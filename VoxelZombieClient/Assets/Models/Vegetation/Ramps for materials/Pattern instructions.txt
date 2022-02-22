@@ -1,0 +1,71 @@
+---------------------
+     HOW TO USE
+---------------------
+
+Apply these to the "albedo" section of a shader!
+The UVs of each object are set up to automatically find the
+part of the image that corresponds to the color they need.
+
+
+-----------------------
+ TO MAKE YOUR OWN:
+-----------------------
+Just create a new file, 256x256, and divide it into a 4-by-4 grid.
+
+NOTE: Spaces 8 and 14 are unused. Plans with their squares were scrapped for the final UVs.
+Any changes to those squares will not be reflected in the final color of the object.
+
+Here's what each square corresponds to:
+---------------
+1 | 2 | 3 | 4 |
+--------------|
+5 | 6 | 7 | 8 |
+--------------|
+9 | 10| 11| 12|
+--------------|
+13| 14| 15| 16|
+---------------
+
+1-3 (top left to center-right on the top):
+
+  > Used for leaves and stems!
+
+4: (top right)
+
+  > Used to color the centers of the flowers.
+
+5:
+  > Used for the petals on the spiky plant!
+
+6:
+  > Used for the petals on the Basic plant!
+
+7:
+  > Used for the petals on the Flat plant!
+
+8:
+  > Unused - planned for use on the Flat plant, but it... honestly looked better with one solid color.
+
+9:
+  > Stem Color for Spotted Mushroom
+
+10:
+  > Color for Group Mushroom
+
+11:
+  > Stem color for Tall Mushroom
+
+12:
+  > Stem color for Little Mushroom
+
+13:
+  > Color for top of spotted mushroom
+
+14:
+  > Unused - pattern was supposed to replicate the look of a morel mushroom, but looked warped and distorted, so it was determined to not be super useful.
+
+15:
+  > Color for tall mushroom cap
+
+16:
+  > color for little mushroom cap
