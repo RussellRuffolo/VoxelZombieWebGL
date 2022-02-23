@@ -38,8 +38,8 @@ public class ClientConnectionManager : MonoBehaviour
     {
         WebRTC.Initialize();
         Listener = new HttpListener();
-        Listener.Prefixes.Add("http://localhost:4556/");
-        Listener.Prefixes.Add("http://127.0.0.1:4556/");
+        Listener.Prefixes.Add("https://localhost:4556/");
+        Listener.Prefixes.Add("https://127.0.0.1:4556/");
         StartAsyncListener(Listener);
     }
 
