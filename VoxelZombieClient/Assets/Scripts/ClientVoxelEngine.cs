@@ -34,8 +34,13 @@ public class ClientVoxelEngine : MonoBehaviour
         {
             UnloadMap();
         }
-
-        StartCoroutine(GetMapData("http://127.0.0.1:4555/StreamingAssets/" + mapName + ".bin"));
+        
+        
+        string url = Application.streamingAssetsPath + "/" + mapName + ".bin";
+        
+        Debug.LogError("Url is: " + url);
+        
+        StartCoroutine(GetMapData(url));
 
 
         // string fileName;

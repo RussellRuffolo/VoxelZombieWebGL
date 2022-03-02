@@ -24,17 +24,23 @@ mergeInto(LibraryManager.library, {
 
   SendAnswer: function (offer) {
 
-  const SendAnswerUrl = "http://127.0.0.1:4556/send-answer-get-candidate"
+  const SendAnswerUrl = "https://crashblox.net/send-answer-get-candidate"
 
   // 1. Create the client side PeerConnection
-  peerConnection = new RTCPeerConnection()
+  peerConnection = new RTCPeerConnection({
+    iceServers: [
+      {
+        urls: "stun:stun.12connect.com:3478"
+      }
+    ]
+  });
   const clientId = offer.clientId
 
   console.log('Attempt set client id')
   unityInstance.SendMessage('Network', 'SetClientId', offer.clientId)
 
-  console.log(offer.clientId)
-  console.log(offer.sdp)
+  //console.log(offer.clientId)
+ // console.log(offer.sdp)
   console.log(offer)
 
   // 2. Set the offer on the PeerConnection
@@ -45,12 +51,21 @@ mergeInto(LibraryManager.library, {
     peerConnection.createAnswer().then(function(answer) {
       // 4. Set the answer on the PeerConnection
       peerConnection.setLocalDescription(answer).then(function() {
+
+        var body = JSON.stringify({clientId: clientId, sdp: answer.sdp})
+
+        console.log("Body is: ", body)
+
         // 5. Send the answer to the server
         fetch(SendAnswerUrl, {
           method: 'POST',
-          body: JSON.stringify({clientId: clientId, sdp: answer.sdp})
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: body
         })
           .then(function(response) {
+            console.log("Reponse is: ", response)
             return response.json()
           })
           .then(_AddIceCandidate)
