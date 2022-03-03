@@ -1,26 +1,15 @@
-mergeInto(LibraryManager.library, {
-
-
-
-    
+mergeInto(LibraryManager.library, {   
 
   AddIceCandidate: function (candidate) {
-    console.log("In add Ice Candidate")
-    console.log(candidate)
     // 1. This checks for the server indicating it could not provide any
     //    ICE Candidates.
     if (candidate.candidate === '') {
       return console.error('the server had no ICE Candidates')
     }
-
-    console.log("Adding Ice Candidate")
   
     // 2. Pass the ICE Candidate to the Client PeerConnection
     peerConnection.addIceCandidate(candidate)
   },
-
-
-
 
   SendAnswer: function (offer) {
 
@@ -36,12 +25,7 @@ mergeInto(LibraryManager.library, {
   });
   const clientId = offer.clientId
 
-  console.log('Attempt set client id')
   unityInstance.SendMessage('Network', 'SetClientId', offer.clientId)
-
-  //console.log(offer.clientId)
- // console.log(offer.sdp)
-  console.log(offer)
 
   // 2. Set the offer on the PeerConnection
   peerConnection.setRemoteDescription(
@@ -54,8 +38,6 @@ mergeInto(LibraryManager.library, {
 
         var body = JSON.stringify({clientId: clientId, sdp: answer.sdp})
 
-        console.log("Body is: ", body)
-
         // 5. Send the answer to the server
         fetch(SendAnswerUrl, {
           method: 'POST',
@@ -65,7 +47,6 @@ mergeInto(LibraryManager.library, {
           body: body
         })
           .then(function(response) {
-            console.log("Reponse is: ", response)
             return response.json()
           })
           .then(_AddIceCandidate)
@@ -74,22 +55,14 @@ mergeInto(LibraryManager.library, {
   })
 
   //set up data channel
-
   peerConnection.ondatachannel = function (event) {
-      console.log("ON DATA CHANNEL")
-      console.log(event)
 
       const dataChannel = event.channel
 
       if(dataChannel.label === 'Reliable'){
         peerConnection.reliableChannel = dataChannel
 
-        dataChannel.onmessage = function(event) {
-          console.log("Reliable")
-    
-          console.log(event.data)
-
-          
+        dataChannel.onmessage = function(event) {            
 
           unityInstance.SendMessage('Network', 'ReceiveReliableMessage', event.data)
         }
@@ -98,16 +71,9 @@ mergeInto(LibraryManager.library, {
         peerConnection.unreliableChannel = dataChannel
 
         dataChannel.onmessage = function(event) {
-
-          console.log("Unreliable")
-          console.log(event.data)
-
-
-
           unityInstance.SendMessage('Network', 'ReceiveUnreliableMessage', event.data)
         }
       }
-
    
     }
 },
@@ -137,12 +103,9 @@ SendUnreliableMessage: function(message){
 Connect__deps: ['SendAnswer', 'AddIceCandidate', 'Pack'],
 Connect: function (baseUrl) {
   var url = Pointer_stringify(baseUrl)
-  console.log(url)
-  console.log(typeof url)
   try{
     fetch(url)
     .then(function(response) {
-      console.log(response)
       return response.json()
     })
     .then(function(offer){
@@ -150,12 +113,8 @@ Connect: function (baseUrl) {
     })
   }
   catch(e){
-
-  console.log(e.message)
-
   }
     
 },
-
 
 });

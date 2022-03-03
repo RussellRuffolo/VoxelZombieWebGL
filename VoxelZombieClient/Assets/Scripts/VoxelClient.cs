@@ -24,7 +24,6 @@ namespace Client
         Transform localPlayerTransform;
         Transform localSimTransform;
 
-        public GameObject loginCamera;
 
 
         ClientChatManager chatManager;
@@ -58,6 +57,7 @@ namespace Client
             SendReliableMessage(testMessage.GetMessage());
         }
 
+        private LoginClient LoginClient;
         private void Awake()
         {
             vEngine = GetComponent<ClientVoxelEngine>();
@@ -65,6 +65,8 @@ namespace Client
 
 
             chatManager = GetComponent<ClientChatManager>();
+
+            LoginClient = GetComponent<LoginClient>();
         }
 
 
@@ -112,7 +114,6 @@ namespace Client
 
                 if (PlayerID == clientId)
                 {
-                    Destroy(loginCamera);
                     GameObject LocalPlayer = GameObject.Instantiate(LocalPlayerPrefab,
                         position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
@@ -355,6 +356,37 @@ namespace Client
             {
                 Debug.Log("No Network Player corresponds to given ID: " + ID);
             }
+        }
+        
+        public void OnSinglePlayer()
+        {
+            
+            
+            Debug.Log("Test");
+            LoginClient.OnSinglePlayer();
+
+
+            Vector3 position = new Vector3(16, 100, 16);
+
+            Vector3 eulerRotation = Vector3.zero;
+            
+        
+            
+            GameObject LocalPlayer = GameObject.Instantiate(LocalPlayerPrefab,
+                position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
+
+            GameObject LocalPlayerSim = GameObject.Instantiate(LocalPlayerSimulator,
+                position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
+
+            LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
+                LocalPlayerSim.transform;
+            LocalPlayerSim.GetComponent<ClientPlayerController>().camController =
+                LocalPlayer.GetComponent<ClientCameraController>();
+     
+
+
+            localPlayerTransform = LocalPlayer.transform;
+            localSimTransform = LocalPlayerSim.transform;
         }
 
         public void SetPlayerState(ushort clientId, RtcMessageReader reader)

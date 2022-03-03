@@ -24,8 +24,7 @@ public class ClientVoxelEngine : MonoBehaviour
         {
             mat.SetFloat("_Glossiness", 0);
         }
-
-        // LoadMap("asylum");
+        
     }
 
     public void LoadMap(string mapName)
@@ -41,38 +40,7 @@ public class ClientVoxelEngine : MonoBehaviour
         Debug.LogError("Url is: " + url);
         
         StartCoroutine(GetMapData(url));
-
-
-        // string fileName;
-        //
-        // if (Application.platform == RuntimePlatform.OSXPlayer)
-        // {
-        //     fileName = Application.dataPath + "/Resources" + "/Data" + "/StreamingAssets/" + mapName + ".bin";
-        // }
-        // else if (Application.platform == RuntimePlatform.WebGLPlayer)
-        // {
-        //
-        //     StartCoroutine(GetMapData("127.0.0.1:4555/Public/StreamingAssets/" + mapName + ".bin"));
-        //     return;
-        //
-        // }
-        //
-        // {
-        //     fileName = Application.streamingAssetsPath + "/" + mapName + ".bin";
-        // }
-
-        // BinaryReader binReader = new BinaryReader(new FileStream(fileName, FileMode.Open));
-        //
-        //
-        // short length = binReader.ReadInt16();
-        // short width = binReader.ReadInt16();
-        // short height = binReader.ReadInt16();
-        //
-        // byte[] mapBytes = binReader.ReadBytes(length * width * height);
-        //
-        // Length = length;
-        // Width = width;
-        // Height = height;
+        ;
     }
 
     private void ApplyMapData(byte[] mapBytes)

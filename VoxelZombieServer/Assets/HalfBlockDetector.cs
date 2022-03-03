@@ -4,18 +4,20 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 //Also requires some sort of collider, made with an AABB in mind
-
 /// The class that takes care of all the player related physics
 /// Many configurable parameters with defaults set as the recommended values in BBR
 public class HalfBlockDetector : MonoBehaviour
 {
     //Remember 1 unit is 1 meter (the physics engine was made with this ratio in mind)
 
-    [Header("Steps")]
-    public float maxStepHeight = 0.55f;              ///< The maximum a player can set upwards in units when they hit a wall that's potentially a step
-    public float stepSearchOvershoot = 0.01f;       ///< How much to overshoot into the direction a potential step in units when testing. High values prevent player from walking up small steps but may cause problems.
+    [Header("Steps")] public float maxStepHeight = 0.55f;
 
+    ///< The maximum a player can set upwards in units when they hit a wall that's potentially a step
+    public float stepSearchOvershoot = 0.01f;
+
+    ///< How much to overshoot into the direction a potential step in units when testing. High values prevent player from walking up small steps but may cause problems.
     private List<ContactPoint> allCPs = new List<ContactPoint>();
+
     private Vector3 lastVelocity;
 
     bool steppingUp = false;
@@ -27,7 +29,7 @@ public class HalfBlockDetector : MonoBehaviour
 
     private List<int> _SteppableBlockIds = new List<int>
     {
-       0,9,11
+        0, 9, 11
     };
 
     private void Awake()
@@ -78,7 +80,6 @@ public class HalfBlockDetector : MonoBehaviour
         allCPs.Clear();
         lastVelocity = velocity;
         */
-
     }
 
     public void CheckSteps()
@@ -100,15 +101,12 @@ public class HalfBlockDetector : MonoBehaviour
             if (stepUp)
             {
                 stepUpOffset += Vector3.up * .1f;
-                Debug.Log("Step up:" + stepUpOffset);
                 steppingUp = true;
                 halfStepOffset = .5f * stepUpOffset;
                 //this.GetComponent<Rigidbody>().position += stepUpOffset;
                 this.GetComponent<Rigidbody>().position += halfStepOffset;
                 this.GetComponent<Rigidbody>().velocity = lastVelocity;
             }
-
-
         }
         else
         {
@@ -117,16 +115,14 @@ public class HalfBlockDetector : MonoBehaviour
             this.GetComponent<Rigidbody>().velocity = lastVelocity;
 
             steppingUp = false;
-
         }
 
         allCPs.Clear();
         lastVelocity = velocity;
-
     }
 
     public bool CheckGrounded()
-    {        
+    {
         bool found = false;
         foreach (ContactPoint cp in allCPs)
         {
@@ -190,6 +186,7 @@ public class HalfBlockDetector : MonoBehaviour
             if (test)
                 return test;
         }
+
         return false;
     }
 
@@ -202,7 +199,6 @@ public class HalfBlockDetector : MonoBehaviour
     {
         stepUpOffset = default(Vector3);
         Collider stepCol = stepTestCP.otherCollider;
-
 
 
         //( 1 ) Check if the contact point normal matches that of a step (y close to 0)
@@ -222,16 +218,13 @@ public class HalfBlockDetector : MonoBehaviour
         RaycastHit hitInfo;
         float stepHeight = groundCP.point.y + maxStepHeight + 0.0001f;
         Vector3 stepTestInvDir = new Vector3(-stepTestCP.normal.x, 0, -stepTestCP.normal.z).normalized;
-        Vector3 origin = new Vector3(stepTestCP.point.x, stepHeight, stepTestCP.point.z) + (stepTestInvDir * stepSearchOvershoot);
+        Vector3 origin = new Vector3(stepTestCP.point.x, stepHeight, stepTestCP.point.z) +
+                         (stepTestInvDir * stepSearchOvershoot);
         Vector3 direction = Vector3.down;
         if (!(Physics.Raycast(new Ray(origin, direction), out hitInfo, maxStepHeight)))
         {
-
             return false;
         }
-
-
-
 
 
         RaycastHit newHit;
@@ -242,24 +235,26 @@ public class HalfBlockDetector : MonoBehaviour
             {
                 return false;
             }
-
         }
 
         //We have enough info to calculate the points
-        Vector3 stepUpPoint = new Vector3(stepTestCP.point.x, hitInfo.point.y + 0.0001f, stepTestCP.point.z) + (stepTestInvDir * stepSearchOvershoot);
+        Vector3 stepUpPoint = new Vector3(stepTestCP.point.x, hitInfo.point.y + 0.0001f, stepTestCP.point.z) +
+                              (stepTestInvDir * stepSearchOvershoot);
 
-        if (!(world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y), Mathf.FloorToInt(stepUpPoint.z)] == 44))
+        if (!(world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y),
+                Mathf.FloorToInt(stepUpPoint.z)] == 44))
         {
-            if (!(world[Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y - 1), Mathf.FloorToInt(transform.position.z)] == 44))
+            if (!(world[Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y - 1),
+                    Mathf.FloorToInt(transform.position.z)] == 44))
             {
                 //  Debug.Log("Block id is: " + world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y), Mathf.FloorToInt(stepUpPoint.z)]);
                 return false;
             }
-
-
         }
 
-        if (!(_SteppableBlockIds.Contains(world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y + 1), Mathf.FloorToInt(stepUpPoint.z)]) && _SteppableBlockIds.Contains(world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y + 1.4f), Mathf.FloorToInt(stepUpPoint.z)])))
+        if (!(_SteppableBlockIds.Contains(world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y + 1),
+                Mathf.FloorToInt(stepUpPoint.z)]) && _SteppableBlockIds.Contains(world[Mathf.FloorToInt(stepUpPoint.x),
+                Mathf.FloorToInt(stepUpPoint.y + 1.4f), Mathf.FloorToInt(stepUpPoint.z)])))
         {
             //Debug.Log("Not air");
             return false;
@@ -270,6 +265,5 @@ public class HalfBlockDetector : MonoBehaviour
         //We passed all the checks! Calculate and return the point!
         stepUpOffset = stepUpPointOffset;
         return true;
-
     }
 }

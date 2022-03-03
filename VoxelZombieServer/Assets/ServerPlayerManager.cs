@@ -45,9 +45,9 @@ public class ServerPlayerManager : MonoBehaviour
 
     public void AddPlayer(ushort PlayerID, ushort stateTag, float xPos, float yPos, float zPos, string name)
     {
-        Vector3 spawnPosition = new Vector3((float) xPos, (float) yPos, (float) zPos);
+        Vector3 spawnPosition = new Vector3(xPos, yPos, zPos);
 
-        GameObject newPlayer = GameObject.Instantiate(PlayerPrefab, spawnPosition, Quaternion.identity);
+        GameObject newPlayer = Instantiate(PlayerPrefab, spawnPosition, Quaternion.identity);
         newPlayer.GetComponent<ServerPositionTracker>().ID = PlayerID;
 
         PlayerInformation newPlayerInfo = new PlayerInformation(newPlayer.transform, name, stateTag);
@@ -272,7 +272,6 @@ public class ServerPlayerManager : MonoBehaviour
             PlayerDictionary[id].moving = true;
             if (inputs.Jump && playerTransform.GetComponent<ServerPositionTracker>().CheckWaterJump())
             {
-                Debug.Log("Water Jump");
                 playerTransform.GetComponent<ServerPositionTracker>().UseWaterJump();
                 Vector3 waterJump = new Vector3(inputs.moveVector.x * horizontalWaterSpeed, waterExitSpeed,
                     inputs.moveVector.z * horizontalWaterSpeed);

@@ -60,7 +60,7 @@ public class ClientConnectionManager : MonoBehaviour
         //     Debug.Log(certificate2.FriendlyName + " " + certificate2.Subject);
         // }
 
-     //   serverCertificate = new X509Certificate2(certPath, certPass, X509KeyStorageFlags.Exportable);
+        //   serverCertificate = new X509Certificate2(certPath, certPass, X509KeyStorageFlags.Exportable);
 
         //  serverCertificate.Import(certPath, (string) null, X509KeyStorageFlags.Exportable);
         //    IPAddress.Parse("192.168.0.171")
@@ -81,62 +81,6 @@ public class ClientConnectionManager : MonoBehaviour
         return certificates;
     }
 
-    private void OnApplicationQuit()
-    {
-        Listener.Stop();
-//        HttpListener.Stop();
-    }
-
-
-    private async void StartAsyncListener(TcpListener listener)
-    {
-        listener.Start();
-        Debug.Log("Starting Listener");
-        while (true)
-        {
-            TcpClient client = await listener.AcceptTcpClientAsync();
-
-            Debug.Log("Accepted client");
-            SslStream sslStream = new SslStream(client.GetStream(), false);
-
-            try
-            {
-                await sslStream.AuthenticateAsServerAsync(serverCertificate, false, SslProtocols.Tls12, true);
-
-                sslStream.ReadTimeout = 5000;
-                sslStream.WriteTimeout = 5000;
-
-                string messageData = ReadMessage(sslStream);
-                Debug.Log(messageData);
-                byte[] message = Encoding.UTF8.GetBytes("Hello from the server.<EOF>");
-                Console.WriteLine("Sending hello message.");
-                sslStream.Write(message);
-            }
-            catch (AuthenticationException e)
-            {
-                Debug.Log("Authentication Exception: " + e.Message);
-                //do i need to reset cert. 
-                Debug.Log(e.InnerException);
-                sslStream.Close();
-                client.Close();
-            }
-            catch (ArgumentException e)
-            {
-                Debug.Log("Argument Exception: " + e.Message);
-                //do i need to reset cert. 
-                Debug.Log(e.InnerException);
-                sslStream.Close();
-                client.Close();
-            }
-            finally
-            {
-                //cert.Reset();
-                sslStream.Close();
-                client.Close();
-            }
-        }
-    }
-
     private async void StartHttpListener(HttpListener listener)
     {
         listener.Start();
@@ -145,7 +89,6 @@ public class ClientConnectionManager : MonoBehaviour
         while (true)
         {
             HttpListenerContext ctx = await listener.GetContextAsync();
-            Debug.Log("Context");
             //  Peel out the requests and response objects
             HttpListenerRequest req = ctx.Request;
             HttpListenerResponse resp = ctx.Response;
@@ -153,16 +96,12 @@ public class ClientConnectionManager : MonoBehaviour
             resp.Headers.Add("Access-Control-Allow-Origin", "*");
             resp.Headers.Add("Access-Control-Allow-Private-Network", "true");
 
-            // if (req.HttpMethod == "GET")
-            //   {
+
             if (req.Url.AbsolutePath == "/get-offer")
             {
                 StartCoroutine(HandleGetOffer(req, resp));
             }
-            //      }
 
-            //   else if (req.HttpMethod == "POST")
-            // {
             if (req.Url.AbsolutePath == "/send-answer-get-candidate")
             {
                 StartCoroutine(HandleSendAnswer(req, resp));
@@ -171,35 +110,6 @@ public class ClientConnectionManager : MonoBehaviour
     }
 
 
-    static string ReadMessage(SslStream sslStream)
-    {
-        // Read the  message sent by the client.
-        // The client signals the end of the message using the
-        // "<EOF>" marker.
-        byte[] buffer = new byte[2048];
-        StringBuilder messageData = new StringBuilder();
-        int bytes = -1;
-        do
-        {
-            // Read the client's test message.
-            bytes = sslStream.Read(buffer, 0, buffer.Length);
-
-            // Use Decoder class to convert from bytes to UTF8
-            // in case a character spans two buffers.
-            Decoder decoder = Encoding.UTF8.GetDecoder();
-            char[] chars = new char[decoder.GetCharCount(buffer, 0, bytes)];
-            decoder.GetChars(buffer, 0, bytes, chars, 0);
-            messageData.Append(chars);
-            // Check for EOF or an empty message.
-            if (messageData.ToString().IndexOf("<EOF>") != -1)
-            {
-                break;
-            }
-        } while (bytes != 0);
-
-        return messageData.ToString();
-    }
-
     private IEnumerator HandleGetOffer(HttpListenerRequest req, HttpListenerResponse resp)
     {
         Debug.Log("Handle Get Offer");
@@ -207,9 +117,19 @@ public class ClientConnectionManager : MonoBehaviour
         nextClientId++;
 
         RTCPeerConnection peerConnection = new RTCPeerConnection();
-     
 
-        peerConnection.OnIceConnectionChange += state => { Debug.Log("On Ice State Change: " + state); };
+
+        peerConnection.OnIceConnectionChange += state =>
+        {
+            if (state == RTCIceConnectionState.Disconnected)
+            {
+                if (clients.ContainsKey(clientId))
+                {
+                    Debug.Log("Removed Client On Ice Connection Disconnected Close");
+                    clients[clientId].ConnectionClosed();
+                }
+            }
+        };
 
         RTCDataChannel unreliableDataChannel = peerConnection.CreateDataChannel("Unreliable", new RTCDataChannelInit()
         {
@@ -219,7 +139,6 @@ public class ClientConnectionManager : MonoBehaviour
 
         unreliableDataChannel.OnOpen += () =>
         {
-            Debug.Log("Unreliable Open");
             clients[clientId].UnreliableOpen = true;
             if (clients[clientId].ReliableOpen)
             {
@@ -227,7 +146,14 @@ public class ClientConnectionManager : MonoBehaviour
             }
         };
 
-        unreliableDataChannel.OnClose += () => { Debug.Log("On Close"); };
+        unreliableDataChannel.OnClose += () =>
+        {
+            if (clients.ContainsKey(clientId))
+            {
+                Debug.Log("Removed Client On Unreliable Close");
+                clients[clientId].ConnectionClosed();
+            }
+        };
 
         unreliableDataChannel.OnMessage += bytes => { MessageReceived(clientId, clients[clientId], bytes); };
 
@@ -238,7 +164,6 @@ public class ClientConnectionManager : MonoBehaviour
 
         reliableDataChannel.OnOpen += () =>
         {
-            Debug.Log("Reliable Open");
             clients[clientId].ReliableOpen = true;
             if (clients[clientId].UnreliableOpen)
             {
@@ -246,7 +171,14 @@ public class ClientConnectionManager : MonoBehaviour
             }
         };
 
-        reliableDataChannel.OnClose += () => { clients[clientId].ConnectionClosed(); };
+        reliableDataChannel.OnClose += () =>
+        {
+            if (clients.ContainsKey(clientId))
+            {
+                Debug.Log("Removed Client On Reliable Close");
+                clients[clientId].ConnectionClosed();
+            }
+        };
 
 
         //ClientId 
@@ -352,7 +284,6 @@ public class ClientConnectionManager : MonoBehaviour
             yield return answerOp;
             if (client.IceCandidate != null)
             {
-                
                 Debug.Log("Candidate: " + client.IceCandidate.Candidate);
                 string candidate = client.IceCandidate.Candidate;
                 string newCandidate = candidate.Replace("192.168.0.171", "209.6.75.168");

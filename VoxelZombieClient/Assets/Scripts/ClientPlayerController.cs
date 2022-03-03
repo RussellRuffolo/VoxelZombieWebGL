@@ -23,14 +23,7 @@ namespace Client
 
         public float waterExitSpeed;
 
-        public float minimumX = -60f;
-        public float maximumX = 60f;
 
-        public float minimumY = -360f;
-        public float maximumY = 360f;
-
-        public float sensitivityX = 5f;
-        public float sensitivityY = 5f;
 
         private float rotationY = 0f;
         private float rotationX = 0f;

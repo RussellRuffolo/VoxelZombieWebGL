@@ -452,17 +452,13 @@ public class VoxelServer : MonoBehaviour
 
         if (!playerNames.ContainsValue(name))
         {
-
             returnText = "Login Successful";
         }
         else
         {
             returnText = "No Username";
         }
-
-
-        Debug.Log(returnText);
-
+        
         ushort succesfulLogin;
 
         if (returnText == "Login Successful")
@@ -493,15 +489,12 @@ public class VoxelServer : MonoBehaviour
         loginMessage.WriteInt(succesfulLogin);
 
         client.SendReliableMessage(loginMessage);
-        
     }
 
     //If login is successful then initialize player
     //otherwise tell client unsuccessful so they can attempt again
     private void HandleLogin(ushort clientId, RtcClient client, string name)
     {
-
-
         PostLoginAttempt(clientId, client, name, "");
     }
 
@@ -721,27 +714,34 @@ public class VoxelServer : MonoBehaviour
 
     public void UpdatePlayerState(ushort ID, ushort stateTag)
     {
-        PlayerManager.PlayerDictionary[ID].stateTag = stateTag;
-        Color newColor;
-
-        if (stateTag == 0)
+        if (PlayerManager.PlayerDictionary.ContainsKey(ID))
         {
-            newColor = Color.white;
+            PlayerManager.PlayerDictionary[ID].stateTag = stateTag;
+            Color newColor;
+
+            if (stateTag == 0)
+            {
+                newColor = Color.white;
+            }
+            else
+            {
+                newColor = Color.red;
+            }
+
+            PlayerManager.PlayerDictionary[ID].transform.GetComponent<MeshRenderer>().material.color = newColor;
+
+            RtcMessage stateMessage = new RtcMessage(PLAYER_STATE_TAG);
+            stateMessage.WriteUShort(ID);
+            stateMessage.WriteUShort(stateTag);
+
+            foreach (RtcClient c in ConnectionManager.GetAllClients())
+            {
+                c.SendReliableMessage(stateMessage);
+            }
         }
         else
         {
-            newColor = Color.red;
-        }
-
-        PlayerManager.PlayerDictionary[ID].transform.GetComponent<MeshRenderer>().material.color = newColor;
-
-        RtcMessage stateMessage = new RtcMessage(PLAYER_STATE_TAG);
-        stateMessage.WriteUShort(ID);
-        stateMessage.WriteUShort(stateTag);
-
-        foreach (RtcClient c in ConnectionManager.GetAllClients())
-        {
-            c.SendReliableMessage(stateMessage);
+            Debug.LogError("Tried to set State: " + stateTag + " for player: " + ID);
         }
     }
 
