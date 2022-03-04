@@ -91,6 +91,7 @@ Pack: function(bytes) {
 
 
 SendReliableMessage: function(message){
+  // Todo: Error gracefully if peer connection is not defined
   peerConnection.reliableChannel.send(Pointer_stringify(message))
 },
 
