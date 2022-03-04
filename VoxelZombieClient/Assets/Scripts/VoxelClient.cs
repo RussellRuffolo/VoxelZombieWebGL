@@ -20,6 +20,9 @@ namespace Client
         public GameObject LocalPlayerPrefab;
         public GameObject LocalPlayerSimulator;
 
+        public GameObject SingePlayerPrefab;
+        public GameObject SinglerPlayerSimulator;
+        
         public GameObject PlayerMenu;
         
         Dictionary<ushort, Transform> NetworkPlayerDictionary = new Dictionary<ushort, Transform>();
@@ -359,29 +362,37 @@ namespace Client
         
         public void OnSinglePlayer()
         {
+            Debug.Log("On Single Player");
             
-            
-            Debug.Log("Test");
+            vEngine.LoadMap("asylum");
             LoginClient.OnSinglePlayer();
 
 
-            Vector3 position = new Vector3(16, 100, 16);
+            Vector3 position = new Vector3(25, 129.5f, 30);
 
             Vector3 eulerRotation = Vector3.zero;
             
         
             
-            GameObject LocalPlayer = GameObject.Instantiate(LocalPlayerPrefab,
+            GameObject LocalPlayer = GameObject.Instantiate(SingePlayerPrefab,
                 position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-            GameObject LocalPlayerSim = GameObject.Instantiate(LocalPlayerSimulator,
+            GameObject LocalPlayerSim = GameObject.Instantiate(SinglerPlayerSimulator,
                 position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
+            GameObject Menu = GameObject.Instantiate(PlayerMenu);
+            
             LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
                 LocalPlayerSim.transform;
-            LocalPlayerSim.GetComponent<ClientPlayerController>().camController =
+            LocalPlayerSim.GetComponent<SinglePlayerPlayerController>().camController =
                 LocalPlayer.GetComponent<ClientCameraController>();
-     
+
+            vEngine.MapLoadedDelegate += spawnPosition =>
+            {
+
+                LocalPlayerSim.transform.position = spawnPosition;
+                LocalPlayer.transform.position = spawnPosition;
+            };
 
 
             localPlayerTransform = LocalPlayer.transform;

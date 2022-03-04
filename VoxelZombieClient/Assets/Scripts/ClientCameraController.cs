@@ -63,7 +63,6 @@ namespace Client
 
 
             playerCam.transform.localEulerAngles = new Vector3(-rotationX, rotationY, 0);
-            Debug.LogError("Camera Look" + -rotationX + " " + rotationY);
         }
     }
 }

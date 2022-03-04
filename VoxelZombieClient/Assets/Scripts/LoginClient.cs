@@ -76,7 +76,8 @@ namespace Client
             chatCanvas.enabled = true;
             targeterCanvas.enabled = true;
 
-            loginCanvas.enabled = false;
+            Destroy(loginCanvas
+                .gameObject); 
         }
 
 

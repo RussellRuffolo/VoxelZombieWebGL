@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using UnityEngine.Networking;
 
+public delegate void MapLoadedDelegate(Vector3 spawnPosition);
+
 public class ClientVoxelEngine : MonoBehaviour
 {
     public World world = new World();
@@ -18,13 +20,13 @@ public class ClientVoxelEngine : MonoBehaviour
 
     public int Length, Width, Height;
 
+    public MapLoadedDelegate MapLoadedDelegate;
     private void Awake()
     {
         foreach (Material mat in materialList)
         {
             mat.SetFloat("_Glossiness", 0);
         }
-        
     }
 
     public void LoadMap(string mapName)
@@ -33,18 +35,18 @@ public class ClientVoxelEngine : MonoBehaviour
         {
             UnloadMap();
         }
-        
-        
+
+
         string url = Application.streamingAssetsPath + "/" + mapName + ".bin";
-        
-        Debug.LogError("Url is: " + url);
-        
+
+//        Debug.LogError("Url is: " + url);
+
         StartCoroutine(GetMapData(url));
-        ;
     }
 
     private void ApplyMapData(byte[] mapBytes)
     {
+        Debug.Log("Length: " + Length + " Width: " + Width + " Height: " + Height);
         bController.SetMapBoundaries(Length, Width, Height);
         string namePrefix = "Chunk ";
 
@@ -83,6 +85,8 @@ public class ClientVoxelEngine : MonoBehaviour
                 }
             }
         }
+
+        MapLoadedDelegate(new Vector3(25, 129.5f, 30));
     }
 
     private IEnumerator GetMapData(string url)
