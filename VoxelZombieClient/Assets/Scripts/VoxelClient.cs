@@ -20,6 +20,8 @@ namespace Client
         public GameObject LocalPlayerPrefab;
         public GameObject LocalPlayerSimulator;
 
+        public GameObject PlayerMenu;
+        
         Dictionary<ushort, Transform> NetworkPlayerDictionary = new Dictionary<ushort, Transform>();
         Transform localPlayerTransform;
         Transform localSimTransform;
@@ -48,14 +50,7 @@ namespace Client
         {
             SendUnreliableMessage(message.GetMessage());
         }
-
-        public void SendRtcTestMessage()
-        {
-            RtcMessage testMessage = new RtcMessage(Tags.CLIENT_POSITION_TAG);
-            testMessage.WriteInt(69);
-            Debug.LogError("Message is: " + testMessage.GetMessage());
-            SendReliableMessage(testMessage.GetMessage());
-        }
+        
 
         private LoginClient LoginClient;
         private void Awake()
@@ -114,11 +109,15 @@ namespace Client
 
                 if (PlayerID == clientId)
                 {
+                    GameObject Menu = GameObject.Instantiate(PlayerMenu);
+                    
                     GameObject LocalPlayer = GameObject.Instantiate(LocalPlayerPrefab,
                         position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
                     GameObject LocalPlayerSim = GameObject.Instantiate(LocalPlayerSimulator,
                         position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
+
+                  
 
                     LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
                         LocalPlayerSim.transform;

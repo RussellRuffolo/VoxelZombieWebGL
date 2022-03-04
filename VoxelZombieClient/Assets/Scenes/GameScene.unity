@@ -572,7 +572,8 @@ MonoBehaviour:
     type: 3}
   LocalPlayerSimulator: {fileID: 3612919840746706134, guid: 3b2967383cc8c1b409593a2e2baaa9f0,
     type: 3}
-  loginCamera: {fileID: 0}
+  PlayerMenu: {fileID: 1187478391641481103, guid: ff91b10a5f6205b44978185609362132,
+    type: 3}
 --- !u!114 &250310965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,10 +616,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nameText: {fileID: 639425857}
-  usernameTakenText: {fileID: 0}
-  passwordNoMatchText: {fileID: 0}
-  accountCreatedText: {fileID: 0}
-  usernameNotExistText: {fileID: 0}
   loginCanvas: {fileID: 636704959}
   chatCanvas: {fileID: 1950941785}
   targeterCanvas: {fileID: 2147228334}

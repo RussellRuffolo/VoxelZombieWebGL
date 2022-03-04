@@ -12,6 +12,7 @@ TagManager:
   - Model
   - NetworkPlayer
   - Lava
+  - MenuCanvas
   layers:
   - Default
   - TransparentFX
