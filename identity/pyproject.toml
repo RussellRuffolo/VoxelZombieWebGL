@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "identity"
+version = "0.1.0"
+description = ""
+authors = ["Snapper <learningwithsnapper@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi-users = {extras = ["sqlalchemy2", "oauth"], version = "^9.2.5"}
+uvicorn = "^0.17.6"
+aiosqlite = "^0.17.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+pytest = "^7.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
