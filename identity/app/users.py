@@ -17,9 +17,18 @@ from app.models import User, UserCreate, UserDB, UserUpdate
 
 SECRET = "SECRET"
 
-with open("secrets.json", "r") as f:
-    s = json.load(f)
-
+try:
+    with open("secrets.json", "r") as f:
+        s = json.load(f)
+except FileNotFoundError:
+    # Todo: logging and proper fallback
+    print("WARNING: secrets.json WAS NOT FOUND. 3rd PARTY AUTHORIZATION WILL NOT WORK")
+    s = {
+        "web": {
+            "client_id": "",
+            "client_secret": ""
+        }
+    }
 
 
 google_oauth_client = GoogleOAuth2(
