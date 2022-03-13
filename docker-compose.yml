@@ -18,3 +18,9 @@ services:
       context: ./crashblox
     labels:
       - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
+
+  identity:
+    build:
+      context: ./identity
+    labels:
+      - "traefik.http.routers.identity.rule=Host(`id.${DOMAIN}`)"

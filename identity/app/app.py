@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import create_db_and_tables
 from app.models import UserDB
@@ -10,6 +11,17 @@ from app.users import (
 )
 
 app = FastAPI()
+
+origins = [
+    "http://localhost"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
@@ -31,6 +43,10 @@ app.include_router(
     prefix="/auth/google",
     tags=["auth"],
 )
+
+@app.get("/")
+def index():
+    return "Hello, world!"
 
 
 @app.get("/authenticated-route")

@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const helmet = require('helmet')
 const path = require('path');
 
@@ -8,23 +7,17 @@ const app = express();
 const hostname = '0.0.0.0';
 const port = 80
 
-app.use(cors());
-// app.use(helmet())
-// //Todo: Use nonce
-// app.use(
-//     helmet.contentSecurityPolicy({
-//         directives: {
-//             scriptSrc: ["'self'", "'unsafe-inline'", 'blob:http://localhost:8000/']
-//         }
-//     })
-// )
-// app.use(
-//     helmet({
-//         contentSecurityPolicy: false
-//     })
-// )
+app.use(helmet({
+    crossOriginResourcePolicy: {policy: "same-site"},
+    contentSecurityPolicy:  {directives: {
+        "script-src": ["'self'", "'unsafe-inline'", "blob:"],
+        // Todo: ensure security with people who know more about the web
+        "default-src": ["'self'", "blob:", "*.localhost"]
+    }}
+}))
 app.use(express.static(path.join(__dirname, 'Public')));
 
+// Todo: this feels like it should be part of helmet, but I couldn't figure out where to set it
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*")
     next()
