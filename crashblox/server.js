@@ -12,7 +12,7 @@ app.use(helmet({
     contentSecurityPolicy:  {directives: {
         "script-src": ["'self'", "'unsafe-inline'", "blob:"],
         // Todo: ensure security with people who know more about the web
-        "default-src": ["'self'", "blob:", "*.localhost"]
+        "default-src": ["'self'", "blob:", "*\." + process.env.DOMAIN]
     }}
 }))
 app.use(express.static(path.join(__dirname, 'Public')));
