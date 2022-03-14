@@ -1,11 +1,13 @@
+import secrets
 from typing import List, Union, Optional
 
 from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, validator
 
 
 class _Settings(BaseSettings):
-    SECRET_KEY: str
+    # Settings are set automatically using environment variables
     SERVER_NAME: str
+    SECRET_KEY: str = str(secrets.randbits(32))
     SERVER_HOST: AnyHttpUrl
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl]
 
@@ -17,12 +19,16 @@ class _Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    PROJECT_NAME: str
+    # PROJECT_NAME: str
 
-    DB_SERVER: str
-    DB_USER: str
-    DB_PASSWORD: str
-    SQLALCHEMY_DB_URI: Optional[str] = None
+    GOOGLE_OAUTH_CLIENT_ID: str
+    GOOGLE_OAUTH_CLIENT_SECRET: str
+    #
+    # DB_SERVER: str
+    # DB_USER: str
+    # DB_PASSWORD: str
+    # SQLALCHEMY_DB_URI: Optional[str] = None
+    DB_URI: str
 
     class Config:
         case_sensitive = True

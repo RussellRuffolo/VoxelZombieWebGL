@@ -9,18 +9,17 @@ from app.users import (
     fastapi_users,
     google_oauth_client,
 )
+from app.settings import settings
 
 app = FastAPI()
 
-origins = [
-    "http://localhost"
-]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 app.include_router(
@@ -39,10 +38,12 @@ app.include_router(
 )
 app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["users"])
 app.include_router(
+    # Todo: redirect url?
     fastapi_users.get_oauth_router(google_oauth_client, auth_backend, "SECRET"),
     prefix="/auth/google",
     tags=["auth"],
 )
+
 
 @app.get("/")
 def index():
