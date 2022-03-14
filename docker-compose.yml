@@ -25,7 +25,7 @@ services:
     labels:
       - "traefik.http.routers.identity.rule=Host(`id.${DOMAIN}`)"
     env_file:
-      - secret.env
+      - .env
     environment:
       - SERVER_NAME=id.${DOMAIN}
       - SERVER_HOST=http://id.${DOMAIN}
