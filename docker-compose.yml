@@ -5,13 +5,44 @@ services:
     # Enables the web UI and tells Traefik to listen to docker
     command: --api.insecure=true --providers.docker
     ports:
-      # The HTTP port
-      - "80:80"
-      # The Web UI (enabled by --api.insecure=true)
-      - "8080:8080"
+      # HTTP
+      - target: 80
+        published: 80
+        mode: host
+      # HTTPS
+      - target: 443
+        published: 443
+        mode: host
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
+      - traefik-public-certificates:/certificates
+    deploy:
+      placement:
+        constraints:
+          # Make the traefik service run only on the node with this label
+          # as the node with it has the volume for the certificates
+          - node.labels.traefik-public.traefik-public-certificates == true
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constrain-label=traefik-public
+
+        ##### HTTP
+        #### Middleware config
+        - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+        ### Routers
+        ## HTTP (redirect to https)
+        - traefik.http.routers.traefik-public-http.rule=Host(`${DOMAIN}`)
+        - traefik.http.routers.traefik-public-http.entrypoints=http
+        - traefik.http.routers.traefik-public-http.middlewares=https-redirect
+        ## HTTPS (The actual router)
+        - traefik.http.routers.traefik-public-https.rule=HOST(`${DOMAIN}`)
+        - traefik.http.routers.traefik-public.https.entrypoint=https
+        - traefik.http.routers.traefik-public-https.tls=true
+        # Let's Encrypt (le) TLS provider
+        - traefik.http.routers.traefik-public-https.tls.certresolver=le
 
   frontend:
     build:
