@@ -61,4 +61,4 @@ services:
       - .env
     environment:
       - SERVER_NAME=id.${DOMAIN}
-      - SERVER_HOST=http://id.${DOMAIN}
+      - SERVER_HOST=https://id.${DOMAIN}
