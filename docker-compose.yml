@@ -46,7 +46,7 @@ services:
     labels:
       - traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.frontend.tls=true
-      - traefik.http.routers.frontend.tls.certresolver
+      - traefik.http.routers.frontend.tls.certresolver=le
     environment:
       - DOMAIN=$DOMAIN
 
@@ -56,7 +56,7 @@ services:
     labels:
       - traefik.http.routers.identity.rule=Host(`id.${DOMAIN}`)
       - traefik.http.routers.identity.tls=true
-      - traefik.http.routers.identity.tls.certresolver
+      - traefik.http.routers.identity.tls.certresolver=le
     env_file:
       - .env
     environment:
