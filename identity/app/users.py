@@ -1,6 +1,6 @@
 import os
 import json
-from typing import Optional
+from typing import Optional, Tuple
 
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers
@@ -20,6 +20,13 @@ from app.settings import settings
 google_oauth_client = GoogleOAuth2(
     settings.GOOGLE_OAUTH_CLIENT_ID, settings.GOOGLE_OAUTH_CLIENT_SECRET
 )
+
+
+async def get_id_email(self, token: str) -> Tuple[str, str]:
+    print("OVERRODE THE FUNCTION 'get_id_email")
+    return "", ""
+
+google_oauth_client.get_id_email = get_id_email
 
 
 class UserManager(BaseUserManager[UserCreate, UserDB]):
