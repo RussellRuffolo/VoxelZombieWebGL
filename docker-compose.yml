@@ -1,23 +1,52 @@
 services:
-  reverse-proxy:
+  proxy:
     # The official v2 Traefik docker image
     image: traefik:v2.6
-    # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
+
+    # Static config
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --api
+      - --providers.docker=true
+      - --certificatesresolvers.le.acme.email=${LETS_ENCRYPT_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
+    # Dynamic config
+    labels:
+      # Dashboard
+#      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
+#      - "traefik.http.routers.traefik.service=api@internal"
+#      - "traefik.http.routers.traefik.middlewares=admin"
+#      - "traefik.http.routers.traefik.tls.certresolver=le"
+#      - "traefik.http.middlewares.admin.basicauth.users=${BASIC_AUTH_USER}:${BASIC_AUTH_PASSWORD}"
+
+      # global redirect to https
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.redirs.entrypoints=web"
+      - "traefik.http.routers.redirs.middlewares=redirect-to-https"
     ports:
-      # The HTTP port
       - "80:80"
-      # The Web UI (enabled by --api.insecure=true)
-      - "8080:8080"
+      - "443:443"
+      # The Web UI (enabled by --api)
+#      - "8080:8080"
+#    networks:
+#      - traefik_net
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
+
+#networks:
+#  traefik_net:
 
   frontend:
     build:
       context: ./crashblox
     labels:
-      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
+      - traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.frontend.tls=true
+      - traefik.http.routers.frontend.tls.certresolver
     environment:
       - DOMAIN=$DOMAIN
 
@@ -25,7 +54,9 @@ services:
     build:
       context: ./identity
     labels:
-      - "traefik.http.routers.identity.rule=Host(`id.${DOMAIN}`)"
+      - traefik.http.routers.identity.rule=Host(`id.${DOMAIN}`)
+      - traefik.http.routers.identity.tls=true
+      - traefik.http.routers.identity.tls.certresolver
     env_file:
       - .env
     environment:
