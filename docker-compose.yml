@@ -36,20 +36,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
 
-  proxyserver:
-    build:
-      context: ./ProxyServer
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    labels:
-      - traefik.http.routers.proxyserver.rule=Host(`rtc.${DOMAIN}`)
-      - traefik.http.routers.proxyserver.tls=true
-      - traefik.http.routers.proxyserver.tls.certresolver=le
-
-
-#networks:
-#  traefik_net:
-
   frontend:
     build:
       context: ./crashblox
