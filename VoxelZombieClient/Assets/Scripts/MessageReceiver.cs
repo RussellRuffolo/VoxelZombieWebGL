@@ -42,7 +42,7 @@ public class MessageReceiver : MonoBehaviour
     {
         RtcMessageReader reader = new RtcMessageReader(message);
         char tag = reader.ReadTag();
-
+        Debug.LogError("received message: " + message);
 
         switch (tag)
         {

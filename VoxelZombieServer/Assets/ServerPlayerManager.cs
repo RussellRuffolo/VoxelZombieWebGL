@@ -50,13 +50,14 @@ public class ServerPlayerManager : MonoBehaviour
         GameObject newPlayer = Instantiate(PlayerPrefab, spawnPosition, Quaternion.identity);
         newPlayer.GetComponent<ServerPositionTracker>().ID = PlayerID;
 
-        PlayerInformation newPlayerInfo = new PlayerInformation(newPlayer.transform, name, stateTag);
+        PlayerInformation newPlayerInfo = new PlayerInformation(newPlayer.transform,
+            newPlayer.transform.GetComponent<ServerPlayerController>(), newPlayer.transform.GetComponent<Rigidbody>(), name, stateTag);
         PlayerDictionary.Add(PlayerID, newPlayerInfo);
         PlayerDictionary[PlayerID].timeJoined = Time.time;
 
         // StartCoroutine(GetPlayerStats(name, PlayerID));
 
-        InputDictionary.Add(PlayerID, new PlayerInputs(Vector3.zero, false));
+        InputDictionary.Add(PlayerID, new PlayerInputs(Vector3.zero, Vector3.zero, false, false));
         TickDic.Add(PlayerID, -1);
         PlayerVelocities.Add(PlayerID, Vector3.zero);
     }
@@ -142,7 +143,11 @@ public class ServerPlayerManager : MonoBehaviour
         {
             Vector3 moveVector = new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat());
 
+            Vector3 lookDirection = new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat());
+
             bool Jump = reader.ReadUShort() == 1;
+
+            bool Slide = reader.ReadUShort() == 1;
 
             int clientTickNum = reader.ReadInt();
 
@@ -153,8 +158,9 @@ public class ServerPlayerManager : MonoBehaviour
             {
                 appliedInput = true;
 
+
                 //apply the clients inputs to change the player velocity
-                ApplyInputs(clientId, new PlayerInputs(moveVector, Jump));
+                ApplyInputs(clientId, new PlayerInputs(moveVector, lookDirection, Jump, Slide));
 
                 //simulate one tick
                 if (!vEngine.loadingMap)
@@ -185,145 +191,149 @@ public class ServerPlayerManager : MonoBehaviour
 
     private void ApplyInputs(ushort id, PlayerInputs inputs)
     {
-        Transform playerTransform = PlayerDictionary[id].transform;
-        Rigidbody playerRB = playerTransform.GetComponent<Rigidbody>();
+        ServerPlayerController playerController = PlayerDictionary[id].PlayerController;
 
-        float yVel = playerRB.velocity.y;
-        Vector3 horizontalSpeed = new Vector3(playerRB.velocity.x, 0, playerRB.velocity.z);
-        inputs.moveState = playerTransform.GetComponent<ServerPositionTracker>().CheckPlayerState();
-        if (inputs.moveState == 0) //normal movement
-        {
-            PlayerDictionary[id].inWater = false;
-            PlayerDictionary[id].moving = true;
-            bool onGround = playerTransform.GetComponent<HalfBlockDetector>().CheckGrounded();
+        playerController.ApplyInputs(PlayerDictionary[id].playerRb, inputs);
 
-            if (onGround && yVel <= 0)
-            {
-                if (inputs.Jump)
-                {
-                    horizontalSpeed = inputs.moveVector.normalized * PlayerSpeed;
-                    yVel = JumpSpeed;
-                }
-                else
-                {
-                    horizontalSpeed = inputs.moveVector.normalized * PlayerSpeed;
-                    if (inputs.moveVector.magnitude == 0)
-                    {
-                        PlayerDictionary[id].moving = false;
-                    }
-                }
-            }
-            else
-            {
-                horizontalSpeed += inputs.moveVector.normalized * AirAcceleration * Time.fixedDeltaTime;
-
-                if (horizontalSpeed.magnitude > PlayerSpeed)
-                {
-                    horizontalSpeed = inputs.moveVector.normalized * PlayerSpeed;
-                }
-
-                yVel -= gravAcceleration * Time.fixedDeltaTime;
-            }
-
-            playerRB.velocity = horizontalSpeed;
-            playerRB.velocity += yVel * Vector3.up;
-        }
-        else if (inputs.moveState == 1) //water movement
-        {
-            PlayerDictionary[id].moving = true;
-            PlayerDictionary[id].inWater = true;
-            if (inputs.Jump)
-            {
-                if (yVel >= verticalWaterMaxSpeed)
-                {
-                    yVel = verticalWaterMaxSpeed;
-                }
-                else
-                {
-                    yVel += verticalWaterAcceleration * Time.fixedDeltaTime;
-                }
-            }
-            else
-            {
-                if (yVel < -verticalWaterMaxSpeed)
-                {
-                    yVel += verticalWaterAcceleration * Time.fixedDeltaTime;
-                    if (yVel > -verticalWaterMaxSpeed)
-                    {
-                        yVel = -verticalWaterMaxSpeed;
-                    }
-                }
-                else
-                {
-                    yVel -= verticalWaterAcceleration * Time.fixedDeltaTime;
-                    if (yVel < -verticalWaterMaxSpeed)
-                    {
-                        yVel = -verticalWaterMaxSpeed;
-                    }
-                }
-            }
-
-            playerRB.velocity = inputs.moveVector * horizontalWaterSpeed;
-            playerRB.velocity += yVel * Vector3.up;
-        }
-        else if (inputs.moveState == 3) //exiting water/lava
-        {
-            PlayerDictionary[id].inWater = false;
-            PlayerDictionary[id].moving = true;
-            if (inputs.Jump && playerTransform.GetComponent<ServerPositionTracker>().CheckWaterJump())
-            {
-                playerTransform.GetComponent<ServerPositionTracker>().UseWaterJump();
-                Vector3 waterJump = new Vector3(inputs.moveVector.x * horizontalWaterSpeed, waterExitSpeed,
-                    inputs.moveVector.z * horizontalWaterSpeed);
-                playerRB.velocity = waterJump;
-            }
-            else
-            {
-                yVel -= gravAcceleration * Time.fixedDeltaTime;
-                playerRB.velocity = inputs.moveVector * PlayerSpeed;
-                playerRB.velocity += yVel * Vector3.up;
-            }
-        }
-        else if (inputs.moveState == 4) //lava movement
-        {
-            PlayerDictionary[id].inWater = true;
-            PlayerDictionary[id].moving = true;
-            if (inputs.Jump)
-            {
-                if (yVel >= verticalLavaMaxSpeed)
-                {
-                    yVel = verticalLavaMaxSpeed;
-                }
-                else
-                {
-                    yVel += verticalLavaAcceleration * Time.fixedDeltaTime;
-                }
-            }
-            else
-            {
-                if (yVel < -verticalLavaMaxSpeed)
-                {
-                    yVel += verticalLavaAcceleration * Time.fixedDeltaTime;
-                    if (yVel > -verticalLavaMaxSpeed)
-                    {
-                        yVel = -verticalLavaMaxSpeed;
-                    }
-                }
-                else
-                {
-                    yVel -= verticalLavaAcceleration * Time.fixedDeltaTime;
-                    if (yVel < -verticalLavaMaxSpeed)
-                    {
-                        yVel = -verticalLavaMaxSpeed;
-                    }
-                }
-            }
-
-            playerRB.velocity = inputs.moveVector * horizontalLavaSpeed;
-            playerRB.velocity += yVel * Vector3.up;
-        }
-
-        playerTransform.GetComponent<HalfBlockDetector>().CheckSteps();
+        // Transform playerTransform = PlayerDictionary[id].transform;
+        // Rigidbody playerRB = playerTransform.GetComponent<Rigidbody>();
+        //
+        // float yVel = playerRB.velocity.y;
+        // Vector3 horizontalSpeed = new Vector3(playerRB.velocity.x, 0, playerRB.velocity.z);
+        // inputs.moveState = playerTransform.GetComponent<ServerPositionTracker>().CheckPlayerState();
+        // if (inputs.moveState == 0) //normal movement
+        // {
+        //     PlayerDictionary[id].inWater = false;
+        //     PlayerDictionary[id].moving = true;
+        //     bool onGround = playerTransform.GetComponent<HalfBlockDetector>().CheckGrounded();
+        //
+        //     if (onGround && yVel <= 0)
+        //     {
+        //         if (inputs.Jump)
+        //         {
+        //             horizontalSpeed = inputs.MoveVector.normalized * PlayerSpeed;
+        //             yVel = JumpSpeed;
+        //         }
+        //         else
+        //         {
+        //             horizontalSpeed = inputs.MoveVector.normalized * PlayerSpeed;
+        //             if (inputs.MoveVector.magnitude == 0)
+        //             {
+        //                 PlayerDictionary[id].moving = false;
+        //             }
+        //         }
+        //     }
+        //     else
+        //     {
+        //         horizontalSpeed += inputs.MoveVector.normalized * AirAcceleration * Time.fixedDeltaTime;
+        //
+        //         if (horizontalSpeed.magnitude > PlayerSpeed)
+        //         {
+        //             horizontalSpeed = inputs.MoveVector.normalized * PlayerSpeed;
+        //         }
+        //
+        //         yVel -= gravAcceleration * Time.fixedDeltaTime;
+        //     }
+        //
+        //     playerRB.velocity = horizontalSpeed;
+        //     playerRB.velocity += yVel * Vector3.up;
+        // }
+        // else if (inputs.moveState == 1) //water movement
+        // {
+        //     PlayerDictionary[id].moving = true;
+        //     PlayerDictionary[id].inWater = true;
+        //     if (inputs.Jump)
+        //     {
+        //         if (yVel >= verticalWaterMaxSpeed)
+        //         {
+        //             yVel = verticalWaterMaxSpeed;
+        //         }
+        //         else
+        //         {
+        //             yVel += verticalWaterAcceleration * Time.fixedDeltaTime;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         if (yVel < -verticalWaterMaxSpeed)
+        //         {
+        //             yVel += verticalWaterAcceleration * Time.fixedDeltaTime;
+        //             if (yVel > -verticalWaterMaxSpeed)
+        //             {
+        //                 yVel = -verticalWaterMaxSpeed;
+        //             }
+        //         }
+        //         else
+        //         {
+        //             yVel -= verticalWaterAcceleration * Time.fixedDeltaTime;
+        //             if (yVel < -verticalWaterMaxSpeed)
+        //             {
+        //                 yVel = -verticalWaterMaxSpeed;
+        //             }
+        //         }
+        //     }
+        //
+        //     playerRB.velocity = inputs.MoveVector * horizontalWaterSpeed;
+        //     playerRB.velocity += yVel * Vector3.up;
+        // }
+        // else if (inputs.moveState == 3) //exiting water/lava
+        // {
+        //     PlayerDictionary[id].inWater = false;
+        //     PlayerDictionary[id].moving = true;
+        //     if (inputs.Jump && playerTransform.GetComponent<ServerPositionTracker>().CheckWaterJump())
+        //     {
+        //         playerTransform.GetComponent<ServerPositionTracker>().UseWaterJump();
+        //         Vector3 waterJump = new Vector3(inputs.MoveVector.x * horizontalWaterSpeed, waterExitSpeed,
+        //             inputs.MoveVector.z * horizontalWaterSpeed);
+        //         playerRB.velocity = waterJump;
+        //     }
+        //     else
+        //     {
+        //         yVel -= gravAcceleration * Time.fixedDeltaTime;
+        //         playerRB.velocity = inputs.MoveVector * PlayerSpeed;
+        //         playerRB.velocity += yVel * Vector3.up;
+        //     }
+        // }
+        // else if (inputs.moveState == 4) //lava movement
+        // {
+        //     PlayerDictionary[id].inWater = true;
+        //     PlayerDictionary[id].moving = true;
+        //     if (inputs.Jump)
+        //     {
+        //         if (yVel >= verticalLavaMaxSpeed)
+        //         {
+        //             yVel = verticalLavaMaxSpeed;
+        //         }
+        //         else
+        //         {
+        //             yVel += verticalLavaAcceleration * Time.fixedDeltaTime;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         if (yVel < -verticalLavaMaxSpeed)
+        //         {
+        //             yVel += verticalLavaAcceleration * Time.fixedDeltaTime;
+        //             if (yVel > -verticalLavaMaxSpeed)
+        //             {
+        //                 yVel = -verticalLavaMaxSpeed;
+        //             }
+        //         }
+        //         else
+        //         {
+        //             yVel -= verticalLavaAcceleration * Time.fixedDeltaTime;
+        //             if (yVel < -verticalLavaMaxSpeed)
+        //             {
+        //                 yVel = -verticalLavaMaxSpeed;
+        //             }
+        //         }
+        //     }
+        //
+        //     playerRB.velocity = inputs.MoveVector * horizontalLavaSpeed;
+        //     playerRB.velocity += yVel * Vector3.up;
+        // }
+        //
+        // playerTransform.GetComponent<HalfBlockDetector>().CheckSteps();
 
         // Vector3 collisionVector = playerTransform.GetComponent<ServerPositionTracker>().GetCollisionVector();
 
@@ -333,7 +343,9 @@ public class ServerPlayerManager : MonoBehaviour
 
 public class PlayerInputs
 {
-    public Vector3 moveVector;
+    public Vector3 MoveVector;
+    public Vector3 PlayerForward;
+    public bool Slide;
     public bool Jump;
     public int ClientTickNumber;
     public int ServerTickNumber;
@@ -341,10 +353,12 @@ public class PlayerInputs
     //0 is normal, 1 is water, 2 is lava
     public ushort moveState;
 
-    public PlayerInputs(Vector3 moveVec, bool jump)
+    public PlayerInputs(Vector3 moveVec, Vector3 playerForward, bool jump, bool slide)
     {
-        moveVector = moveVec;
+        MoveVector = moveVec;
+        PlayerForward = playerForward;
         Jump = jump;
+        Slide = slide;
         moveState = 0;
         ClientTickNumber = 0;
         ServerTickNumber = 0;
@@ -354,6 +368,8 @@ public class PlayerInputs
 public class PlayerInformation
 {
     public Transform transform;
+    public Rigidbody playerRb;
+    public ServerPlayerController PlayerController;
     public float yRotation = 0;
     public string name;
     public ushort stateTag;
@@ -373,8 +389,11 @@ public class PlayerInformation
 
     public bool moving = false;
 
-    public PlayerInformation(Transform t, string playerName, ushort tag)
+    public PlayerInformation(Transform t, ServerPlayerController playerController, Rigidbody rb, string playerName,
+        ushort tag)
     {
+        PlayerController = playerController;
+        playerRb = rb;
         transform = t;
         name = playerName;
         stateTag = tag;

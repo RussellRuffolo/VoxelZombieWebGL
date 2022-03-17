@@ -266,8 +266,11 @@ namespace Client
         {
             int numBlocks = reader.GetMessageLength() / 16;
 
+            Debug.LogError("Num Block Edits: " + numBlocks);
+            
             for (int i = 0; i < numBlocks; i++)
             {
+                Debug.LogError("Doing Block Edit: " + i);
                 ushort x = reader.ReadUShort();
                 ushort y = reader.ReadUShort();
                 ushort z = reader.ReadUShort();
