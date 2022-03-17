@@ -46,8 +46,11 @@ public class ClientVoxelEngine : MonoBehaviour
 
     private void ApplyMapData(byte[] mapBytes)
     {
-        Debug.Log("Length: " + Length + " Width: " + Width + " Height: " + Height);
+        Debug.LogError("Length: " + Length + " Width: " + Width + " Height: " + Height);
         bController.SetMapBoundaries(Length, Width, Height);
+        
+        Debug.LogError("Set Map Boundaries");
+        
         string namePrefix = "Chunk ";
 
         for (int z = 0; z < Width / 16; z++)
@@ -73,6 +76,8 @@ public class ClientVoxelEngine : MonoBehaviour
             }
         }
 
+        Debug.LogError("Loaded Chunks");
+        
         int blockCount = 0;
         for (int y = 0; y < Height; y++)
         {
@@ -86,7 +91,9 @@ public class ClientVoxelEngine : MonoBehaviour
             }
         }
 
-        MapLoadedDelegate(new Vector3(25, 129.5f, 30));
+        Debug.LogError("Set Blocks");
+        
+      //  MapLoadedDelegate(new Vector3(25, 129.5f, 30));
     }
 
     private IEnumerator GetMapData(string url)
