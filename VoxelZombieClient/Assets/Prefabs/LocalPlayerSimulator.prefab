@@ -9,12 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5047680582305602850}
-  - component: {fileID: 4657016256015743738}
   - component: {fileID: 4940741137197650718}
   - component: {fileID: 5901481688190478591}
-  - component: {fileID: 3819677211544966706}
-  - component: {fileID: -3978920533216438698}
-  - component: {fileID: 6426515938264307511}
+  - component: {fileID: 4289896884718757370}
+  - component: {fileID: -2962742638624967160}
   m_Layer: 0
   m_Name: LocalPlayerSimulator
   m_TagString: Untagged
@@ -37,39 +35,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4657016256015743738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3612919840746706134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8a1f880585be3446881a7d4c26e90bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationTracker: {fileID: 6218170143455669374}
-  playerSpeed: 4.25
-  AirAcceleration: 8.5
-  jumpSpeed: 8
-  gravAcceleration: 25
-  verticalWaterMaxSpeed: 1.5
-  verticalWaterAcceleration: 35
-  horizontalWaterSpeed: 1.5
-  verticalLavaMaxSpeed: 0.75
-  verticalLavaAcceleration: 17.5
-  horizontalLavaSpeed: 0.75
-  waterExitSpeed: 5
-  minimumX: -90
-  maximumX: 90
-  minimumY: -360
-  maximumY: 360
-  sensitivityX: 5
-  sensitivityY: 5
-  moveState: 0
-  camController: {fileID: 0}
-  playerRB: {fileID: 4940741137197650718}
 --- !u!54 &4940741137197650718
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -99,7 +64,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.708, y: 1.76, z: 0.708}
   m_Center: {x: 0, y: -0.08, z: 0}
---- !u!114 &3819677211544966706
+--- !u!114 &4289896884718757370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,38 +73,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 3612919840746706134}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8700c219a17e1f54b9f4848ce48f39f1, type: 3}
+  m_Script: {fileID: 11500000, guid: e8a1f880585be3446881a7d4c26e90bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxCollider: {fileID: 0}
---- !u!114 &-3978920533216438698
-MonoBehaviour:
+  rotationTracker: {fileID: 6218170143455669374}
+  moveState: 0
+  camController: {fileID: 0}
+  playerRB: {fileID: 4940741137197650718}
+  playerRb: {fileID: 4940741137197650718}
+  standingCollider: {fileID: 5901481688190478591}
+  slidingCollider: {fileID: -2962742638624967160}
+  MoveState: 0
+  lastVelocity: {x: 0, y: 0, z: 0}
+--- !u!65 &-2962742638624967160
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3612919840746706134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60503e4c522c952428b679668010971b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxStepHeight: 0.55
-  stepSearchOvershoot: 0.01
-  grounded: 0
---- !u!135 &6426515938264307511
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3612919840746706134}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 3dfd38b862e744746bd7839034af3c6f, type: 2}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
-  m_Radius: 0.354
-  m_Center: {x: 0, y: -0.646, z: 0}
+  m_Size: {x: 0.708, y: 0.88, z: 0.708}
+  m_Center: {x: 0, y: -0.08, z: 0}
 --- !u!1 &6218170143455669374
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 2788433769167362472}
   - component: {fileID: -5455658024287241082}
   - component: {fileID: 5642323224270285528}
-  - component: {fileID: 8766112764280615478}
-  - component: {fileID: 344401052835935590}
+  - component: {fileID: 8073916766125767216}
+  - component: {fileID: 6904989908365494726}
   m_Layer: 8
   m_Name: NetworkPlayerPrefab
   m_TagString: Player
@@ -60,6 +60,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -114,7 +115,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minMoveDelta: 0.01
   ID: 0
-  stateTag: 0
   collidingPlayers: []
 --- !u!65 &5642323224270285528
 BoxCollider:
@@ -129,7 +129,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.708, y: 1.76, z: 0.708}
   m_Center: {x: 0, y: -0.08, z: 0}
---- !u!114 &8766112764280615478
+--- !u!114 &8073916766125767216
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -138,25 +138,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 4801396134384152861}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53e95df1483869144b529bb624392b64, type: 3}
+  m_Script: {fileID: 11500000, guid: 3668e0367583ff84d872a0e80e7cc9fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxStepHeight: 0.55
-  stepSearchOvershoot: 0.01
-  grounded: 0
---- !u!135 &344401052835935590
-SphereCollider:
+  playerRb: {fileID: 2788433769167362472}
+  standingCollider: {fileID: 5642323224270285528}
+  slidingCollider: {fileID: 6904989908365494726}
+  MoveState: 0
+--- !u!65 &6904989908365494726
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4801396134384152861}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: baf507181ede19340ab832f28ec1184c, type: 2}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
-  m_Radius: 0.354
-  m_Center: {x: 0, y: -0.646, z: 0}
+  m_Size: {x: 0.708, y: 0.88, z: 0.708}
+  m_Center: {x: 0, y: -0.08, z: 0}
 --- !u!1 &6115718764223257091
 GameObject:
   m_ObjectHideFlags: 0

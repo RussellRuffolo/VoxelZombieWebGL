@@ -1,39 +1,85 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 namespace Client
 {
+    public enum MoveState
+    {
+        basicGrounded,
+        basicAir,
+        postJump,
+        waterSwimming,
+        lavaSwimming,
+        basicJump,
+        waterJump,
+        basicSliding,
+        basicCrawling,
+        slideAir,
+        wallJump,
+        groundedHalfBlock,
+        aerialHalfBlock,
+        crouchJump, 
+        wallHang,
+        postWallJump
+    }
+
     public class ClientPositionTracker : MonoBehaviour
     {
+        private List<ContactPoint> allCPs = new List<ContactPoint>();
+
+
         private World world;
-        private ClientPlayerController pController;
+       // private ClientPlayerController pController;
 
         private ushort lastMoveState = 0;
+
+        private MoveState lastState = 0;
 
         Vector3 colliderHalfExtents;
 
         private bool hasWaterJump = false;
 
-        public Collider boxCollider;
+        private bool hasWallJump = false;
+        
+        [SerializeField] public BoxCollider standingCollider;
+
+        [SerializeField] public BoxCollider slidingCollider;
+
+        [SerializeField] public Rigidbody playerRb;
+
+        [SerializeField] public SphereCollider standingBase;
+
+        [SerializeField] public SphereCollider slidingBase;
 
         private List<Transform> collidingPlayers = new List<Transform>();
 
         void Awake()
         {
             world = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>().world;
-            pController = GetComponent<ClientPlayerController>();
+         //   pController = GetComponent<ClientPlayerController>();
 
             colliderHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
         }
 
+        public void ClearContactPoints()
+        {
+            allCPs.Clear();
+        }
+
+     
+
 
         public ushort CheckPlayerState(ushort lastState)
         {
+            Vector3 feetPosition = new Vector3(transform.position.x, transform.position.y - .08f - (1.76f / 2),
+                transform.position.z);
+            Vector3 headPosition = new Vector3(transform.position.x, transform.position.y - .08f + (1.76f / 2),
+                transform.position.z);
 
-            Vector3 feetPosition = new Vector3(transform.position.x, transform.position.y -.08f - (1.76f /2), transform.position.z);
-            Vector3 headPosition = new Vector3(transform.position.x, transform.position.y - .08f + (1.76f / 2), transform.position.z);
-
-            ushort jumpTag = world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y + .2f), Mathf.FloorToInt(feetPosition.z)];
+            ushort jumpTag = world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y + .2f),
+                Mathf.FloorToInt(feetPosition.z)];
             if (jumpTag == 9 || jumpTag == 11)
             {
                 hasWaterJump = true;
@@ -46,28 +92,33 @@ namespace Client
 
             foreach (Collider col in thingsHit)
             {
-                if(col.CompareTag("Water"))
+                if (col.CompareTag("Water"))
                 {
                     inWater = true;
                 }
-                else if(col.CompareTag("Lava"))
+                else if (col.CompareTag("Lava"))
                 {
                     lastMoveState = 4;
                     return 4;
                 }
             }
 
-            if(inWater)
+            if (inWater)
             {
                 lastMoveState = 1;
                 return 1;
             }
-        
-            
 
-            if (world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z)] != 9 && world[Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)] != 9 && world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z)] != 11 && world[Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)] != 11)
+
+            if (world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y),
+                    Mathf.FloorToInt(feetPosition.z)] != 9 &&
+                world[Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y),
+                    Mathf.FloorToInt(headPosition.z)] != 9 &&
+                world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y),
+                    Mathf.FloorToInt(feetPosition.z)] != 11 && world[Mathf.FloorToInt(headPosition.x),
+                    Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)] != 11)
             {
-                if(lastMoveState == 1 || lastMoveState == 4)
+                if (lastMoveState == 1 || lastMoveState == 4)
                 {
                     lastMoveState = 3;
                     return 3;
@@ -76,10 +127,11 @@ namespace Client
                 hasWaterJump = false;
                 lastMoveState = 0;
                 return 0;
-                  
             }
 
-            if(world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z)] == 9 && world[Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)] == 9)
+            if (world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y),
+                    Mathf.FloorToInt(feetPosition.z)] == 9 && world[Mathf.FloorToInt(headPosition.x),
+                    Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)] == 9)
             {
                 lastMoveState = 1;
                 return 1;
@@ -89,22 +141,16 @@ namespace Client
                 lastMoveState = 4;
                 return 4;
             }
-           
-
-            
-
         }
 
         public bool CheckWaterJump()
         {
             if (hasWaterJump)
             {
-                
                 return true;
             }
 
             return false;
-
         }
 
         public void UseWaterJump()
@@ -114,18 +160,18 @@ namespace Client
 
         private void OnTriggerEnter(Collider other)
         {
-            if(other.CompareTag("NetworkPlayer"))
+            if (other.CompareTag("NetworkPlayer"))
             {
                 collidingPlayers.Add(other.transform);
             }
         }
 
 
-       private void OnTriggerStay(Collider other)
+        private void OnTriggerStay(Collider other)
         {
             if (other.CompareTag("NetworkPlayer"))
             {
-                if(!collidingPlayers.Contains(other.transform))
+                if (!collidingPlayers.Contains(other.transform))
                 {
                     collidingPlayers.Add(other.transform);
                 }
@@ -143,6 +189,50 @@ namespace Client
             }
         }
 
+        public bool CheckGrounded()
+        {
+            ContactPoint groundCP = default(ContactPoint);
+
+            return FindGround(out groundCP, allCPs);
+        }
+
+        bool FindGround(out ContactPoint groundCP, List<ContactPoint> pointList)
+        {
+            groundCP = default(ContactPoint);
+            bool found = false;
+            foreach (ContactPoint cp in pointList)
+            {
+                //Pointing with some up direction
+                if (cp.normal.y == 1 && (found == false || cp.normal.y > groundCP.normal.y))
+                {
+                    groundCP = cp;
+                    found = true;
+                }
+            }
+
+
+            return found;
+        }
+
+       
+
+        // void FixedUpdate()
+        // {
+        //     allCPs.Clear();
+        // }
+
+
+        private void OnCollisionEnter(Collision collision)
+        {
+     //       Debug.Log("Adding " + collision.contacts.Length);
+            allCPs.AddRange(collision.contacts);
+        }
+
+        void OnCollisionStay(Collision col)
+        {
+//            Debug.Log("Adding " + col.contacts.Length);
+            allCPs.AddRange(col.contacts);
+        }
 
 
         public Vector3 GetCollisionVector()
@@ -154,17 +244,15 @@ namespace Client
                 return collisionVector;
             }
 
-           Vector2 xzPos = new Vector2(transform.position.x, transform.position.z);
-           foreach(Transform networkPlayer in collidingPlayers)
+            Vector2 xzPos = new Vector2(transform.position.x, transform.position.z);
+            foreach (Transform networkPlayer in collidingPlayers)
             {
                 Vector2 otherXZ = new Vector2(networkPlayer.position.x, networkPlayer.position.z);
-                collisionVector += 1 / Mathf.Pow((Vector2.Distance(xzPos, otherXZ)), 2) * (transform.position - networkPlayer.position).normalized;
+                collisionVector += 1 / Mathf.Pow((Vector2.Distance(xzPos, otherXZ)), 2) *
+                                   (transform.position - networkPlayer.position).normalized;
             }
 
             return collisionVector;
         }
     }
-
-
-
 }
