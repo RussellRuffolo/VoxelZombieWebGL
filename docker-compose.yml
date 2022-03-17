@@ -1,5 +1,5 @@
 services:
-  proxy:
+  traefik:
     # The official v2 Traefik docker image
     image: traefik:v2.6
 
@@ -7,7 +7,7 @@ services:
     command:
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
-      - --api
+      - --api.insecure=true
       - --providers.docker=true
       - --certificatesresolvers.le.acme.email=${LETS_ENCRYPT_EMAIL}
       - --certificatesresolvers.le.acme.storage=/acme.json
@@ -30,12 +30,22 @@ services:
       - "80:80"
       - "443:443"
       # The Web UI (enabled by --api)
-#      - "8080:8080"
-#    networks:
-#      - traefik_net
+      - "8080:8080"
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
+
+
+  proxyserver:
+    build:
+      context: ./ProxyServer
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - traefik.http.routers.proxyserver.rule=Host(`rtc.${DOMAIN}`)
+      - traefik.http.routers.proxyserver.tls=true
+      - traefik.http.routers.proxyserver.tls.certresolver=le
+
 
 #networks:
 #  traefik_net:
