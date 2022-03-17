@@ -1,7 +1,7 @@
 const http = require("http")
 const express = require("express")
 app = express()
-const port = 3000
+const port = 25565
 
 app.get("/", (req, res) => {
   res.send({"msg": "YOU DID IT"})

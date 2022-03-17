@@ -1,16 +1,14 @@
-const https = require('https');
+const http = require('http');
 const axios = require('axios');
 const express = require('express');
 const app = express();
 const cors = require('cors');
 
-const baseUrl = "host.docker.internal:25565"
+const baseUrl = "http://host.docker.internal:25565"
 const port = 8010
 
 app.use(cors());
-
 app.use(express.json());
-
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   next()
@@ -53,17 +51,18 @@ app.post('/send-answer-get-candidate', (req,res) =>{
 // This endpoint is for testing that proxyServer connects to localhost (outside of Docker)
 // even on machines that don't have the server.
 // Run `node testServer.js` before testing on your local machine to open the test server
-app.get("/linux-test", (req, res) =>{
-  axios.get("host.docker.internal")
+app.get("/test", (req, res) =>{
+  console.log("Entered /test\n")
+  axios.get(baseUrl)
     .then(response => {
+      console.log("RESPONSE: ", response)
       res.send(response.data)
-    })
+  })
     .catch(err => {
-      res.status(500)
       res.send("Something went wrong :(\n")
       console.log(err)
-    })
-})
+    });
+});
 
-options = {}
-https.createServer(options, app).listen(port, () => console.log('Proxy Server is listening on port ' + port));
+options = {};
+http.createServer(options, app).listen(port, () => console.log('Proxy Server is listening on port ' + port));
