@@ -12,6 +12,8 @@ namespace Client
     {
         public bool loadedFirstMap = false;
 
+        [SerializeField]
+        public Canvas ZombieCanvas;
 
         ClientVoxelEngine vEngine;
         private World world;
@@ -22,13 +24,12 @@ namespace Client
 
         public GameObject SingePlayerPrefab;
         public GameObject SinglerPlayerSimulator;
-        
+
         public GameObject PlayerMenu;
-        
+
         Dictionary<ushort, Transform> NetworkPlayerDictionary = new Dictionary<ushort, Transform>();
         Transform localPlayerTransform;
         Transform localSimTransform;
-
 
 
         ClientChatManager chatManager;
@@ -53,9 +54,10 @@ namespace Client
         {
             SendUnreliableMessage(message.GetMessage());
         }
-        
+
 
         private LoginClient LoginClient;
+
         private void Awake()
         {
             vEngine = GetComponent<ClientVoxelEngine>();
@@ -113,14 +115,13 @@ namespace Client
                 if (PlayerID == clientId)
                 {
                     GameObject Menu = GameObject.Instantiate(PlayerMenu);
-                    
+
                     GameObject LocalPlayer = GameObject.Instantiate(LocalPlayerPrefab,
                         position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
                     GameObject LocalPlayerSim = GameObject.Instantiate(LocalPlayerSimulator,
                         position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-                  
 
                     LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
                         LocalPlayerSim.transform;
@@ -267,7 +268,7 @@ namespace Client
             int numBlocks = reader.GetMessageLength() / 16;
 
             Debug.LogError("Num Block Edits: " + numBlocks);
-            
+
             for (int i = 0; i < numBlocks; i++)
             {
                 Debug.LogError("Doing Block Edit: " + i);
@@ -362,11 +363,11 @@ namespace Client
                 Debug.Log("No Network Player corresponds to given ID: " + ID);
             }
         }
-        
+
         public void OnSinglePlayer()
         {
             Debug.Log("On Single Player");
-            
+
             vEngine.LoadMap("asylum");
             LoginClient.OnSinglePlayer();
 
@@ -374,9 +375,8 @@ namespace Client
             Vector3 position = new Vector3(25, 129.5f, 30);
 
             Vector3 eulerRotation = Vector3.zero;
-            
-        
-            
+
+
             GameObject LocalPlayer = GameObject.Instantiate(SingePlayerPrefab,
                 position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
@@ -384,7 +384,7 @@ namespace Client
                 position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
             GameObject Menu = GameObject.Instantiate(PlayerMenu);
-            
+
             LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
                 LocalPlayerSim.transform;
             LocalPlayerSim.GetComponent<SinglePlayerPlayerController>().camController =
@@ -392,7 +392,6 @@ namespace Client
 
             vEngine.MapLoadedDelegate += spawnPosition =>
             {
-
                 LocalPlayerSim.transform.position = spawnPosition;
                 LocalPlayer.transform.position = spawnPosition;
             };
@@ -428,7 +427,8 @@ namespace Client
                 }
                 else
                 {
-                    // ZombieCanvas.enabled = false;
+                    ZombieCanvas.enabled = true;
+                    StartCoroutine(DisableZombieCanvas());
                 }
             }
             else
@@ -454,6 +454,11 @@ namespace Client
             }
         }
 
+        private IEnumerator DisableZombieCanvas()
+        {
+            yield return new WaitForSeconds(.5f);
+            ZombieCanvas.enabled = false;
+        }
 
         public void ReceiveChat(RtcMessageReader reader)
         {

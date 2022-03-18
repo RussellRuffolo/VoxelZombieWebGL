@@ -5,7 +5,7 @@
 "dataUrl": "VoxelClientWebGL.data.unityweb",
 "wasmCodeUrl": "VoxelClientWebGL.wasm.code.unityweb",
 "wasmFrameworkUrl": "VoxelClientWebGL.wasm.framework.unityweb",
-"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"graphicsAPI": ["WebGL 2.0"],
 "webglContextAttributes": {"preserveDrawingBuffer": false},
 "splashScreenStyle": "Dark",
 "backgroundColor": "#231F20",
