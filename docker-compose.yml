@@ -9,17 +9,17 @@ services:
       - --entrypoints.websecure.address=:443
 #      - --api.insecure=true
       - --providers.docker=true
-#      - --certificatesresolvers.le.acme.email=${LETS_ENCRYPT_EMAIL}
-#      - --certificatesresolvers.le.acme.storage=/acme.json
-#      - --certificatesresolvers.le.acme.tlschallenge=true
+      - --certificatesresolvers.le.acme.email=${LETS_ENCRYPT_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
     # Dynamic config
     labels:
       # Dashboard
-      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.middlewares=admin"
-      - "traefik.http.routers.traefik.tls.certresolver=le"
-      - "traefik.http.middlewares.admin.basicauth.users=${BASIC_AUTH_USER}:${BASIC_AUTH_PASSWORD}"
+#      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
+#      - "traefik.http.routers.traefik.service=api@internal"
+#      - "traefik.http.routers.traefik.middlewares=admin"
+#      - "traefik.http.routers.traefik.tls.certresolver=le"
+#      - "traefik.http.middlewares.admin.basicauth.users=${BASIC_AUTH_USER}:${BASIC_AUTH_PASSWORD}"
 
 
 
