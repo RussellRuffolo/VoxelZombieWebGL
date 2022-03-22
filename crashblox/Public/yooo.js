@@ -5,5 +5,8 @@ google_sign_in_button.addEventListener("click", function () {
         .then(response => response.json())
         .then(data => data.authorization_url)
         // Todo: figure out target
-        .then(oAuthUrl => window.open(oAuthUrl,null, 'width=972,height=660,modal=yes,alwaysRaised=yes'));
+        // .then(oAuthUrl => window.open(oAuthUrl,null, 'width=972,height=660,modal=yes,alwaysRaised=yes'));
+        .then(oAuthUrl => {
+            window.location.href = oAuthUrl;
+        })
 })
