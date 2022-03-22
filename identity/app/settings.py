@@ -30,6 +30,8 @@ class _Settings(BaseSettings):
     # SQLALCHEMY_DB_URI: Optional[str] = None
     DB_URI: str
 
+    OAUTH_JWT_SECRET: str
+
     class Config:
         case_sensitive = True
 
