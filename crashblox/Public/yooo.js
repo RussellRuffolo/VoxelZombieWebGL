@@ -1,7 +1,7 @@
 const google_sign_in_button = document.querySelector("#google")
 google_sign_in_button.addEventListener("click", function () {
     console.log("Hello")
-    fetch("http://id.localhost/auth/google/authorize")
+    fetch("http://id.snappervibes.com/auth/google/authorize")
         .then(response => response.json())
         .then(data => data.authorization_url)
         // Todo: figure out target

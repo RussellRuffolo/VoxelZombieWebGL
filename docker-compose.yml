@@ -13,22 +13,22 @@ services:
 #      - --certificatesresolvers.le.acme.storage=/acme.json
 #      - --certificatesresolvers.le.acme.tlschallenge=true
     # Dynamic config
-#    labels:
+    labels:
       # Dashboard
-#      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
-#      - "traefik.http.routers.traefik.service=api@internal"
-#      - "traefik.http.routers.traefik.middlewares=admin"
-#      - "traefik.http.routers.traefik.tls.certresolver=le"
-#      - "traefik.http.middlewares.admin.basicauth.users=${BASIC_AUTH_USER}:${BASIC_AUTH_PASSWORD}"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.middlewares=admin"
+      - "traefik.http.routers.traefik.tls.certresolver=le"
+      - "traefik.http.middlewares.admin.basicauth.users=${BASIC_AUTH_USER}:${BASIC_AUTH_PASSWORD}"
 
 
 
 
-      # global redirect to https
-#      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-#      - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
-#      - "traefik.http.routers.redirs.entrypoints=web"
-#      - "traefik.http.routers.redirs.middlewares=redirect-to-https"
+#       global redirect to https
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.redirs.entrypoints=web"
+      - "traefik.http.routers.redirs.middlewares=redirect-to-https"
     ports:
       - "80:80"
       - "443:443"
@@ -46,10 +46,9 @@ services:
       - "host.docker.internal:host-gateway"
     labels:
       - traefik.http.routers.proxyserver.rule=Host(`rtc.${DOMAIN}`)
-
-
-#      - traefik.http.routers.proxyserver.tls=true
-#      - traefik.http.routers.proxyserver.tls.certresolver=le
+      # HTTPS
+      - traefik.http.routers.proxyserver.tls=true
+      - traefik.http.routers.proxyserver.tls.certresolver=le
 
 
   frontend:
@@ -57,10 +56,9 @@ services:
       context: ./crashblox
     labels:
       - traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)
-
-
-#      - traefik.http.routers.frontend.tls=true
-#      - traefik.http.routers.frontend.tls.certresolver=le
+      # HTTPS
+      - traefik.http.routers.frontend.tls=true
+      - traefik.http.routers.frontend.tls.certresolver=le
     environment:
       - DOMAIN=$DOMAIN
 
@@ -70,10 +68,9 @@ services:
       context: ./identity
     labels:
       - traefik.http.routers.identity.rule=Host(`id.${DOMAIN}`)
-
-
-#      - traefik.http.routers.identity.tls=true
-#      - traefik.http.routers.identity.tls.certresolver=le
+      # HTTPS
+      - traefik.http.routers.identity.tls=true
+      - traefik.http.routers.identity.tls.certresolver=le
     env_file:
       - .env
     environment:
