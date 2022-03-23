@@ -29,8 +29,18 @@ public class BasicAirMoveState : IMoveState
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
-        World world)
+        IWorld world)
     {
+        if (PlayerUtils.CheckWater(playerRb, contactPoints, world))
+        {
+            if (playerInputs.Jump)
+            {
+                return MoveState.waterSwimming;
+            }
+
+            return MoveState.waterFalling;
+        }
+
         if (PlayerUtils.CheckGrounded(contactPoints))
         {
             return MoveState.basicGrounded;

@@ -469,11 +469,11 @@ GameObject:
   m_Component:
   - component: {fileID: 250310966}
   - component: {fileID: 250310964}
-  - component: {fileID: 250310963}
   - component: {fileID: 250310967}
   - component: {fileID: 250310968}
   - component: {fileID: 250310969}
   - component: {fileID: 250310965}
+  - component: {fileID: 250310963}
   m_Layer: 0
   m_Name: Network
   m_TagString: Network
@@ -490,7 +490,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 250310962}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7390aa74d79ecc4e9bd3ed8a150216c, type: 3}
+  m_Script: {fileID: 11500000, guid: eac4b3bd42136204ba8c4ea1353b200b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   materialList:
@@ -536,23 +536,20 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 45cbc44b6b1901840a7760683c724b04, type: 2}
   - {fileID: 2100000, guid: 46060a46ec9a56f4f8f68dd6b0b5dc6f, type: 2}
   - {fileID: 2100000, guid: 50f10e5eeed96a640bb5a87896ab7e30, type: 2}
-  - {fileID: 2100000, guid: 007ae3732b930df43bd923c65b696614, type: 2}
-  - {fileID: 2100000, guid: 9445aee4ce275374fbb026dc78d7c7bd, type: 2}
-  - {fileID: 2100000, guid: bef80fc8e01b1824fbbaf4d2fe3c82d2, type: 2}
-  - {fileID: 2100000, guid: 40646301ce49a304fb139fe8f38c4841, type: 2}
-  - {fileID: 2100000, guid: f4569c17755bbb54589b4e0744a1df31, type: 2}
-  - {fileID: 2100000, guid: e55bc58971617ba4da1d001679810eba, type: 2}
-  - {fileID: 2100000, guid: 40faca93431223848936eae92431654e, type: 2}
-  - {fileID: 2100000, guid: 2ddfaf793b324b24399629faf1a0dd96, type: 2}
-  - {fileID: 2100000, guid: 820cab7d68b54424ea5b618665cca92b, type: 2}
-  - {fileID: 2100000, guid: 9445aee4ce275374fbb026dc78d7c7bd, type: 2}
-  - {fileID: 2100000, guid: c08f87680a65b48449b6cafd28f46a67, type: 2}
-  - {fileID: 2100000, guid: 6871fb2d2b6d8fe429b7c266b1e0dfbd, type: 2}
-  - {fileID: 2100000, guid: e2a65d46c4191e44c880e8caeda4c701, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
+  - {fileID: 2100000, guid: d2c28189f50925847ac7ba1623511afc, type: 2}
   bController: {fileID: 239188429}
-  Length: 0
-  Width: 0
-  Height: 0
 --- !u!114 &250310964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,6 +564,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadedFirstMap: 0
   ZombieCanvas: {fileID: 274633052}
+  SinglePlayerMenuController: {fileID: 0}
   NetworkPlayerPrefab: {fileID: 4552662591371424641, guid: 204d47e9688fd2b48a5384b6c7d189bf,
     type: 3}
   LocalPlayerPrefab: {fileID: 6218928733261965679, guid: 0c98dbbf39b92e742b203e7cd3deca4e,
@@ -591,8 +589,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c7648f7bd173274bbc04650eeed30c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reliableText: {fileID: 0}
-  unreliableText: {fileID: 0}
   ClientId: 0
 --- !u!4 &250310966
 Transform:
@@ -1601,7 +1597,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1185063696}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

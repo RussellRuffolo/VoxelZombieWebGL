@@ -49,8 +49,8 @@ public class VoxelEngine : MonoBehaviour
         MapData asylum = new MapData("asylum", 25, 129.5f, 30);
         mapList.Add(asylum);
 
-        //MapData domti = new MapData("domti", 25, 129.5f, 30);
-        //  mapList.Add(domti);
+        MapData domti = new MapData("domti", 126, 35, 64);
+          mapList.Add(domti);
 
         //  MapData excavation = new MapData("excavation", 25, 129.5f, 30);
         // mapList.Add(excavation);
@@ -73,8 +73,8 @@ public class VoxelEngine : MonoBehaviour
         // MapData Sunspots = new MapData("Sunspots",  60, 112.5f, 108);
         //mapList.Add(Sunspots);
 
-        MapData hawaii = new MapData("hawaiiMod", 1, 67.5f, 43);
-        mapList.Add(hawaii);
+        // MapData hawaii = new MapData("hawaiiMod", 1, 67.5f, 43);
+        // mapList.Add(hawaii);
 
         //  MapData clockwork = new MapData("clockwork", 20, 238, 3);
         //  mapList.Add(clockwork);
@@ -84,11 +84,11 @@ public class VoxelEngine : MonoBehaviour
 
         //  MapData italy = new MapData("italy",  53, 89.5f, 63);
         //   mapList.Add(italy);
-        //  MapData swiss = new MapData("swiss",  29, 50.5f, 12);
-        //  mapList.Add(swiss);
+        MapData swiss = new MapData("swiss",  29, 50.5f, 12);
+        mapList.Add(swiss);
 
-        //  MapData swordbase = new MapData("swordbase", 56, 20, 4);
-        //  mapList.Add(swordbase);
+        // MapData swordbase = new MapData("swordbase", 56, 20, 4);
+        // mapList.Add(swordbase);
 
         // mapList.Add(hawaii);
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace Client
@@ -12,11 +13,11 @@ namespace Client
     {
         public bool loadedFirstMap = false;
 
-        [SerializeField]
-        public Canvas ZombieCanvas;
+        [SerializeField] public Canvas ZombieCanvas;
 
-        ClientVoxelEngine vEngine;
-        private World world;
+        [SerializeField] public SinglePlayerMenuController SinglePlayerMenuController;
+        SinglePlayerVoxelEngine vEngine;
+        private IWorld world;
 
         public GameObject NetworkPlayerPrefab;
         public GameObject LocalPlayerPrefab;
@@ -60,8 +61,8 @@ namespace Client
 
         private void Awake()
         {
-            vEngine = GetComponent<ClientVoxelEngine>();
-            world = vEngine.world;
+            vEngine = GetComponent<SinglePlayerVoxelEngine>();
+            world = vEngine.World;
 
 
             chatManager = GetComponent<ClientChatManager>();
@@ -267,11 +268,9 @@ namespace Client
         {
             int numBlocks = reader.GetMessageLength() / 16;
 
-            Debug.LogError("Num Block Edits: " + numBlocks);
 
             for (int i = 0; i < numBlocks; i++)
             {
-                Debug.LogError("Doing Block Edit: " + i);
                 ushort x = reader.ReadUShort();
                 ushort y = reader.ReadUShort();
                 ushort z = reader.ReadUShort();
@@ -368,11 +367,20 @@ namespace Client
         {
             Debug.Log("On Single Player");
 
-            vEngine.LoadMap("asylum");
-            LoginClient.OnSinglePlayer();
+            SceneManager.LoadScene("SinglePlayerScene");
 
 
-            Vector3 position = new Vector3(25, 129.5f, 30);
+            // LoginClient.OnSinglePlayer();
+            // SinglePlayerMenuController.OnSinglePlayer();
+        }
+
+        public void LoadSinglePlayerMap(string mapName)
+        {
+            Debug.Log("Load Single Player Map");
+            vEngine.LoadMap(mapName);
+
+
+            Vector3 position = MapInfo.SpawnPositions[mapName];
 
             Vector3 eulerRotation = Vector3.zero;
 
@@ -390,11 +398,11 @@ namespace Client
             LocalPlayerSim.GetComponent<SinglePlayerPlayerController>().camController =
                 LocalPlayer.GetComponent<ClientCameraController>();
 
-            vEngine.MapLoadedDelegate += spawnPosition =>
-            {
-                LocalPlayerSim.transform.position = spawnPosition;
-                LocalPlayer.transform.position = spawnPosition;
-            };
+            // vEngine.MapLoadedDelegate += spawnPosition =>
+            // {
+            //     LocalPlayerSim.transform.position = spawnPosition;
+            //     LocalPlayer.transform.position = spawnPosition;
+            // };
 
 
             localPlayerTransform = LocalPlayer.transform;

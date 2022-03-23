@@ -19,7 +19,7 @@ mergeInto(LibraryManager.library, {
   peerConnection = new RTCPeerConnection({
     iceServers: [
       {
-        urls: "stun:stun.12connect.com:3478"
+        urls: "stun:stun2.l.google.com:19302"
       }
     ]
   });

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class LavaSwimmingMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody player, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public void ApplyInput(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints)
     {
     }
 
@@ -15,7 +15,7 @@ public class LavaSwimmingMoveState : IMoveState
     {
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs, List<ContactPoint> contactPoints, World world)
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints, World world)
     {
         throw new System.NotImplementedException();
     }

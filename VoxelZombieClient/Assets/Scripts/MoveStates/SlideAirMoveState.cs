@@ -22,11 +22,11 @@ public class SlideAirMoveState : CrouchingMoveState
 
 
     public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
-        List<ContactPoint> contactPoints, World world)
+        List<ContactPoint> contactPoints, IWorld world)
     {
         if (PlayerUtils.CheckGrounded(contactPoints))
         {
-            if (playerInputs.Slide)
+            if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
             {
                 if (playerRb.velocity.magnitude > PlayerStats.crawlSpeed)
                 {
@@ -35,11 +35,11 @@ public class SlideAirMoveState : CrouchingMoveState
 
                 return MoveState.basicCrawling;
             }
-            
+
             return MoveState.basicGrounded;
         }
 
-        if (playerInputs.Slide)
+        if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
         {
             return MoveState.slideAir;
         }

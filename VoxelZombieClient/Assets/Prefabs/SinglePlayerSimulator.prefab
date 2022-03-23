@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5128777441807606117}
   m_Layer: 0
   m_Name: SinglePlayerSimulator
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -77,24 +77,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationTracker: {fileID: 5507316863679401603}
-  playerSpeed: 4.25
-  AirAcceleration: 8.5
-  jumpSpeed: 8
-  gravAcceleration: 25
-  verticalWaterMaxSpeed: 1.5
-  verticalWaterAcceleration: 35
-  horizontalWaterSpeed: 1.5
-  verticalLavaMaxSpeed: 0.75
-  verticalLavaAcceleration: 17.5
-  horizontalLavaSpeed: 0.75
-  waterExitSpeed: 5
   moveState: 0
+  MoveState: 0
   camController: {fileID: 0}
   playerRB: {fileID: 6825067443827716579}
   playerRb: {fileID: 6825067443827716579}
   standingCollider: {fileID: 5458588273040198146}
   slidingCollider: {fileID: 5128777441807606117}
-  MoveState: 0
   lastVelocity: {x: 0, y: 0, z: 0}
 --- !u!65 &5128777441807606117
 BoxCollider:
@@ -108,7 +97,7 @@ BoxCollider:
   m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 0.708, y: 0.88, z: 0.708}
-  m_Center: {x: 0, y: -0.08, z: 0}
+  m_Center: {x: 0, y: -0.52, z: 0}
 --- !u!1 &5507316863679401603
 GameObject:
   m_ObjectHideFlags: 0

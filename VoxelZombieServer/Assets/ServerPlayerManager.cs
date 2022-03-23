@@ -8,7 +8,7 @@ public class ServerPlayerManager : MonoBehaviour
     public GameObject PlayerPrefab;
 
     public Dictionary<ushort, PlayerInformation> PlayerDictionary = new Dictionary<ushort, PlayerInformation>();
-    public Dictionary<ushort, PlayerInputs> InputDictionary = new Dictionary<ushort, PlayerInputs>();
+    public Dictionary<ushort, ClientInputs> InputDictionary = new Dictionary<ushort, ClientInputs>();
 
     public Dictionary<ushort, int> TickDic = new Dictionary<ushort, int>();
     public Dictionary<ushort, Vector3> PlayerVelocities = new Dictionary<ushort, Vector3>();
@@ -57,7 +57,7 @@ public class ServerPlayerManager : MonoBehaviour
 
         // StartCoroutine(GetPlayerStats(name, PlayerID));
 
-        InputDictionary.Add(PlayerID, new PlayerInputs(Vector3.zero, Vector3.zero, false, false));
+        InputDictionary.Add(PlayerID, new ClientInputs(Vector3.zero, Vector3.zero, false, false));
         TickDic.Add(PlayerID, -1);
         PlayerVelocities.Add(PlayerID, Vector3.zero);
     }
@@ -160,7 +160,7 @@ public class ServerPlayerManager : MonoBehaviour
 
 
                 //apply the clients inputs to change the player velocity
-                ApplyInputs(clientId, new PlayerInputs(moveVector, lookDirection, Jump, Slide));
+                ApplyInputs(clientId, new ClientInputs(moveVector, lookDirection, Jump, Slide));
 
                 //simulate one tick
                 if (!vEngine.loadingMap)
@@ -189,7 +189,7 @@ public class ServerPlayerManager : MonoBehaviour
         playerRB.isKinematic = true;
     }
 
-    private void ApplyInputs(ushort id, PlayerInputs inputs)
+    private void ApplyInputs(ushort id, ClientInputs inputs)
     {
         ServerPlayerController playerController = PlayerDictionary[id].PlayerController;
 
@@ -341,7 +341,7 @@ public class ServerPlayerManager : MonoBehaviour
     }
 }
 
-public class PlayerInputs
+public class ClientInputs
 {
     public Vector3 MoveVector;
     public Vector3 PlayerForward;
@@ -353,7 +353,7 @@ public class PlayerInputs
     //0 is normal, 1 is water, 2 is lava
     public ushort moveState;
 
-    public PlayerInputs(Vector3 moveVec, Vector3 playerForward, bool jump, bool slide)
+    public ClientInputs(Vector3 moveVec, Vector3 playerForward, bool jump, bool slide)
     {
         MoveVector = moveVec;
         PlayerForward = playerForward;

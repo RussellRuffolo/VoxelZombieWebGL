@@ -6,7 +6,7 @@ public class WallJumpMoveState : IMoveState
     private bool Jumped;
     private Vector3 normal = Vector3.zero;
 
-    public void ApplyInput(Rigidbody playerRb, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
     {
         foreach (ContactPoint contactPoint in contactPoints)
         {
@@ -45,7 +45,7 @@ public class WallJumpMoveState : IMoveState
         normal = Vector3.zero;
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs, List<ContactPoint> contactPoints,
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         World world)
     {
         if (Jumped)

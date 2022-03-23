@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -2962742638624967160}
   m_Layer: 0
   m_Name: LocalPlayerSimulator
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -78,12 +78,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationTracker: {fileID: 6218170143455669374}
   moveState: 0
+  MoveState: 0
   camController: {fileID: 0}
   playerRB: {fileID: 4940741137197650718}
   playerRb: {fileID: 4940741137197650718}
   standingCollider: {fileID: 5901481688190478591}
   slidingCollider: {fileID: -2962742638624967160}
-  MoveState: 0
   lastVelocity: {x: 0, y: 0, z: 0}
 --- !u!65 &-2962742638624967160
 BoxCollider:
@@ -97,7 +97,7 @@ BoxCollider:
   m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 0.708, y: 0.88, z: 0.708}
-  m_Center: {x: 0, y: -0.08, z: 0}
+  m_Center: {x: 0, y: -0.52, z: 0}
 --- !u!1 &6218170143455669374
 GameObject:
   m_ObjectHideFlags: 0

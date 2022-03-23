@@ -23,7 +23,7 @@ public class HalfBlockDetector : MonoBehaviour
 
     public bool grounded = false;
 
-    private World world;
+    private IWorld world;
 
     private List<int> _SteppableBlockIds = new List<int>
     {
@@ -33,7 +33,7 @@ public class HalfBlockDetector : MonoBehaviour
 
     private void Awake()
     {
-        world = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>().world;
+        world = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>().World;
     }
 
     void FixedUpdate()
@@ -213,7 +213,7 @@ public class HalfBlockDetector : MonoBehaviour
 
         }
 
-        if (!(_SteppableBlockIds.Contains(world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y + 1), Mathf.FloorToInt(stepUpPoint.z)]) && _SteppableBlockIds.Contains(world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y + 1.4f), Mathf.FloorToInt(stepUpPoint.z)])))
+        if (!(_SteppableBlockIds.Contains((ushort)world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y + 1), Mathf.FloorToInt(stepUpPoint.z)]) && _SteppableBlockIds.Contains((ushort)world[Mathf.FloorToInt(stepUpPoint.x), Mathf.FloorToInt(stepUpPoint.y + 1.4f), Mathf.FloorToInt(stepUpPoint.z)])))
         {
             //Debug.Log("Not air");
             return false;

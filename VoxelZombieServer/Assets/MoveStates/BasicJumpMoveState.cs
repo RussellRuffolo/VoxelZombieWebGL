@@ -5,7 +5,7 @@ public class BasicJumpMoveState : IMoveState
 {
     private bool Jumped;
 
-    public void ApplyInput(Rigidbody playerRb, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
     {
         Vector3 horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
 
@@ -24,7 +24,7 @@ public class BasicJumpMoveState : IMoveState
         Jumped = false;
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs, List<ContactPoint> contactPoints, World world)
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints, World world)
     {
         if (Jumped)
         {

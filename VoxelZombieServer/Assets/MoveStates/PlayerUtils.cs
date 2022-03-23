@@ -1,3 +1,5 @@
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,9 +21,26 @@ public static class PlayerUtils
         return false;
     }
 
- 
+    public static bool CheckStandable(Rigidbody playerRb)
+    {
+        Collider[] colliders = Physics.OverlapBox(playerRb.transform.position, PlayerStats.StandingHalfExtents,
+            playerRb.transform.rotation,
+            Physics.AllLayers
+        );
 
-    public static bool CheckWall(Rigidbody playerRb, PlayerInputs playerInputs,
+
+        foreach (Collider collider in colliders)
+        {
+            if (collider.CompareTag("Ground"))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static bool CheckWall(Rigidbody playerRb, ClientInputs playerInputs,
         List<ContactPoint> contactPoints,
         World world)
     {
@@ -46,8 +65,40 @@ public static class PlayerUtils
         return false;
     }
 
+    public static bool CheckWater(Rigidbody playerRb, List<ContactPoint> contactPoints, World world)
+    {
+        Collider[] colliders = Physics.OverlapBox(playerRb.transform.position, PlayerStats.StandingHalfExtents,
+            playerRb.transform.rotation,
+            Physics.AllLayers
+        );
 
-    public static bool CheckAerialHalfBlock(Rigidbody playerRb, PlayerInputs playerInputs,
+
+        foreach (Collider collider in colliders)
+        {
+            if (collider.CompareTag("Water"))
+            {
+                Debug.Log("Colliding with water");
+                return true;
+            }
+        }
+
+        Vector3 playerPosition = playerRb.transform.position;
+        ushort x = (ushort) Mathf.FloorToInt(playerPosition.x);
+        ushort y = (ushort) Mathf.FloorToInt(playerPosition.y);
+        ushort z = (ushort) Mathf.FloorToInt(playerPosition.z);
+
+        if (world[x, y, z] == 9)
+        {
+            Debug.Log("In Water");
+            return true;
+        }
+
+
+        return false;
+    }
+
+
+    public static bool CheckAerialHalfBlock(Rigidbody playerRb, ClientInputs playerInputs,
         List<ContactPoint> contactPoints,
         World world)
     {
@@ -64,7 +115,7 @@ public static class PlayerUtils
         return CheckHalfBlock(playerRb, playerInputs, contactPoints, world);
     }
 
-    public static bool CheckHalfBlock(Rigidbody playerRb, PlayerInputs playerInputs, List<ContactPoint> contactPoints,
+    public static bool CheckHalfBlock(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         World world)
     {
         foreach (ContactPoint contactPoint in contactPoints)

@@ -1,3 +1,7 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 public static class PlayerStats
 {
     public static float playerSpeed = 4.25f;
@@ -18,4 +22,28 @@ public static class PlayerStats
     public static float horizontalLavaSpeed = 0.75f;
 
     public static float waterExitSpeed = 5;
+    
+    public static Vector3 StandingHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
+    public static Vector3 StandableHalfExtents = new Vector3(.708f / 2, 1.75f / 2, .708f / 2);
+}
+
+public enum MoveState
+{
+    basicGrounded,
+    basicAir,
+    postJump,
+    waterSwimming,
+    waterFalling,
+    lavaSwimming,
+    basicJump,
+    waterJump,
+    basicSliding,
+    basicCrawling,
+    slideAir,
+    wallJump,
+    groundedHalfBlock,
+    aerialHalfBlock,
+    crouchJump, 
+    wallHang,
+    postWallJump
 }

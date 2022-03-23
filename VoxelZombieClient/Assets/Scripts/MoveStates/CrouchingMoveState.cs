@@ -22,5 +22,5 @@ public abstract class CrouchingMoveState : IMoveState
     }
 
     public abstract MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
-        List<ContactPoint> contactPoints, World world);
+        List<ContactPoint> contactPoints, IWorld world);
 }

@@ -47,11 +47,11 @@ public class ClientConnectionManager : MonoBehaviour
     private void Awake()
     {
         WebRTC.Initialize();
-        
+
         HttpListener = new HttpListener();
 
         HttpListener.Prefixes.Add("http://127.0.0.1:25565/");
-        
+
         StartHttpListener(HttpListener);
     }
 
@@ -270,6 +270,8 @@ public class ClientConnectionManager : MonoBehaviour
                 Debug.Log("Candidate: " + client.IceCandidate.Candidate);
                 string candidate = client.IceCandidate.Candidate;
                 string newCandidate = candidate.Replace("192.168.0.171", "209.6.75.168");
+
+
                 JObject jObject = JObject.FromObject(new
                 {
                     address = "209.6.75.168",

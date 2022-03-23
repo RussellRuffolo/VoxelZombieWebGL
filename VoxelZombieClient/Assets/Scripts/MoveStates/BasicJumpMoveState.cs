@@ -25,7 +25,7 @@ public class BasicJumpMoveState : IMoveState
         Jumped = false;
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints, World world)
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints, IWorld world)
     {
         if (Jumped)
         {

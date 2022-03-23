@@ -49,7 +49,7 @@ namespace Client
                 PlayerController.MoveState == MoveState.basicCrawling ||
                 PlayerController.MoveState == MoveState.slideAir)
             {
-                targetPosition = LocalPlayerSim.position - Vector3.up * .5f;
+                targetPosition = LocalPlayerSim.position - Vector3.up;
             }
 
             // float clientError = Vector3.Distance(transform.position, LocalPlayerSim.position);

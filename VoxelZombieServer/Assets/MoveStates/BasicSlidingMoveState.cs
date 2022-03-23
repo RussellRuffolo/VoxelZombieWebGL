@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BasicSlidingMoveState : CrouchingMoveState
 {
-    public override void ApplyInput(Rigidbody playerRb, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public override void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
     {
         Vector3 velocity = playerRb.velocity;
         velocity -= velocity.normalized * PlayerStats.slideFriction;
@@ -11,12 +11,12 @@ public class BasicSlidingMoveState : CrouchingMoveState
     }
 
 
-    public override MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs,
+    public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
         List<ContactPoint> contactPoints, World world)
     {
         if (PlayerUtils.CheckGrounded(contactPoints))
         {
-            if (playerInputs.Slide)
+            if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
             {
                 if (playerRb.velocity.magnitude > PlayerStats.crawlSpeed)
                 {
@@ -25,11 +25,11 @@ public class BasicSlidingMoveState : CrouchingMoveState
 
                 return MoveState.basicCrawling;
             }
-            
+
             return MoveState.basicGrounded;
         }
 
-        if (playerInputs.Slide)
+        if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
         {
             return MoveState.slideAir;
         }

@@ -47,7 +47,7 @@ public class WallJumpMoveState : IMoveState
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
-        World world)
+        IWorld world)
     {
         if (Jumped)
         {

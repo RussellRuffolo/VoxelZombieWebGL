@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AerialHalfBlockMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody playerRb, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
     {
         float yPos = playerRb.transform.position.y;
         float yDec = yPos - (int) yPos;
@@ -35,7 +35,7 @@ public class AerialHalfBlockMoveState : IMoveState
     {
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs, List<ContactPoint> contactPoints,
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         World world)
     {
         if (PlayerUtils.CheckGrounded(contactPoints))

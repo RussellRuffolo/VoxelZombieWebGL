@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class WallHangMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody playerRb, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
     {
         Vector3 horizontalVelocity = new Vector3(playerRb.velocity.x, 0, playerRb.velocity.z);
         float ySpeed = playerRb.velocity.y;
@@ -27,7 +27,7 @@ public class WallHangMoveState : IMoveState
     {
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs, List<ContactPoint> contactPoints,
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         World world)
     {
         if (PlayerUtils.CheckGrounded(contactPoints))

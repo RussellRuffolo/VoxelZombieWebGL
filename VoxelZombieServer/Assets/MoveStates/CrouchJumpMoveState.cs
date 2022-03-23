@@ -6,7 +6,7 @@ public class CrouchJumpMoveState : CrouchingMoveState
     private bool Jumped;
 
 
-    public override void ApplyInput(Rigidbody playerRb, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public override void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
     {
         Vector3 horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.crawlSpeed;
 
@@ -21,14 +21,14 @@ public class CrouchJumpMoveState : CrouchingMoveState
         Jumped = false;
     }
 
-    public override MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs,
+    public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
         List<ContactPoint> contactPoints, World world)
     {
         if (Jumped)
         {
             if (PlayerUtils.CheckGrounded(contactPoints))
             {
-                if (playerInputs.Slide)
+                if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
                 {
                     if (playerRb.velocity.magnitude > PlayerStats.crawlSpeed)
                     {
@@ -41,7 +41,7 @@ public class CrouchJumpMoveState : CrouchingMoveState
                 return MoveState.basicGrounded;
             }
 
-            if (playerInputs.Slide)
+            if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
             {
                 return MoveState.slideAir;
             }

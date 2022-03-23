@@ -25,6 +25,7 @@ public class ServerPlayerController : MonoBehaviour
         {MoveState.basicAir, new BasicAirMoveState()},
         {MoveState.basicJump, new BasicJumpMoveState()},
         {MoveState.waterSwimming, new WaterSwimmingMoveState()},
+        {MoveState.waterFalling, new WaterFallingMoveState()},
         {MoveState.lavaSwimming, new LavaSwimmingMoveState()},
         {MoveState.waterJump, new WaterJumpMoveState()},
         {MoveState.basicSliding, new BasicSlidingMoveState()},
@@ -57,7 +58,7 @@ public class ServerPlayerController : MonoBehaviour
         }
     }
 
-    public void ApplyInputs(Rigidbody playerRB, PlayerInputs currentInputs)
+    public void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs)
     {
         MoveState state = MoveStates[MoveState].CheckMoveState(playerRB, currentInputs, allCPs, world);
 

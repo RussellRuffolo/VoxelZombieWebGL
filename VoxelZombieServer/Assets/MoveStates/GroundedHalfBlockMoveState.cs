@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GroundedHalfBlockMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody playerRb, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
     {
         playerRb.transform.position += Vector3.up * .5f;
         //perhaps also tp you in the direction of your velocity the amount you should have moved last frame but didn't because of collision with block. 
@@ -21,7 +21,7 @@ public class GroundedHalfBlockMoveState : IMoveState
     {
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs, List<ContactPoint> contactPoints,
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         World world)
     {
         if (PlayerUtils.CheckGrounded(contactPoints))

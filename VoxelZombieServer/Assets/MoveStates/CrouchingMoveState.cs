@@ -6,7 +6,7 @@ public abstract class CrouchingMoveState : IMoveState
     public BoxCollider slidingCollider;
     public BoxCollider standingCollider;
 
-    public abstract void ApplyInput(Rigidbody player, PlayerInputs currentInputs, List<ContactPoint> contactPoints);
+    public abstract void ApplyInput(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints);
 
     public virtual void Enter()
     {
@@ -20,6 +20,6 @@ public abstract class CrouchingMoveState : IMoveState
         standingCollider.enabled = true;
     }
 
-    public abstract MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs,
+    public abstract MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
         List<ContactPoint> contactPoints, World world);
 }

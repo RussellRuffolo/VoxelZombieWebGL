@@ -15,36 +15,17 @@ namespace Client
         [SerializeField] public BoxCollider slidingCollider;
 
         private IMoveState CurrentMoveState;
-        private World world;
+        private IWorld world;
         private bool hasWaterJump = false;
         private bool hasWallJump = false;
         Vector3 colliderHalfExtents;
 
         private VoxelClient vClient;
 
-        private Dictionary<MoveState, IMoveState> MoveStates = new Dictionary<MoveState, IMoveState>()
-        {
-            {MoveState.basicGrounded, new BasicGroundedMoveState()},
-            {MoveState.basicAir, new BasicAirMoveState()},
-            {MoveState.basicJump, new BasicJumpMoveState()},
-            {MoveState.waterSwimming, new WaterSwimmingMoveState()},
-            {MoveState.lavaSwimming, new LavaSwimmingMoveState()},
-            {MoveState.waterJump, new WaterJumpMoveState()},
-            {MoveState.basicSliding, new BasicSlidingMoveState()},
-            {MoveState.basicCrawling, new BasicCrawlingMoveState()},
-            {MoveState.slideAir, new SlideAirMoveState()},
-            {MoveState.wallJump, new WallJumpMoveState()},
-            {MoveState.groundedHalfBlock, new GroundedHalfBlockMoveState()},
-            {MoveState.crouchJump, new CrouchJumpMoveState()},
-            {MoveState.aerialHalfBlock, new AerialHalfBlockMoveState()},
-            {MoveState.wallHang, new WallHangMoveState()},
-            {MoveState.postJump, new PostJumpMoveState()},
-            {MoveState.postWallJump, new PostWallJumpMoveState()}
-        };
 
         protected override void OnAwake()
         {
-            world = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>().world;
+            world = GameObject.FindGameObjectWithTag("Network").GetComponent<SinglePlayerVoxelEngine>().World;
 
             colliderHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
 
@@ -101,7 +82,7 @@ namespace Client
             Vector3 headPosition = new Vector3(transform.position.x, transform.position.y - .08f + (1.76f / 2),
                 transform.position.z);
 
-            ushort jumpTag = world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y + .2f),
+            ushort jumpTag = (ushort) world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y + .2f),
                 Mathf.FloorToInt(feetPosition.z)];
             if (jumpTag == 9 || jumpTag == 11)
             {

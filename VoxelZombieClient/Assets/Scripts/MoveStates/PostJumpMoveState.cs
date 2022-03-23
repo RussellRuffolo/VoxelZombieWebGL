@@ -34,7 +34,7 @@ public class PostJumpMoveState : IMoveState
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
-        World world)
+        IWorld world)
     {
         if (PlayerUtils.CheckAerialHalfBlock(playerRb, playerInputs, contactPoints, world))
         {

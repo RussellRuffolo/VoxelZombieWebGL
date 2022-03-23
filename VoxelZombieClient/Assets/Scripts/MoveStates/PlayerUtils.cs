@@ -43,7 +43,7 @@ public static class PlayerUtils
 
     public static bool CheckWall(Rigidbody playerRb, ClientInputs playerInputs,
         List<ContactPoint> contactPoints,
-        World world)
+        IWorld world)
     {
         foreach (ContactPoint contactPoint in contactPoints)
         {
@@ -66,7 +66,7 @@ public static class PlayerUtils
         return false;
     }
 
-    public static bool CheckWater(Rigidbody playerRb, List<ContactPoint> contactPoints, World world)
+    public static bool CheckWater(Rigidbody playerRb, List<ContactPoint> contactPoints, IWorld world)
     {
         Collider[] colliders = Physics.OverlapBox(playerRb.transform.position, PlayerStats.StandingHalfExtents,
             playerRb.transform.rotation,
@@ -101,7 +101,7 @@ public static class PlayerUtils
 
     public static bool CheckAerialHalfBlock(Rigidbody playerRb, ClientInputs playerInputs,
         List<ContactPoint> contactPoints,
-        World world)
+        IWorld world)
     {
         Vector3 blockPosition = playerRb.transform.position + FootOffset - Vector3.up;
         ushort x = (ushort) Mathf.FloorToInt(blockPosition.x);
@@ -117,7 +117,7 @@ public static class PlayerUtils
     }
 
     public static bool CheckHalfBlock(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
-        World world)
+        IWorld world)
     {
         foreach (ContactPoint contactPoint in contactPoints)
         {
@@ -162,7 +162,7 @@ public static class PlayerUtils
         return false;
     }
 
-    public static bool IsSolidBlock(ushort blockTag)
+    public static bool IsSolidBlock(ulong blockTag)
     {
         return blockTag != 0 && blockTag != 9 && blockTag != 11;
     }
