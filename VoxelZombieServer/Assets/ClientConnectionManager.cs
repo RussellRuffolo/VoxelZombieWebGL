@@ -47,28 +47,11 @@ public class ClientConnectionManager : MonoBehaviour
     private void Awake()
     {
         WebRTC.Initialize();
-        string certPath = "D://Certs/Sat/1/www.crashblox.net.pfx";
-        string certPass = "bXPVRKsUGhbK";
 
-        // cert = new X509Certificate2(certPath, certPass);
-        // Debug.Log(cert.Issuer);
-        //
-        // X509Certificate2Collection collection = GetUserCertificates();
-        // Debug.Log("Num certificates: " + collection.Count);
-        // foreach (X509Certificate2 certificate2 in collection)
-        // {
-        //     Debug.Log(certificate2.FriendlyName + " " + certificate2.Subject);
-        // }
-
-        //   serverCertificate = new X509Certificate2(certPath, certPass, X509KeyStorageFlags.Exportable);
-
-        //  serverCertificate.Import(certPath, (string) null, X509KeyStorageFlags.Exportable);
-        //    IPAddress.Parse("192.168.0.171")
-        // Listener = new TcpListener(IPAddress.Parse("192.168.0.171"), 443);
-        // StartAsyncListener(Listener);
         HttpListener = new HttpListener();
 
         HttpListener.Prefixes.Add("http://127.0.0.1:25565/");
+
         StartHttpListener(HttpListener);
     }
 
@@ -287,6 +270,8 @@ public class ClientConnectionManager : MonoBehaviour
                 Debug.Log("Candidate: " + client.IceCandidate.Candidate);
                 string candidate = client.IceCandidate.Candidate;
                 string newCandidate = candidate.Replace("192.168.0.171", "209.6.75.168");
+
+
                 JObject jObject = JObject.FromObject(new
                 {
                     address = "209.6.75.168",

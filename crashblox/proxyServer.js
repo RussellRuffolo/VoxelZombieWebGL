@@ -1,4 +1,4 @@
-const https = require('https');
+//const https = require('https');
 const fs = require('fs');
 const axios = require('axios');
 // const wrtc = require('wrtc')
@@ -7,18 +7,19 @@ const app = express();
 const cors = require('cors');
 var path = require('path')
 
-const hostname = '192.168.0.171';
+const hostname = '192.168.0.137';
 const localHostName = '127.0.0.1';
-const port = 443
+const port = 25565
 
 app.use(cors());
 
+app.use(function (req, res, next) {
+  next()
+})
+
+
 app.use(express.json());
 
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*")
-    next()
-  })
 
 
 app.get('/get-offer', (req, res) => {
@@ -55,9 +56,9 @@ app.get('/get-offer', (req, res) => {
  
 
 
-const options = {
-  key: fs.readFileSync('www.crashblox.net.key'),
-  cert: fs.readFileSync('www.crashblox.net.crt')
-};
-
-https.createServer(options, app).listen(port, () => console.log('Proxy Server is listening on port: ' + port));
+// const options = {
+//   key: fs.readFileSync('www.crashblox.net.key'),
+//   cert: fs.readFileSync('www.crashblox.net.crt')
+// };
+app.listen(port, hostname, () => console.log('Proxy Server is listening on port: ' + port));
+// https.createServer(options, app).listen(port, () => console.log('Proxy Server is listening on port: ' + port));

@@ -7,7 +7,7 @@ using System;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
 
-public class Chunk : MonoBehaviour
+public class Chunk : MonoBehaviour, IChunk
 {
 
     public World world;
@@ -60,7 +60,7 @@ public class Chunk : MonoBehaviour
 
  
 
-    public bool dirty = true;
+    public bool dirty { get; set; } = true;
 
     private Vector3[] _cubeVertices = new[] {
         new Vector3 (0, 0, 0),

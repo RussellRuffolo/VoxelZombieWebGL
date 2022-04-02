@@ -17,8 +17,8 @@ public class MenuController : MonoBehaviour
 
     [SerializeField] public Slider ySlider;
 
-    [SerializeField]
-    private Canvas MenuCanvas;
+    [SerializeField] private Canvas MenuCanvas;
+
 
     ClientChatManager chatManager;
 
@@ -28,14 +28,13 @@ public class MenuController : MonoBehaviour
     {
         chatManager = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientChatManager>();
         MenuCanvas.enabled = false;
-        
+
         xSlider.onValueChanged.AddListener(XChanged);
 
         ySlider.onValueChanged.AddListener(YChanged);
-        
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
     }
 
     void XChanged(float value)
@@ -61,11 +60,7 @@ public class MenuController : MonoBehaviour
             }
             else
             {
-                if (chatManager.chatEnabled) //if chat is open escape closes chat. Otherwise it frees cursor
-                {
-                    chatManager.CloseChat();
-                }
-                else
+                if (!chatManager.chatEnabled) //if chat is open m closes chat. Otherwise it frees cursor
                 {
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;

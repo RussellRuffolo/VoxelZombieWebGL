@@ -26,7 +26,7 @@ namespace Client
         private static extern void Connect(string baseUrl);
 
 
-        private const string baseUrl = "https://crashblox.net";
+        private const string baseUrl = "https://rtc.crashbloxserver.net";
 
         // Start is called before the first frame update
         void Start()
@@ -44,7 +44,8 @@ namespace Client
 
             if (!editor)
             {
-                Connect(baseUrl + "/get-offer");
+                Debug.LogError("Connecting");
+                Connect(baseUrl + "/get-offer/");
             }
         }
 

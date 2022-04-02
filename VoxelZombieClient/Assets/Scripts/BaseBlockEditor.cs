@@ -7,12 +7,14 @@ namespace Client
         private Camera playerCam;
         public float editDistance;
         public float stepDistance;
-        private World currentWorld;
-        private ClientVoxelEngine vEngine;
+        private IWorld currentWorld;
+        private IVoxelEngine vEngine;
 
-        private ushort placeBlockTag = 1;
+        private ulong placeBlockTag = 1;
 
         public LineRenderer blockOutline;
+
+        public ParticleSystem blockBreakParticleSystem;
 
         private Vector3[] _frontVertices = new[]
         {
@@ -87,8 +89,8 @@ namespace Client
         void Start()
         {
             playerCam = GetComponentInChildren<Camera>();
-            vEngine = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>();
-            currentWorld = vEngine.world;
+            vEngine = GameObject.FindGameObjectWithTag("Network").GetComponent<IVoxelEngine>();
+            currentWorld = vEngine.World;
 
             blockOutline.positionCount = 0;
 
@@ -310,7 +312,7 @@ namespace Client
             int y = Mathf.FloorToInt(checkPosition.y);
             int z = Mathf.FloorToInt(checkPosition.z);
 
-            ushort blockTag = currentWorld[x, y, z];
+            ulong blockTag = currentWorld[x, y, z];
 
 
             //untargetable blocks: air, water, lava, outside of map
@@ -344,7 +346,7 @@ namespace Client
                 int y = (int) selectionPosition.y;
                 int z = (int) selectionPosition.z;
 
-                ushort breakSpotTag = currentWorld[x, y, z];
+                ulong breakSpotTag = currentWorld[x, y, z];
 
                 if (breakSpotTag == 0)
                 {
@@ -359,7 +361,13 @@ namespace Client
                     return;
                 }
 
-                OnBreakBlock((ushort) x, (ushort) y, (ushort) z);
+                blockBreakParticleSystem.GetComponent<Renderer>().material =
+                    vEngine.materialList[(int) (breakSpotTag - 1)];
+                blockBreakParticleSystem.transform.position = selectionPosition;
+                blockBreakParticleSystem.Play();
+                //
+                //
+                 OnBreakBlock((ushort) x, (ushort) y, (ushort) z);
 
 
                 return;
@@ -383,11 +391,11 @@ namespace Client
                 else
                 {
                     y++;
-                    ushort placeSpotTag = currentWorld[x, y, z];
+                    ulong placeSpotTag = currentWorld[x, y, z];
 
                     if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
                     {
-                        OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, placeBlockTag);
+                        OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, (ushort) placeBlockTag);
                     }
                 }
             }
@@ -397,11 +405,11 @@ namespace Client
                 int y = (int) (selectionPosition.y + selectionNormal.y);
                 int z = (int) (selectionPosition.z + selectionNormal.z);
 
-                ushort placeSpotTag = currentWorld[x, y, z];
+                ulong placeSpotTag = currentWorld[x, y, z];
 
                 if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
                 {
-                    OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, placeBlockTag);
+                    OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, (ushort) placeBlockTag);
                 }
             }
         }
@@ -418,7 +426,7 @@ namespace Client
 
                 if (x < vEngine.Length && y < vEngine.Height && z < vEngine.Width)
                 {
-                    ushort selectTag = currentWorld[x, y, z];
+                    ulong selectTag = currentWorld[x, y, z];
 
                     if (selectTag != 7 && selectTag != 0 && selectTag != 9 && selectTag != 11)
                     {

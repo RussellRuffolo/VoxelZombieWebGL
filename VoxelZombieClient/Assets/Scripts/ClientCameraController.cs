@@ -22,6 +22,8 @@ namespace Client
 
         private MenuController menuController;
 
+        private BasePlayerController PlayerController;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -29,7 +31,7 @@ namespace Client
 
             menuController = GameObject.FindGameObjectWithTag("MenuCanvas").GetComponent<MenuController>();
 
-        
+            PlayerController = LocalPlayerSim.GetComponent<BasePlayerController>();
         }
 
         // Update is called once per frame
@@ -37,21 +39,28 @@ namespace Client
         {
             if (!menuController.MenuOpen)
                 CameraLook();
-
-           
         }
 
         private void LateUpdate()
         {
-            float clientError = Vector3.Distance(transform.position, LocalPlayerSim.position);
-            if (clientError > 2 || clientError < 0.2f)
+            Vector3 targetPosition = LocalPlayerSim.position;
+
+            if (PlayerController.MoveState == MoveState.basicSliding ||
+                PlayerController.MoveState == MoveState.basicCrawling ||
+                PlayerController.MoveState == MoveState.slideAir)
             {
-                transform.position = LocalPlayerSim.position;
+                targetPosition = LocalPlayerSim.position - Vector3.up;
             }
-            else
-            {
-                transform.position = Vector3.Lerp(transform.position, LocalPlayerSim.position, .5f);
-            }
+
+            // float clientError = Vector3.Distance(transform.position, LocalPlayerSim.position);
+            // if (clientError > 2 || clientError < 0.2f)
+            // {
+            //     transform.position = LocalPlayerSim.position;
+            // }
+            // else
+            //{
+            transform.position = Vector3.Lerp(transform.position, targetPosition, .5f);
+            //  }
         }
 
         void CameraLook()

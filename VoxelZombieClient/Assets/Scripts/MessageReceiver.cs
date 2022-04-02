@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using Client;
+﻿using Client;
 using UnityEngine;
-using UnityEngine.UI;
-
 public class MessageReceiver : MonoBehaviour
 {
     private VoxelClient VoxelClient;
 
     private LoginClient LoginClient;
-    [SerializeField] public Text reliableText;
-
-    [SerializeField] public Text unreliableText;
 
     public ushort ClientId;
 
@@ -43,17 +34,14 @@ public class MessageReceiver : MonoBehaviour
         RtcMessageReader reader = new RtcMessageReader(message);
         char tag = reader.ReadTag();
 
-
         switch (tag)
         {
             case Tags.MAP_TAG:
                 string mapName = reader.ReadString();
                 VoxelClient.LoadMap(mapName);
-                Debug.LogError("Case A: " + mapName);
                 break;
             case Tags.LOGIN_ATTEMPT_TAG:
                 int response = reader.ReadInt();
-                Debug.LogError("Response was: " + response);
                 LoginClient.OnLoginResponse(response);
                 break;
             case Tags.PLAYER_INIT_TAG:

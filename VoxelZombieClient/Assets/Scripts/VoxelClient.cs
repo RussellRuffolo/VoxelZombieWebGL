@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace Client
@@ -12,9 +13,11 @@ namespace Client
     {
         public bool loadedFirstMap = false;
 
+        [SerializeField] public Canvas ZombieCanvas;
 
-        ClientVoxelEngine vEngine;
-        private World world;
+        [SerializeField] public SinglePlayerMenuController SinglePlayerMenuController;
+        SinglePlayerVoxelEngine vEngine;
+        private IWorld world;
 
         public GameObject NetworkPlayerPrefab;
         public GameObject LocalPlayerPrefab;
@@ -22,13 +25,14 @@ namespace Client
 
         public GameObject SingePlayerPrefab;
         public GameObject SinglerPlayerSimulator;
-        
+
+        public ParticleSystem BreakBlockParticleSystem;
+
         public GameObject PlayerMenu;
-        
+
         Dictionary<ushort, Transform> NetworkPlayerDictionary = new Dictionary<ushort, Transform>();
         Transform localPlayerTransform;
         Transform localSimTransform;
-
 
 
         ClientChatManager chatManager;
@@ -53,13 +57,14 @@ namespace Client
         {
             SendUnreliableMessage(message.GetMessage());
         }
-        
+
 
         private LoginClient LoginClient;
+
         private void Awake()
         {
-            vEngine = GetComponent<ClientVoxelEngine>();
-            world = vEngine.world;
+            vEngine = GetComponent<SinglePlayerVoxelEngine>();
+            world = vEngine.World;
 
 
             chatManager = GetComponent<ClientChatManager>();
@@ -112,20 +117,21 @@ namespace Client
 
                 if (PlayerID == clientId)
                 {
-                    GameObject Menu = GameObject.Instantiate(PlayerMenu);
-                    
-                    GameObject LocalPlayer = GameObject.Instantiate(LocalPlayerPrefab,
+                    Instantiate(PlayerMenu);
+
+                    GameObject LocalPlayer = Instantiate(LocalPlayerPrefab,
                         position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-                    GameObject LocalPlayerSim = GameObject.Instantiate(LocalPlayerSimulator,
+                    GameObject LocalPlayerSim = Instantiate(LocalPlayerSimulator,
                         position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-                  
+                    ClientCameraController cameraController = LocalPlayer.GetComponent<ClientCameraController>();
+                    cameraController.LocalPlayerSim = LocalPlayerSim.transform;
 
-                    LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
-                        LocalPlayerSim.transform;
                     LocalPlayerSim.GetComponent<ClientPlayerController>().camController =
-                        LocalPlayer.GetComponent<ClientCameraController>();
+                        cameraController;
+                    LocalPlayer.GetComponent<ClientBlockEditor>().blockBreakParticleSystem =
+                        Instantiate(BreakBlockParticleSystem);
                     if (StateTag == 0)
                     {
                         LocalPlayer.GetComponent<MeshRenderer>().material.color = Color.white;
@@ -266,6 +272,7 @@ namespace Client
         {
             int numBlocks = reader.GetMessageLength() / 16;
 
+
             for (int i = 0; i < numBlocks; i++)
             {
                 ushort x = reader.ReadUShort();
@@ -359,21 +366,29 @@ namespace Client
                 Debug.Log("No Network Player corresponds to given ID: " + ID);
             }
         }
-        
+
         public void OnSinglePlayer()
         {
             Debug.Log("On Single Player");
-            
-            vEngine.LoadMap("asylum");
-            LoginClient.OnSinglePlayer();
+
+            SceneManager.LoadScene("SinglePlayerScene");
 
 
-            Vector3 position = new Vector3(25, 129.5f, 30);
+            // LoginClient.OnSinglePlayer();
+            // SinglePlayerMenuController.OnSinglePlayer();
+        }
+
+        public void LoadSinglePlayerMap(string mapName)
+        {
+            Debug.Log("Load Single Player Map");
+            vEngine.LoadMap(mapName);
+
+
+            Vector3 position = MapInfo.SpawnPositions[mapName];
 
             Vector3 eulerRotation = Vector3.zero;
-            
-        
-            
+
+
             GameObject LocalPlayer = GameObject.Instantiate(SingePlayerPrefab,
                 position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
@@ -381,18 +396,17 @@ namespace Client
                 position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
             GameObject Menu = GameObject.Instantiate(PlayerMenu);
-            
+
             LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
                 LocalPlayerSim.transform;
             LocalPlayerSim.GetComponent<SinglePlayerPlayerController>().camController =
                 LocalPlayer.GetComponent<ClientCameraController>();
 
-            vEngine.MapLoadedDelegate += spawnPosition =>
-            {
-
-                LocalPlayerSim.transform.position = spawnPosition;
-                LocalPlayer.transform.position = spawnPosition;
-            };
+            // vEngine.MapLoadedDelegate += spawnPosition =>
+            // {
+            //     LocalPlayerSim.transform.position = spawnPosition;
+            //     LocalPlayer.transform.position = spawnPosition;
+            // };
 
 
             localPlayerTransform = LocalPlayer.transform;
@@ -425,7 +439,8 @@ namespace Client
                 }
                 else
                 {
-                    // ZombieCanvas.enabled = false;
+                    ZombieCanvas.enabled = true;
+                    StartCoroutine(DisableZombieCanvas());
                 }
             }
             else
@@ -451,6 +466,11 @@ namespace Client
             }
         }
 
+        private IEnumerator DisableZombieCanvas()
+        {
+            yield return new WaitForSeconds(.5f);
+            ZombieCanvas.enabled = false;
+        }
 
         public void ReceiveChat(RtcMessageReader reader)
         {

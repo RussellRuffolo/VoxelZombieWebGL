@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Client
 {
@@ -6,20 +7,28 @@ namespace Client
     {
         public GameObject rotationTracker;
 
-        public float playerSpeed;
-        public float AirAcceleration;
-        public float jumpSpeed;
-        public float gravAcceleration;
 
-        public float verticalWaterMaxSpeed;
-        public float verticalWaterAcceleration;
-        public float horizontalWaterSpeed;
-
-        public float verticalLavaMaxSpeed;
-        public float verticalLavaAcceleration;
-        public float horizontalLavaSpeed;
-
-        public float waterExitSpeed;
+        protected Dictionary<MoveState, IMoveState> MoveStates = new Dictionary<MoveState, IMoveState>()
+        {
+            {MoveState.basicGrounded, new BasicGroundedMoveState()},
+            {MoveState.basicAir, new BasicAirMoveState()},
+            {MoveState.basicJump, new BasicJumpMoveState()},
+            {MoveState.waterSwimming, new WaterSwimmingMoveState()},
+            {MoveState.waterFalling, new WaterFallingMoveState()},
+            {MoveState.lavaSwimming, new LavaSwimmingMoveState()},
+            {MoveState.waterJump, new WaterJumpMoveState()},
+            {MoveState.basicSliding, new BasicSlidingMoveState()},
+            {MoveState.basicCrawling, new BasicCrawlingMoveState()},
+            {MoveState.slideAir, new SlideAirMoveState()},
+            {MoveState.slideLand, new SlideLandMoveState()},
+            {MoveState.wallJump, new WallJumpMoveState()},
+            {MoveState.groundedHalfBlock, new GroundedHalfBlockMoveState()},
+            {MoveState.crouchJump, new CrouchJumpMoveState()},
+            {MoveState.aerialHalfBlock, new AerialHalfBlockMoveState()},
+            {MoveState.wallHang, new WallHangMoveState()},
+            {MoveState.postJump, new PostJumpMoveState()},
+            {MoveState.postWallJump, new PostWallJumpMoveState()}
+        };
 
 
         protected float rotationY = 0f;
@@ -27,10 +36,9 @@ namespace Client
 
         public ushort moveState = 0;
 
+        public MoveState MoveState;
 
         ClientChatManager chatClient;
-        HalfBlockDetector hbDetector;
-        ClientPositionTracker pTracker;
         public ClientCameraController camController;
 
         protected ClientInputs[] LoggedInputs = new ClientInputs[1024];
@@ -47,14 +55,13 @@ namespace Client
         {
             playerRB = GetComponent<Rigidbody>();
             chatClient = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientChatManager>();
-            hbDetector = GetComponent<HalfBlockDetector>();
-            pTracker = GetComponent<ClientPositionTracker>();
             playerRB = GetComponent<Rigidbody>();
 
             OnAwake();
         }
 
         protected abstract void OnAwake();
+
 
         // Update is called once per frame
         void Update()
@@ -76,8 +83,11 @@ namespace Client
                 //store the state and inputs in circular buffers
                 LoggedStates[bufferIndex] = new PlayerState(transform.position, playerRB.velocity, tickNumber);
 
-                LoggedInputs[bufferIndex] = new ClientInputs(currentInputs.MoveVector, currentInputs.Jump, tickNumber);
+                LoggedInputs[bufferIndex] = new ClientInputs(currentInputs.MoveVector, currentInputs.PlayerForward,
+                    currentInputs.Jump,
+                    currentInputs.Slide, tickNumber);
 
+                
                 //Apply the inputs to change player velocity
                 ApplyInputs(playerRB, currentInputs);
 
@@ -130,6 +140,8 @@ namespace Client
 
             bool jump = Input.GetKey(KeyCode.Space);
 
+            bool slide = Input.GetKey(KeyCode.LeftShift);
+
             //can't move or jump if chatting
             if (chatClient.chatEnabled)
             {
@@ -139,144 +151,12 @@ namespace Client
 
             int inputTickNumber = tickNumber;
 
-            ClientInputs currentInputs = new ClientInputs(speedVector, jump, inputTickNumber);
+            ClientInputs currentInputs = new ClientInputs(speedVector, playerForward, jump, slide, inputTickNumber);
             return currentInputs;
         }
 
-        public void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs)
-        {
-            //run inputs here        
-
-            float yVel = playerRB.velocity.y;
-            Vector3 horizontalSpeed = new Vector3(playerRB.velocity.x, 0, playerRB.velocity.z);
-
-            moveState = pTracker.CheckPlayerState(moveState);
-            if (moveState == 0) //normal movement
-            {
-                bool onGround = hbDetector.CheckGrounded();
-
-                if (onGround && yVel <= 0)
-                {
-                    if (currentInputs.Jump)
-                    {
-                        horizontalSpeed = currentInputs.MoveVector.normalized * playerSpeed;
-                        yVel = jumpSpeed;
-                    }
-                    else
-                    {
-                        horizontalSpeed = currentInputs.MoveVector.normalized * playerSpeed;
-                    }
-                }
-                else
-                {
-                    horizontalSpeed += currentInputs.MoveVector.normalized * AirAcceleration * Time.fixedDeltaTime;
-
-                    if (horizontalSpeed.magnitude > playerSpeed)
-                    {
-                        horizontalSpeed = currentInputs.MoveVector.normalized * playerSpeed;
-                    }
-
-                    yVel -= gravAcceleration * Time.fixedDeltaTime;
-                }
-
-                playerRB.velocity = horizontalSpeed;
-                playerRB.velocity += yVel * Vector3.up;
-            }
-            else if (moveState == 1) //water movement
-            {
-                if (currentInputs.Jump)
-                {
-                    if (yVel >= verticalWaterMaxSpeed)
-                    {
-                        yVel = verticalWaterMaxSpeed;
-                    }
-                    else
-                    {
-                        yVel += verticalWaterAcceleration * Time.fixedDeltaTime;
-                    }
-                }
-                else
-                {
-                    if (yVel < -verticalWaterMaxSpeed)
-                    {
-                        yVel += verticalWaterAcceleration * Time.fixedDeltaTime;
-                        if (yVel > -verticalWaterMaxSpeed)
-                        {
-                            yVel = -verticalWaterMaxSpeed;
-                        }
-                    }
-                    else
-                    {
-                        yVel -= verticalWaterAcceleration * Time.fixedDeltaTime;
-                        if (yVel < -verticalWaterMaxSpeed)
-                        {
-                            yVel = -verticalWaterMaxSpeed;
-                        }
-                    }
-                }
-
-                playerRB.velocity = currentInputs.MoveVector * horizontalWaterSpeed;
-                playerRB.velocity += yVel * Vector3.up;
-            }
-            else if (moveState == 3)
-            {
-                if (currentInputs.Jump && pTracker.CheckWaterJump())
-                {
-                    Debug.Log("Water Jump");
-                    pTracker.UseWaterJump();
-                    Vector3 waterJump = new Vector3(currentInputs.MoveVector.x * horizontalWaterSpeed, waterExitSpeed,
-                        currentInputs.MoveVector.z * horizontalWaterSpeed);
-                    playerRB.velocity = waterJump;
-                }
-                else
-                {
-                    yVel -= gravAcceleration * Time.fixedDeltaTime;
-                    playerRB.velocity = currentInputs.MoveVector * playerSpeed;
-                    playerRB.velocity += yVel * Vector3.up;
-                }
-            }
-            else if (moveState == 4) //lava movement
-            {
-                if (currentInputs.Jump)
-                {
-                    if (yVel >= verticalLavaMaxSpeed)
-                    {
-                        yVel = verticalLavaMaxSpeed;
-                    }
-                    else
-                    {
-                        yVel += verticalLavaAcceleration * Time.fixedDeltaTime;
-                    }
-                }
-                else
-                {
-                    if (yVel < -verticalLavaMaxSpeed)
-                    {
-                        yVel += verticalLavaAcceleration * Time.fixedDeltaTime;
-                        if (yVel > -verticalLavaMaxSpeed)
-                        {
-                            yVel = -verticalLavaMaxSpeed;
-                        }
-                    }
-                    else
-                    {
-                        yVel -= verticalLavaAcceleration * Time.fixedDeltaTime;
-                        if (yVel < -verticalLavaMaxSpeed)
-                        {
-                            yVel = -verticalLavaMaxSpeed;
-                        }
-                    }
-                }
-
-                playerRB.velocity = currentInputs.MoveVector * horizontalLavaSpeed;
-                playerRB.velocity += yVel * Vector3.up;
-            }
-
-            // Vector3 collisionVector = pTracker.GetCollisionVector();
-
-            // playerRB.velocity += collisionVector;
-            //add collision logic here
-        }
+        public abstract void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs);
+        public abstract bool CheckGrounded();
 
         //This is called when a server state packet arrives
         //The server state is compared to the saved client state and if it doesn't match
