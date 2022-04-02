@@ -1,35 +1,39 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 
 public class BasicSlidingMoveState : CrouchingMoveState
 {
-    public override void ApplyInput(Rigidbody playerRb, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public override Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs,
+        List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
-        Vector3 velocity = playerRb.velocity;
+        Vector3 velocity = (playerRb.position - lastPosition) / Time.fixedDeltaTime;
         velocity -= velocity.normalized * PlayerStats.slideFriction;
-        playerRb.velocity = velocity;
+
+        return velocity;
     }
 
 
-    public override MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs,
-        List<ContactPoint> contactPoints, World world)
+    public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
+        List<ContactPoint> contactPoints, IWorld world, Vector3 lastVelocity)
     {
         if (PlayerUtils.CheckGrounded(contactPoints))
         {
-            if (playerInputs.Slide)
+            if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
             {
-                if (playerRb.velocity.magnitude > PlayerStats.crawlSpeed)
+                if (lastVelocity.magnitude > PlayerStats.crawlSpeed)
                 {
                     return MoveState.basicSliding;
                 }
 
                 return MoveState.basicCrawling;
             }
-            
+
             return MoveState.basicGrounded;
         }
 
-        if (playerInputs.Slide)
+        if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
         {
             return MoveState.slideAir;
         }

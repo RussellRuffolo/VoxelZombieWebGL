@@ -6,14 +6,14 @@ using UnityEngine.UI;
 public class CameraWaterTracker : MonoBehaviour
 {
     
-    private World world;
+    private IWorld world;
 
     private Image waterEffect;
     private Image lavaEffect;
     // Start is called before the first frame update
     void Start()
     {
-        world = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>().world;
+        world = GameObject.FindGameObjectWithTag("Network").GetComponent<IVoxelEngine>().World;
         GameObject waterCanvas = Instantiate(Resources.Load<GameObject>("WaterCanvas"));
         waterEffect = waterCanvas.GetComponentInChildren<Image>();
 
@@ -32,7 +32,7 @@ public class CameraWaterTracker : MonoBehaviour
         int y = Mathf.FloorToInt(transform.position.y);
         int z = Mathf.FloorToInt(transform.position.z);
 
-        ushort blockTag = world[x, y, z];
+        ushort blockTag = (ushort)world[x, y, z];
 
         if(blockTag == 9)
         {

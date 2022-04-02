@@ -25,7 +25,6 @@ public class ServerGameManager : MonoBehaviour
         vEngine = GetComponent<VoxelEngine>();
         vServer = GetComponent<VoxelServer>();
         pMananger = GetComponent<ServerPlayerManager>();
-     
     }
 
     private void Start()
@@ -35,7 +34,7 @@ public class ServerGameManager : MonoBehaviour
 
     private void StartRound(MapData nextMap)
     {
-        inStartTime = true;     
+        inStartTime = true;
         vEngine.LoadMap(nextMap);
         vServer.StartRound();
         RoundTime = 10 * 60;
@@ -45,34 +44,35 @@ public class ServerGameManager : MonoBehaviour
 
     private void EndRound()
     {
-
         map1Votes = 0;
         map2Votes = 0;
-        map3Votes = 0;       
+        map3Votes = 0;
 
         map1 = vEngine.GetRandomMap();
-        map2 = vEngine.GetRandomMap();
 
-        while(map2 == map1)
-        {
-            map2 = vEngine.GetRandomMap();
-        }
-        map3 = vEngine.GetRandomMap();
-        while(map3 == map2 || map3 == map1)
-        {
-            map3 = vEngine.GetRandomMap();
-        }
-
-        vServer.SendPublicChat("Vote for the next map:", 2);
-        vServer.SendPublicChat("1: " + map1.Name + " 2: " + map2.Name + " 3: " + map3.Name, 2);
-        inVoteTime = true;
         StartCoroutine(VoteDelay());
 
+        // map2 = vEngine.GetRandomMap();
+        //
+        // while(map2 == map1)
+        // {
+        //     map2 = vEngine.GetRandomMap();
+        // }
+        // map3 = vEngine.GetRandomMap();
+        // while(map3 == map2 || map3 == map1)
+        // {
+        //     map3 = vEngine.GetRandomMap();
+        // }
+        //
+        // vServer.SendPublicChat("Vote for the next map:", 2);
+        // vServer.SendPublicChat("1: " + map1.Name + " 2: " + map2.Name + " 3: " + map3.Name, 2);
+        // inVoteTime = true;
+        // StartCoroutine(VoteDelay());
     }
 
     private void Update()
     {
-        if(!inStartTime && !inVoteTime)
+        if (!inStartTime && !inVoteTime)
         {
             if (RoundTime > 0)
             {
@@ -88,26 +88,22 @@ public class ServerGameManager : MonoBehaviour
                 vServer.SendPublicChat("Humans win!", 2);
                 RecordWinners();
                 EndRound();
-
             }
         }
-
     }
 
     void RecordWinners()
     {
-        foreach(PlayerInformation p in pMananger.PlayerDictionary.Values)
+        foreach (PlayerInformation p in pMananger.PlayerDictionary.Values)
         {
             //If this player was human at the end of the round
-            if(p.stateTag == 0)
+            if (p.stateTag == 0)
             {
                 p.roundsWon += 1;
             }
         }
     }
 
-
-    
 
     public void SubtractTime()
     {
@@ -117,7 +113,7 @@ public class ServerGameManager : MonoBehaviour
 
     public void CheckZombieWin()
     {
-        if(pMananger.PlayerDictionary.Count > 0)
+        if (pMananger.PlayerDictionary.Count > 0)
         {
             foreach (PlayerInformation pInfo in pMananger.PlayerDictionary.Values)
             {
@@ -127,13 +123,11 @@ public class ServerGameManager : MonoBehaviour
                     return;
                 }
             }
-            
+
             //if no players were human then zombies win
             vServer.SendPublicChat("Zombies win!", 2);
             EndRound();
         }
-  
-       
     }
 
     public void CheckNoZombies()
@@ -155,22 +149,21 @@ public class ServerGameManager : MonoBehaviour
             vServer.SendPublicChat("The Infection restarts with " + vServer.playerNames[newZombie] + "!", 2);
             CheckZombieWin();
         }
-
     }
 
     public bool AddVote(string mapName)
     {
-        if(mapName == map1.Name || mapName == "1")
+        if (mapName == map1.Name || mapName == "1")
         {
             map1Votes++;
             return true;
         }
-        else if(mapName == map2.Name || mapName == "2")
+        else if (mapName == map2.Name || mapName == "2")
         {
             map2Votes++;
             return true;
         }
-        else if(mapName == map3.Name || mapName == "3")
+        else if (mapName == map3.Name || mapName == "3")
         {
             map3Votes++;
             return true;
@@ -184,13 +177,13 @@ public class ServerGameManager : MonoBehaviour
     IEnumerator StartDelay()
     {
         yield return new WaitForSeconds(20);
-     
 
-        if(pMananger.PlayerDictionary.Count > 1)
+
+        if (pMananger.PlayerDictionary.Count > 1)
         {
             inStartTime = false;
             ushort firstZombie = vServer.GetRandomPlayer();
-            
+
             //get random player returns 1000 if no players are connected
             if (firstZombie != 1000)
             {
@@ -202,8 +195,6 @@ public class ServerGameManager : MonoBehaviour
         {
             StartCoroutine(StartDelay());
         }
-     
-        
     }
 
     IEnumerator VoteDelay()
@@ -212,29 +203,30 @@ public class ServerGameManager : MonoBehaviour
         inVoteTime = false;
 
         MapData nextMap;
-        if (map1Votes >= map2Votes)
-        {
-            if (map1Votes >= map3Votes)
-            {
-                nextMap = map1;
-            }
-            else
-            {
-                nextMap = map3;
-            }
-        }
-        else
-        {
-            if(map3Votes >= map2Votes)
-            {
-                nextMap = map3;
-            }
-            else
-            {
-                nextMap = map2;
-            }
-        }
-      
+        nextMap = map1;
+        // if (map1Votes >= map2Votes)
+        // {
+        //     if (map1Votes >= map3Votes)
+        //     {
+        //         nextMap = map1;
+        //     }
+        //     else
+        //     {
+        //         nextMap = map3;
+        //     }
+        // }
+        // else
+        // {
+        //     if(map3Votes >= map2Votes)
+        //     {
+        //         nextMap = map3;
+        //     }
+        //     else
+        //     {
+        //         nextMap = map2;
+        //     }
+        // }
+
         StartRound(nextMap);
     }
 }

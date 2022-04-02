@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 public class BasicGroundedMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody playerRb, PlayerInputs currentInputs, List<ContactPoint> contactPoints)
+    public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
         Vector3 horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
 
-        playerRb.velocity = horizontalVelocity + playerRb.velocity.y * Vector3.up;
+
+        return horizontalVelocity;
     }
 
     public void Enter()
@@ -19,18 +22,29 @@ public class BasicGroundedMoveState : IMoveState
     {
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, PlayerInputs playerInputs, List<ContactPoint> contactPoints, World world)
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
+        IWorld world, Vector3 lastVelocity)
     {
+        if (PlayerUtils.CheckWater(playerRb, contactPoints, world))
+        {
+            if (playerInputs.Jump)
+            {
+                return MoveState.waterSwimming;
+            }
+
+            return MoveState.waterFalling;
+        }
+
         if (PlayerUtils.CheckGrounded(contactPoints))
         {
             if (playerInputs.Jump)
             {
-                return MoveState.basicJump; 
+                return MoveState.basicJump;
             }
 
             if (playerInputs.Slide)
             {
-                if (playerRb.velocity.magnitude > PlayerStats.crawlSpeed)
+                if (lastVelocity.magnitude > PlayerStats.crawlSpeed)
                 {
                     return MoveState.basicSliding;
                 }

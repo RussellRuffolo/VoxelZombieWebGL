@@ -2,7 +2,7 @@ from fastapi_users import models
 
 
 class User(models.BaseUser, models.BaseOAuthAccountMixin):
-    pass
+    username: str
 
 
 class UserCreate(models.BaseUserCreate):

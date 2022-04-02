@@ -5,32 +5,12 @@ using UnityEngine;
 
 namespace Client
 {
-    public enum MoveState
-    {
-        basicGrounded,
-        basicAir,
-        postJump,
-        waterSwimming,
-        lavaSwimming,
-        basicJump,
-        waterJump,
-        basicSliding,
-        basicCrawling,
-        slideAir,
-        wallJump,
-        groundedHalfBlock,
-        aerialHalfBlock,
-        crouchJump, 
-        wallHang,
-        postWallJump
-    }
-
     public class ClientPositionTracker : MonoBehaviour
     {
         private List<ContactPoint> allCPs = new List<ContactPoint>();
 
 
-        private World world;
+        private IWorld world;
        // private ClientPlayerController pController;
 
         private ushort lastMoveState = 0;
@@ -57,7 +37,7 @@ namespace Client
 
         void Awake()
         {
-            world = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>().world;
+            world = GameObject.FindGameObjectWithTag("Network").GetComponent<SinglePlayerVoxelEngine>().World;
          //   pController = GetComponent<ClientPlayerController>();
 
             colliderHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
@@ -78,7 +58,7 @@ namespace Client
             Vector3 headPosition = new Vector3(transform.position.x, transform.position.y - .08f + (1.76f / 2),
                 transform.position.z);
 
-            ushort jumpTag = world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y + .2f),
+            ushort jumpTag = (ushort)world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y + .2f),
                 Mathf.FloorToInt(feetPosition.z)];
             if (jumpTag == 9 || jumpTag == 11)
             {

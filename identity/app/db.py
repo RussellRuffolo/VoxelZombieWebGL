@@ -11,8 +11,8 @@ from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
 from app.models import UserDB
+from app.settings import settings
 
-DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 Base: DeclarativeMeta = declarative_base()
 
 
@@ -24,7 +24,7 @@ class OAuthAccountTable(SQLAlchemyBaseOAuthAccountTable, Base):
     pass
 
 
-engine = create_async_engine(DATABASE_URL)
+engine = create_async_engine(settings.DB_URI)
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 

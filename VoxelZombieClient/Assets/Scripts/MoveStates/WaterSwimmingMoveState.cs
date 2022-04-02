@@ -4,41 +4,22 @@ using UnityEngine;
 
 public class WaterSwimmingMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
+    public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
-        float yVel = playerRb.velocity.y;
-        if (currentInputs.Jump)
+        float yVel = lastVelocity.y;
+
+        if (yVel >= PlayerStats.verticalWaterMaxSpeed)
         {
-            if (yVel >= PlayerStats.verticalWaterMaxSpeed)
-            {
-                yVel = PlayerStats.verticalWaterMaxSpeed;
-            }
-            else
-            {
-                yVel += PlayerStats.verticalWaterAcceleration * Time.fixedDeltaTime;
-            }
+            yVel = PlayerStats.verticalWaterMaxSpeed;
         }
         else
         {
-            if (yVel < -PlayerStats.verticalWaterMaxSpeed)
-            {
-                yVel += PlayerStats.verticalWaterAcceleration * Time.fixedDeltaTime;
-                if (yVel > -PlayerStats.verticalWaterMaxSpeed)
-                {
-                    yVel = -PlayerStats.verticalWaterMaxSpeed;
-                }
-            }
-            else
-            {
-                yVel -= PlayerStats.verticalWaterAcceleration * Time.fixedDeltaTime;
-                if (yVel < -PlayerStats.verticalWaterMaxSpeed)
-                {
-                    yVel = -PlayerStats.verticalWaterMaxSpeed;
-                }
-            }
+            yVel += PlayerStats.verticalWaterAcceleration * Time.fixedDeltaTime;
         }
 
-        playerRb.velocity = currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
+
+       return currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
     }
 
     public void Enter()
@@ -49,8 +30,30 @@ public class WaterSwimmingMoveState : IMoveState
     {
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints, World world)
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
+        IWorld world, Vector3 lastVelocity)
     {
-        throw new System.NotImplementedException();
+        if (PlayerUtils.CheckWater(playerRb, contactPoints, world))
+        {
+            if (playerInputs.Jump)
+            {
+                return MoveState.waterSwimming;
+            }
+
+            return MoveState.waterFalling;
+        }
+
+        //walk out of water onto land
+        if (PlayerUtils.CheckGrounded(contactPoints))
+        {
+            return MoveState.basicGrounded;
+        }
+
+        if (playerInputs.Jump)
+        {
+            return MoveState.waterJump;
+        }
+
+        return MoveState.basicAir;
     }
 }

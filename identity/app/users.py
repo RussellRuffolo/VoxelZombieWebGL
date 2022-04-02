@@ -14,26 +14,18 @@ from httpx_oauth.clients.google import GoogleOAuth2
 
 from app.db import get_user_db
 from app.models import User, UserCreate, UserDB, UserUpdate
-
-SECRET = "SECRET"
-
-with open("secrets.json", "r") as f:
-    s = json.load(f)
-
+from app.settings import settings
 
 
 google_oauth_client = GoogleOAuth2(
-    s["web"]["client_id"],
-    s["web"]["client_secret"]
-    # os.getenv("GOOGLE_OAUTH_CLIENT_ID", ""),
-    # os.getenv("GOOGLE_OAUTH_CLIENT_SECRET", ""),
+    settings.GOOGLE_OAUTH_CLIENT_ID, settings.GOOGLE_OAUTH_CLIENT_SECRET
 )
 
 
 class UserManager(BaseUserManager[UserCreate, UserDB]):
     user_db_model = UserDB
-    reset_password_token_secret = SECRET
-    verification_token_secret = SECRET
+    reset_password_token_secret = settings.SECRET_KEY
+    verification_token_secret = settings.SECRET_KEY
 
     async def on_after_register(self, user: UserDB, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
@@ -57,7 +49,7 @@ bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=SECRET, lifetime_seconds=3600)
+    return JWTStrategy(secret=settings.SECRET_KEY, lifetime_seconds=3600)
 
 
 auth_backend = AuthenticationBackend(

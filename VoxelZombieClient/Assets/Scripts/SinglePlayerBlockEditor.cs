@@ -5,17 +5,17 @@ namespace Client
 {
     public class SinglePlayerBlockEditor : BaseBlockEditor
     {
-        private World world;
+        private IWorld world;
 
-        private ClientVoxelEngine vEngine;
+        private IVoxelEngine vEngine;
 
         List<ChunkID> dirtiedChunks = new List<ChunkID>();
 
 
         protected override void OnStart()
         {
-            vEngine = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>();
-            world = vEngine.world;
+            vEngine = GameObject.FindGameObjectWithTag("Network").GetComponent<IVoxelEngine>();
+            world = vEngine.World;
         }
 
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)

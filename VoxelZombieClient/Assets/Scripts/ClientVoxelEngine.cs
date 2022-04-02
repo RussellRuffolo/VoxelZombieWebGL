@@ -9,18 +9,35 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using UnityEngine.Networking;
 
+
+public interface IVoxelEngine
+{
+    IWorld World { get; }
+    int Length { get; set; }
+    
+    int Width { get; set; }
+    
+    int Height { get; set; }
+    List<Material> materialList { get; }
+}
+
+
 public delegate void MapLoadedDelegate(Vector3 spawnPosition);
 
-public class ClientVoxelEngine : MonoBehaviour
+public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 {
-    public World world = new World();
-    public List<Material> materialList;
+    public IWorld World { get; } = new World();
+    
+    public List<Material> materialList { get; }
 
     public BoundaryController bController;
 
-    public int Length, Width, Height;
+    public int Length { get; set; }
+    public int Width{ get; set; } 
+    public int Height { get; set; }
 
     public MapLoadedDelegate MapLoadedDelegate;
+
     private void Awake()
     {
         foreach (Material mat in materialList)
@@ -31,7 +48,7 @@ public class ClientVoxelEngine : MonoBehaviour
 
     public void LoadMap(string mapName)
     {
-        if (world.Chunks.Count != 0)
+        if (World.Chunks.Count != 0)
         {
             UnloadMap();
         }
@@ -39,18 +56,15 @@ public class ClientVoxelEngine : MonoBehaviour
 
         string url = Application.streamingAssetsPath + "/" + mapName + ".bin";
 
-//        Debug.LogError("Url is: " + url);
 
         StartCoroutine(GetMapData(url));
     }
 
     private void ApplyMapData(byte[] mapBytes)
     {
-        Debug.LogError("Length: " + Length + " Width: " + Width + " Height: " + Height);
         bController.SetMapBoundaries(Length, Width, Height);
-        
-        Debug.LogError("Set Map Boundaries");
-        
+
+
         string namePrefix = "Chunk ";
 
         for (int z = 0; z < Width / 16; z++)
@@ -65,10 +79,10 @@ public class ClientVoxelEngine : MonoBehaviour
 
 
                     var chunk = newChunkObj.AddComponent<Chunk>();
-                    chunk.world = world;
+                    chunk.world = World;
                     chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
                     ChunkID newID = new ChunkID(x, y, z);
-                    world.Chunks.Add(newID, chunk);
+                    World.Chunks.Add(newID, chunk);
                     chunk.ID = newID;
 
                     chunk.GetComponent<Chunk>().init();
@@ -76,8 +90,7 @@ public class ClientVoxelEngine : MonoBehaviour
             }
         }
 
-        Debug.LogError("Loaded Chunks");
-        
+
         int blockCount = 0;
         for (int y = 0; y < Height; y++)
         {
@@ -85,15 +98,11 @@ public class ClientVoxelEngine : MonoBehaviour
             {
                 for (int z = 0; z < Width; z++)
                 {
-                    world[x, y, z] = mapBytes[blockCount];
+                    World[x, y, z] = mapBytes[blockCount];
                     blockCount++;
                 }
             }
         }
-
-        Debug.LogError("Set Blocks");
-        
-      //  MapLoadedDelegate(new Vector3(25, 129.5f, 30));
     }
 
     private IEnumerator GetMapData(string url)
@@ -118,11 +127,11 @@ public class ClientVoxelEngine : MonoBehaviour
 
     public void UnloadMap()
     {
-        foreach (Chunk toDestroy in world.Chunks.Values)
+        foreach (Chunk toDestroy in World.Chunks.Values)
         {
             Destroy(toDestroy.gameObject);
         }
 
-        world.Chunks.Clear();
+        World.Chunks.Clear();
     }
 }
