@@ -40,6 +40,8 @@ namespace Client
         List<ChunkID> dirtiedChunks = new List<ChunkID>();
 
 
+        private ClientPlayerController ClientPlayerController;
+        
         [DllImport("__Internal")]
         private static extern void SendReliableMessage(string message);
 
@@ -83,9 +85,8 @@ namespace Client
             int clientTickNumber = reader.ReadInt();
 
             Vector3 velocity = new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat());
-
-            localSimTransform.GetComponent<ClientPlayerController>()
-                .ClientPrediction(serverPosition, clientTickNumber, velocity);
+            ClientPlayerController.ClientPrediction(serverPosition, clientTickNumber, velocity);
+  
         }
 
 
@@ -132,6 +133,8 @@ namespace Client
                         cameraController;
                     LocalPlayer.GetComponent<ClientBlockEditor>().blockBreakParticleSystem =
                         Instantiate(BreakBlockParticleSystem);
+
+                    ClientPlayerController = LocalPlayerSim.GetComponent<ClientPlayerController>(); 
                     if (StateTag == 0)
                     {
                         LocalPlayer.GetComponent<MeshRenderer>().material.color = Color.white;
@@ -279,7 +282,7 @@ namespace Client
                 ushort y = reader.ReadUShort();
                 ushort z = reader.ReadUShort();
 
-                ushort blockTag = reader.ReadUShort();
+                byte blockTag = (byte)reader.ReadUShort();
                 world[x, y, z] = blockTag;
 
                 dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, z));

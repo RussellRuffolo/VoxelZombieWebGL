@@ -10,7 +10,7 @@ namespace Client
         private IWorld currentWorld;
         private IVoxelEngine vEngine;
 
-        private ulong placeBlockTag = 1;
+        private byte placeBlockTag = 1;
 
         public LineRenderer blockOutline;
 
@@ -395,7 +395,7 @@ namespace Client
 
                     if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
                     {
-                        OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, (ushort) placeBlockTag);
+                        OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, placeBlockTag);
                     }
                 }
             }
@@ -409,12 +409,12 @@ namespace Client
 
                 if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
                 {
-                    OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, (ushort) placeBlockTag);
+                    OnPlaceBlock((ushort) x, (ushort) y, (ushort) z,  placeBlockTag);
                 }
             }
         }
 
-        protected abstract void OnPlaceBlock(ushort x, ushort y, ushort z, ushort blockTag);
+        protected abstract void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag);
 
         void SelectBlock()
         {
@@ -426,7 +426,7 @@ namespace Client
 
                 if (x < vEngine.Length && y < vEngine.Height && z < vEngine.Width)
                 {
-                    ulong selectTag = currentWorld[x, y, z];
+                    byte selectTag = currentWorld[x, y, z];
 
                     if (selectTag != 7 && selectTag != 0 && selectTag != 9 && selectTag != 11)
                     {

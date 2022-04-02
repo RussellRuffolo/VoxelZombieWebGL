@@ -24,7 +24,7 @@ namespace Client
             CheckChunks(x, y, z);
         }
 
-        protected override void OnPlaceBlock(ushort x, ushort y, ushort z, ushort blockTag)
+        protected override void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag)
         {
             world[x, y, z] = blockTag;
             CheckChunks(x, y, z);

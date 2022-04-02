@@ -9,7 +9,7 @@ using System;
 public class Chunk : MonoBehaviour, IChunk
 {
     public IWorld world;
-    private UInt16[] voxels = new ushort[16 * 16 * 16];
+    private byte[] voxels = new byte[16 * 16 * 16];
 
 
     private MeshFilter meshFilter;
@@ -61,193 +61,11 @@ public class Chunk : MonoBehaviour, IChunk
 
     public bool dirty { get; set; } = true;
 
-    private Vector3[] _cubeVertices = new[]
-    {
-        new Vector3(0, 0, 0),
-        new Vector3(1, 0, 0),
-        new Vector3(1, 1, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(0, 1, 1),
-        new Vector3(1, 1, 1),
-        new Vector3(1, 0, 1),
-        new Vector3(0, 0, 1),
-    };
-
-    private Vector3[] _frontVertices = new[]
-    {
-        new Vector3(0, 0, 0),
-        new Vector3(1, 0, 0),
-        new Vector3(1, 1, 0),
-        new Vector3(0, 1, 0),
-    };
-
-    private Vector3[] _frontHalfVertices = new[]
-    {
-        new Vector3(0, 0, 0),
-        new Vector3(1, 0, 0),
-        new Vector3(1, 0.5f, 0),
-        new Vector3(0, 0.5f, 0),
-    };
-
-    private int[] _frontTriangles = new[]
-    {
-        0, 2, 1,
-        0, 3, 2
-    };
-
-    private Vector3[] _topVertices = new[]
-    {
-        new Vector3(1, 1, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(0, 1, 1),
-        new Vector3(1, 1, 1),
-    };
-
-    private Vector3[] _topHalfVertices = new[]
-    {
-        new Vector3(1, .5f, 0),
-        new Vector3(0, .5f, 0),
-        new Vector3(0, .5f, 1),
-        new Vector3(1, .5f, 1),
-    };
-
-    private int[] _topTriangles = new[]
-    {
-        0, 1, 2,
-        0, 2, 3
-    };
-
-    private Vector3[] _rightVertices = new[]
-    {
-        new Vector3(1, 0, 0),
-        new Vector3(1, 1, 0),
-        new Vector3(1, 1, 1),
-        new Vector3(1, 0, 1)
-    };
-
-    private Vector3[] _rightHalfVertices = new[]
-    {
-        new Vector3(1, 0, 0),
-        new Vector3(1, .5f, 0),
-        new Vector3(1, .5f, 1),
-        new Vector3(1, 0, 1)
-    };
-
-    private int[] _rightTriangles = new[]
-    {
-        0, 1, 2,
-        0, 2, 3
-    };
-
-    private Vector3[] _leftVertices = new[]
-    {
-        new Vector3(0, 0, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(0, 1, 1),
-        new Vector3(0, 0, 1)
-    };
-
-    private Vector3[] _leftHalfVertices = new[]
-    {
-        new Vector3(0, 0, 0),
-        new Vector3(0, .5f, 0),
-        new Vector3(0, .5f, 1),
-        new Vector3(0, 0, 1)
-    };
-
-    private int[] _leftTriangles = new[]
-    {
-        0, 3, 2,
-        0, 2, 1
-    };
-
-    private Vector3[] _backVertices = new[]
-    {
-        new Vector3(0, 1, 1),
-        new Vector3(1, 1, 1),
-        new Vector3(1, 0, 1),
-        new Vector3(0, 0, 1),
-    };
-
-    private Vector3[] _backHalfVertices = new[]
-    {
-        new Vector3(0, .5f, 1),
-        new Vector3(1, .5f, 1),
-        new Vector3(1, 0, 1),
-        new Vector3(0, 0, 1),
-    };
-
-    private int[] _backTriangles = new[]
-    {
-        2, 1, 0,
-        2, 0, 3
-    };
-
-    private Vector3[] _bottomVertices = new[]
-    {
-        new Vector3(0, 0, 0),
-        new Vector3(1, 0, 0),
-        new Vector3(1, 0, 1),
-        new Vector3(0, 0, 1)
-    };
-
-    private int[] _bottomTriangles = new[]
-    {
-        0, 2, 3,
-        0, 1, 2
-    };
-
-    private int[] _cubeTriangles = new[]
-    {
-        // Front
-        0, 2, 1,
-        0, 3, 2,
-        // Top
-        2, 3, 4,
-        2, 4, 5,
-        // Right
-        1, 2, 5,
-        1, 5, 6,
-        // Left
-        0, 7, 4,
-        0, 4, 3,
-        // Back
-        5, 4, 7,
-        5, 7, 6,
-        // Bottom
-        0, 6, 7,
-        0, 1, 6
-    };
-
-    private static Vector3[] _cubeNormals = new[]
-    {
-        Vector3.up, Vector3.up, Vector3.up,
-        Vector3.up, Vector3.up, Vector3.up,
-        Vector3.up, Vector3.up
-    };
-
-    private static Vector3[] _faceNormals = new[]
-    {
-        Vector3.up, Vector3.up, Vector3.up,
-        Vector3.up
-    };
-
-    public UInt16 this[int x, int y, int z]
+    public byte this[int x, int y, int z]
     {
         get { return voxels[x * 16 * 16 + y * 16 + z]; }
-        set { voxels[x * 16 * 16 + y * 16 + z] = (UInt16) value; }
+        set { voxels[x * 16 * 16 + y * 16 + z] = value; }
     }
-
-    private List<int> _transparentBlockIDs = new List<int>
-    {
-        0, 9, 11, 18,
-        20, 37, 38, 39, 40, 44, 57, 61
-    };
-
-    private List<int> _modeledBlockIDs = new List<int>
-    {
-        37, 38, 39, 40, 57, 61
-    };
 
     public void init()
     {
@@ -321,6 +139,17 @@ public class Chunk : MonoBehaviour, IChunk
             RenderToMesh();
     }
 
+
+    private Vector3 pos;
+
+    private int verticesPos;
+    private int waterVertPos;
+    private int lavaVertPos;
+
+    private byte voxelType;
+
+    private byte blockCheck;
+
     public void RenderToMesh()
     {
         vertices.Clear();
@@ -350,11 +179,11 @@ public class Chunk : MonoBehaviour, IChunk
             {
                 for (var z = 0; z < 16; z++)
                 {
-                    var pos = new Vector3(x, y, z);
-                    var verticesPos = vertices.Count;
-                    var waterVertPos = waterVertices.Count;
-                    var lavaVertPos = lavaVertices.Count;
-                    ushort voxelType = (ushort) this[x, y, z];
+                    pos = new Vector3(x, y, z);
+                    verticesPos = vertices.Count;
+                    waterVertPos = waterVertices.Count;
+                    lavaVertPos = lavaVertices.Count;
+                    voxelType = this[x, y, z];
                     // If it is air we ignore this block
                     if (voxelType == 0)
                     {
@@ -367,7 +196,7 @@ public class Chunk : MonoBehaviour, IChunk
                         continue;
                     }
 
-                    if (_modeledBlockIDs.Contains(voxelType))
+                    if (ChunkInfo._modeledBlockIDs.Contains(voxelType))
                     {
                         if (!modeledObjects.ContainsKey(pos))
                         {
@@ -416,60 +245,54 @@ public class Chunk : MonoBehaviour, IChunk
                     }
 
                     //RENDER FRONT
-                    int front;
+
                     if (z == 0)
                     {
                         ChunkID frontID = new ChunkID(ID.X, ID.Y, ID.Z - 1);
                         if (world.Chunks.ContainsKey(frontID))
                         {
-                            front = (ushort) world[ID.X * 16 + x, ID.Y * 16 + y, ID.Z * 16 + z - 1];
+                            blockCheck = world[ID.X * 16 + x, ID.Y * 16 + y, ID.Z * 16 + z - 1];
                         }
                         else
                         {
-                            front = 0;
+                            blockCheck = 0;
                         }
                     }
                     else
                     {
-                        front = (ushort) this[x, y, z - 1];
+                        blockCheck = this[x, y, z - 1];
                     }
 
-                    if (_transparentBlockIDs.Contains(front) && front != voxelType)
+                    if (ChunkInfo._transparentBlockIDs.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         if (voxelType == 9)
                         {
-                            foreach (var vert in _frontVertices)
+                            foreach (var vert in ChunkInfo._frontVertices)
                                 waterVertices.Add(pos + vert);
 
-                            waterUVs.Add(new Vector2(0, 0));
-                            waterUVs.Add(new Vector2(1, 0));
+                            ChunkInfo.AddFrontUVs(waterUVs);
 
-                            waterUVs.Add(new Vector2(1, 1));
-                            waterUVs.Add(new Vector2(0, 1));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 waterNormals.Add(normal);
 
-                            foreach (var tri in _frontTriangles)
+                            foreach (var tri in ChunkInfo._frontTriangles)
                             {
                                 waterTriangles.Add(waterVertPos + tri);
                             }
                         }
                         else if (voxelType == 11)
                         {
-                            foreach (var vert in _frontVertices)
+                            foreach (var vert in ChunkInfo._frontVertices)
                                 lavaVertices.Add(pos + vert);
 
-                            lavaUVs.Add(new Vector2(0, 0));
-                            lavaUVs.Add(new Vector2(1, 0));
+                            ChunkInfo.AddFrontUVs(lavaUVs);
 
-                            lavaUVs.Add(new Vector2(1, 1));
-                            lavaUVs.Add(new Vector2(0, 1));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 lavaNormals.Add(normal);
 
-                            foreach (var tri in _frontTriangles)
+                            foreach (var tri in ChunkInfo._frontTriangles)
                             {
                                 lavaTriangles.Add(lavaVertPos + tri);
                             }
@@ -478,26 +301,21 @@ public class Chunk : MonoBehaviour, IChunk
                         {
                             if (voxelType == 44)
                             {
-                                foreach (var vert in _frontHalfVertices)
+                                foreach (var vert in ChunkInfo._frontHalfVertices)
                                     vertices.Add(pos + vert);
                             }
                             else
                             {
-                                foreach (var vert in _frontVertices)
+                                foreach (var vert in ChunkInfo._frontVertices)
                                     vertices.Add(pos + vert);
                             }
 
+                            ChunkInfo.AddFrontUVs(uvList);
 
-                            uvList.Add(new Vector2(0, 0));
-                            uvList.Add(new Vector2(1, 0));
-
-                            uvList.Add(new Vector2(1, 1));
-                            uvList.Add(new Vector2(0, 1));
-
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 normals.Add(normal);
 
-                            AddTriangles(voxelType, verticesPos, _frontTriangles);
+                            AddTriangles(voxelType, verticesPos, ChunkInfo._frontTriangles);
                         }
                     }
 
@@ -511,61 +329,55 @@ public class Chunk : MonoBehaviour, IChunk
                     }
 
                     //RENDER TOP
-                    int top;
+
                     if (y == 15)
                     {
                         ChunkID topID = new ChunkID(ID.X, ID.Y + 1, ID.Z);
                         if (world.Chunks.ContainsKey(topID))
                         {
-                            top = (ushort) world[ID.X * 16 + x, ID.Y * 16 + y + 1, ID.Z * 16 + z];
+                            blockCheck = world[ID.X * 16 + x, ID.Y * 16 + y + 1, ID.Z * 16 + z];
                         }
                         else
                         {
-                            top = 0;
+                            blockCheck = 0;
                         }
                     }
                     else
                     {
-                        top = (ushort) this[x, y + 1, z];
+                        blockCheck = this[x, y + 1, z];
                     }
 
-                    if (top == 44)
-                        top = 0;
-                    if ((_transparentBlockIDs.Contains(top) && top != voxelType) || voxelType == 44)
+                    if (blockCheck == 44)
+                        blockCheck = 0;
+                    if ((ChunkInfo._transparentBlockIDs.Contains(blockCheck) && blockCheck != voxelType) ||
+                        voxelType == 44)
                     {
                         if (voxelType == 9)
                         {
-                            foreach (var vert in _topVertices)
+                            foreach (var vert in ChunkInfo._topVertices)
                                 waterVertices.Add(pos + vert);
 
+                            ChunkInfo.AddTopUVs(waterUVs);
 
-                            waterUVs.Add(new Vector2(0, 0));
-                            waterUVs.Add(new Vector2(0, 1));
-                            waterUVs.Add(new Vector2(1, 1));
-                            waterUVs.Add(new Vector2(1, 0));
-
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 waterNormals.Add(normal);
 
-                            foreach (var tri in _topTriangles)
+                            foreach (var tri in ChunkInfo._topTriangles)
                             {
                                 waterTriangles.Add(waterVertPos + tri);
                             }
                         }
                         else if (voxelType == 11)
                         {
-                            foreach (var vert in _topVertices)
+                            foreach (var vert in ChunkInfo._topVertices)
                                 lavaVertices.Add(pos + vert);
+                            ChunkInfo.AddTopUVs(lavaUVs);
 
-                            lavaUVs.Add(new Vector2(0, 0));
-                            lavaUVs.Add(new Vector2(0, 1));
-                            lavaUVs.Add(new Vector2(1, 1));
-                            lavaUVs.Add(new Vector2(1, 0));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 lavaNormals.Add(normal);
 
-                            foreach (var tri in _topTriangles)
+                            foreach (var tri in ChunkInfo._topTriangles)
                             {
                                 lavaTriangles.Add(lavaVertPos + tri);
                             }
@@ -574,24 +386,22 @@ public class Chunk : MonoBehaviour, IChunk
                         {
                             if (voxelType == 44)
                             {
-                                foreach (var vert in _topHalfVertices)
+                                foreach (var vert in ChunkInfo._topHalfVertices)
                                     vertices.Add(pos + vert);
                             }
                             else
                             {
-                                foreach (var vert in _topVertices)
+                                foreach (var vert in ChunkInfo._topVertices)
                                     vertices.Add(pos + vert);
                             }
 
-                            uvList.Add(new Vector2(0, 0));
-                            uvList.Add(new Vector2(0, 1));
-                            uvList.Add(new Vector2(1, 1));
-                            uvList.Add(new Vector2(1, 0));
+                            ChunkInfo.AddTopUVs(uvList);
 
-                            foreach (var normal in _faceNormals)
+
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 normals.Add(normal);
 
-                            AddTriangles(voxelType, verticesPos, _topTriangles);
+                            AddTriangles(voxelType, verticesPos, ChunkInfo._topTriangles);
                         }
                     }
 
@@ -601,58 +411,52 @@ public class Chunk : MonoBehaviour, IChunk
 
 
                     //RENDER RIGHT
-                    int right;
+
                     if (x == 15)
                     {
                         ChunkID rightID = new ChunkID(ID.X + 1, ID.Y, ID.Z);
                         if (world.Chunks.ContainsKey(rightID))
                         {
-                            right = (ushort) world[ID.X * 16 + x + 1, ID.Y * 16 + y, ID.Z * 16 + z];
+                            blockCheck = world[ID.X * 16 + x + 1, ID.Y * 16 + y, ID.Z * 16 + z];
                         }
                         else
                         {
-                            right = 0;
+                            blockCheck = 0;
                         }
                     }
                     else
                     {
-                        right = (ushort) this[x + 1, y, z];
+                        blockCheck = this[x + 1, y, z];
                     }
 
-                    if (_transparentBlockIDs.Contains(right) && right != voxelType)
+                    if (ChunkInfo._transparentBlockIDs.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         if (voxelType == 9)
                         {
-                            foreach (var vert in _rightVertices)
+                            foreach (var vert in ChunkInfo._rightVertices)
                                 waterVertices.Add(pos + vert);
+                            ChunkInfo.AddRightUVs(waterUVs);
 
-                            waterUVs.Add(new Vector2(0, 0));
-                            waterUVs.Add(new Vector2(0, 1));
-                            waterUVs.Add(new Vector2(1, 1));
-                            waterUVs.Add(new Vector2(1, 0));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 waterNormals.Add(normal);
 
-                            foreach (var tri in _rightTriangles)
+                            foreach (var tri in ChunkInfo._rightTriangles)
                             {
                                 waterTriangles.Add(waterVertPos + tri);
                             }
                         }
                         else if (voxelType == 11)
                         {
-                            foreach (var vert in _rightVertices)
+                            foreach (var vert in ChunkInfo._rightVertices)
                                 lavaVertices.Add(pos + vert);
+                            ChunkInfo.AddRightUVs(lavaUVs);
 
-                            lavaUVs.Add(new Vector2(0, 0));
-                            lavaUVs.Add(new Vector2(0, 1));
-                            lavaUVs.Add(new Vector2(1, 1));
-                            lavaUVs.Add(new Vector2(1, 0));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 lavaNormals.Add(normal);
 
-                            foreach (var tri in _rightTriangles)
+                            foreach (var tri in ChunkInfo._rightTriangles)
                             {
                                 lavaTriangles.Add(lavaVertPos + tri);
                             }
@@ -661,22 +465,20 @@ public class Chunk : MonoBehaviour, IChunk
                         {
                             if (voxelType == 44)
                             {
-                                foreach (var vert in _rightHalfVertices)
+                                foreach (var vert in ChunkInfo._rightHalfVertices)
                                     vertices.Add(pos + vert);
                             }
                             else
                             {
-                                foreach (var vert in _rightVertices)
+                                foreach (var vert in ChunkInfo._rightVertices)
                                     vertices.Add(pos + vert);
                             }
 
-                            uvList.Add(new Vector2(0, 0));
-                            uvList.Add(new Vector2(0, 1));
-                            uvList.Add(new Vector2(1, 1));
-                            uvList.Add(new Vector2(1, 0));
-                            AddTriangles(voxelType, verticesPos, _rightTriangles);
+                            ChunkInfo.AddRightUVs(uvList);
 
-                            foreach (var normal in _faceNormals)
+                            AddTriangles(voxelType, verticesPos, ChunkInfo._rightTriangles);
+
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 normals.Add(normal);
                         }
                     }
@@ -687,58 +489,51 @@ public class Chunk : MonoBehaviour, IChunk
 
 
                     //RENDER LEFT
-                    int left;
                     if (x == 0)
                     {
                         ChunkID leftID = new ChunkID(ID.X - 1, ID.Y, ID.Z);
                         if (world.Chunks.ContainsKey(leftID))
                         {
-                            left = (ushort) world[ID.X * 16 + x - 1, ID.Y * 16 + y, ID.Z * 16 + z];
+                            blockCheck = world[ID.X * 16 + x - 1, ID.Y * 16 + y, ID.Z * 16 + z];
                         }
                         else
                         {
-                            left = 0;
+                            blockCheck = 0;
                         }
                     }
                     else
                     {
-                        left = (ushort) this[x - 1, y, z];
+                        blockCheck = this[x - 1, y, z];
                     }
 
-                    if (_transparentBlockIDs.Contains(left) && left != voxelType)
+                    if (ChunkInfo._transparentBlockIDs.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         if (voxelType == 9)
                         {
-                            foreach (var vert in _leftVertices)
+                            foreach (var vert in ChunkInfo._leftVertices)
                                 waterVertices.Add(pos + vert);
+                            ChunkInfo.AddLeftUVs(waterUVs);
 
-                            waterUVs.Add(new Vector2(0, 0));
-                            waterUVs.Add(new Vector2(0, 1));
-                            waterUVs.Add(new Vector2(1, 1));
-                            waterUVs.Add(new Vector2(1, 0));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 waterNormals.Add(normal);
 
-                            foreach (var tri in _leftTriangles)
+                            foreach (var tri in ChunkInfo._leftTriangles)
                             {
                                 waterTriangles.Add(waterVertPos + tri);
                             }
                         }
                         else if (voxelType == 11)
                         {
-                            foreach (var vert in _leftVertices)
+                            foreach (var vert in ChunkInfo._leftVertices)
                                 lavaVertices.Add(pos + vert);
+                            ChunkInfo.AddLeftUVs(lavaUVs);
 
-                            lavaUVs.Add(new Vector2(0, 0));
-                            lavaUVs.Add(new Vector2(0, 1));
-                            lavaUVs.Add(new Vector2(1, 1));
-                            lavaUVs.Add(new Vector2(1, 0));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 lavaNormals.Add(normal);
 
-                            foreach (var tri in _leftTriangles)
+                            foreach (var tri in ChunkInfo._leftTriangles)
                             {
                                 lavaTriangles.Add(lavaVertPos + tri);
                             }
@@ -747,23 +542,21 @@ public class Chunk : MonoBehaviour, IChunk
                         {
                             if (voxelType == 44)
                             {
-                                foreach (var vert in _leftHalfVertices)
+                                foreach (var vert in ChunkInfo._leftHalfVertices)
                                     vertices.Add(pos + vert);
                             }
                             else
                             {
-                                foreach (var vert in _leftVertices)
+                                foreach (var vert in ChunkInfo._leftVertices)
                                     vertices.Add(pos + vert);
                             }
 
 
-                            uvList.Add(new Vector2(0, 0));
-                            uvList.Add(new Vector2(0, 1));
-                            uvList.Add(new Vector2(1, 1));
-                            uvList.Add(new Vector2(1, 0));
-                            AddTriangles(voxelType, verticesPos, _leftTriangles);
+                            ChunkInfo.AddLeftUVs(uvList);
 
-                            foreach (var normal in _faceNormals)
+                            AddTriangles(voxelType, verticesPos, ChunkInfo._leftTriangles);
+
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 normals.Add(normal);
                         }
                     }
@@ -774,58 +567,52 @@ public class Chunk : MonoBehaviour, IChunk
 
 
                     //RENDER BACK
-                    int back;
+
                     if (z == 15)
                     {
                         ChunkID backID = new ChunkID(ID.X, ID.Y, ID.Z + 1);
                         if (world.Chunks.ContainsKey(backID))
                         {
-                            back = (ushort) world[ID.X * 16 + x, ID.Y * 16 + y, ID.Z * 16 + z + 1];
+                            blockCheck = world[ID.X * 16 + x, ID.Y * 16 + y, ID.Z * 16 + z + 1];
                         }
                         else
                         {
-                            back = 0;
+                            blockCheck = 0;
                         }
                     }
                     else
                     {
-                        back = (ushort) this[x, y, z + 1];
+                        blockCheck = this[x, y, z + 1];
                     }
 
-                    if (_transparentBlockIDs.Contains(back) && back != voxelType)
+                    if (ChunkInfo._transparentBlockIDs.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         if (voxelType == 9)
                         {
-                            foreach (var vert in _backVertices)
+                            foreach (var vert in ChunkInfo._backVertices)
                                 waterVertices.Add(pos + vert);
+                            ChunkInfo.AddBackUVs(waterUVs);
 
-                            waterUVs.Add(new Vector2(1, 0));
-                            waterUVs.Add(new Vector2(0, 1));
-                            waterUVs.Add(new Vector2(0, 0));
-                            waterUVs.Add(new Vector2(1, 0));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 waterNormals.Add(normal);
 
-                            foreach (var tri in _backTriangles)
+                            foreach (var tri in ChunkInfo._backTriangles)
                             {
                                 waterTriangles.Add(waterVertPos + tri);
                             }
                         }
                         else if (voxelType == 11)
                         {
-                            foreach (var vert in _backVertices)
+                            foreach (var vert in ChunkInfo._backVertices)
                                 lavaVertices.Add(pos + vert);
+                            ChunkInfo.AddBackUVs(lavaUVs);
 
-                            lavaUVs.Add(new Vector2(1, 0));
-                            lavaUVs.Add(new Vector2(0, 1));
-                            lavaUVs.Add(new Vector2(0, 0));
-                            lavaUVs.Add(new Vector2(1, 0));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 lavaNormals.Add(normal);
 
-                            foreach (var tri in _backTriangles)
+                            foreach (var tri in ChunkInfo._backTriangles)
                             {
                                 lavaTriangles.Add(lavaVertPos + tri);
                             }
@@ -834,25 +621,21 @@ public class Chunk : MonoBehaviour, IChunk
                         {
                             if (voxelType == 44)
                             {
-                                foreach (var vert in _backHalfVertices)
+                                foreach (var vert in ChunkInfo._backHalfVertices)
                                     vertices.Add(pos + vert);
                             }
                             else
                             {
-                                foreach (var vert in _backVertices)
+                                foreach (var vert in ChunkInfo._backVertices)
                                     vertices.Add(pos + vert);
                             }
 
+                            ChunkInfo.AddBackUVs(uvList);
 
-                            uvList.Add(new Vector2(1, 1));
-                            uvList.Add(new Vector2(0, 1));
 
-                            uvList.Add(new Vector2(0, 0));
-                            uvList.Add(new Vector2(1, 0));
+                            AddTriangles(voxelType, verticesPos, ChunkInfo._backTriangles);
 
-                            AddTriangles(voxelType, verticesPos, _backTriangles);
-
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 normals.Add(normal);
                         }
                     }
@@ -863,74 +646,66 @@ public class Chunk : MonoBehaviour, IChunk
 
 
                     //RENDER BOTTOM
-                    int bottom;
                     if (y == 0)
                     {
                         ChunkID bottomID = new ChunkID(ID.X, ID.Y - 1, ID.Z);
                         if (world.Chunks.ContainsKey(bottomID))
                         {
-                            bottom = (ushort) world[ID.X * 16 + x, ID.Y * 16 + y - 1, ID.Z * 16 + z];
+                            blockCheck = world[ID.X * 16 + x, ID.Y * 16 + y - 1, ID.Z * 16 + z];
                         }
                         else
                         {
-                            bottom = 0;
+                            blockCheck = 0;
                         }
                     }
                     else
                     {
-                        bottom = (ushort) this[x, y - 1, z];
+                        blockCheck = this[x, y - 1, z];
                     }
 
-                    if ((_transparentBlockIDs.Contains(bottom) && bottom != voxelType) || bottom == 44)
+                    if ((ChunkInfo._transparentBlockIDs.Contains(blockCheck) && blockCheck != voxelType) ||
+                        blockCheck == 44)
                     {
                         if (voxelType == 9)
                         {
-                            foreach (var vert in _bottomVertices)
+                            foreach (var vert in ChunkInfo._bottomVertices)
                                 waterVertices.Add(pos + vert);
+                            ChunkInfo.AddBottomUVs(waterUVs);
 
-                            waterUVs.Add(new Vector2(0, 0));
-                            waterUVs.Add(new Vector2(0, 1));
-                            waterUVs.Add(new Vector2(1, 1));
-                            waterUVs.Add(new Vector2(1, 0));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 waterNormals.Add(normal);
 
-                            foreach (var tri in _bottomTriangles)
+                            foreach (var tri in ChunkInfo._bottomTriangles)
                             {
                                 waterTriangles.Add(waterVertPos + tri);
                             }
                         }
                         else if (voxelType == 11)
                         {
-                            foreach (var vert in _bottomVertices)
+                            foreach (var vert in ChunkInfo._bottomVertices)
                                 lavaVertices.Add(pos + vert);
+                            ChunkInfo.AddBottomUVs(lavaUVs);
 
-                            lavaUVs.Add(new Vector2(0, 0));
-                            lavaUVs.Add(new Vector2(0, 1));
-                            lavaUVs.Add(new Vector2(1, 1));
-                            lavaUVs.Add(new Vector2(1, 0));
 
-                            foreach (var normal in _faceNormals)
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 lavaNormals.Add(normal);
 
-                            foreach (var tri in _bottomTriangles)
+                            foreach (var tri in ChunkInfo._bottomTriangles)
                             {
                                 lavaTriangles.Add(lavaVertPos + tri);
                             }
                         }
                         else
                         {
-                            foreach (var vert in _bottomVertices)
+                            foreach (var vert in ChunkInfo._bottomVertices)
                                 vertices.Add(pos + vert);
 
-                            uvList.Add(new Vector2(0, 0));
-                            uvList.Add(new Vector2(0, 1));
-                            uvList.Add(new Vector2(1, 1));
-                            uvList.Add(new Vector2(1, 0));
-                            AddTriangles(voxelType, verticesPos, _bottomTriangles);
+                            ChunkInfo.AddBottomUVs(uvList);
 
-                            foreach (var normal in _faceNormals)
+                            AddTriangles(voxelType, verticesPos, ChunkInfo._bottomTriangles);
+
+                            foreach (var normal in ChunkInfo._faceNormals)
                                 normals.Add(normal);
                         }
                     }
@@ -982,6 +757,7 @@ public class Chunk : MonoBehaviour, IChunk
         dirty = false;
     }
 
+
     private void AddTriangles(int vType, int vPos, int[] triangles)
     {
         //0-48 are default MC ids offset back by 1 because 0 was air
@@ -993,12 +769,12 @@ public class Chunk : MonoBehaviour, IChunk
         switch (vType)
         {
             case (2):
-                if (triangles == _topTriangles)
+                if (triangles == ChunkInfo._topTriangles)
                 {
                     foreach (var tri in triangles)
                         TriangleLists[49].Add(vPos + tri);
                 }
-                else if (triangles == _bottomTriangles)
+                else if (triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
                     {
@@ -1013,7 +789,7 @@ public class Chunk : MonoBehaviour, IChunk
 
                 break;
             case (17):
-                if (triangles == _topTriangles || triangles == _bottomTriangles)
+                if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
                         TriangleLists[50].Add(vPos + tri);
@@ -1026,7 +802,7 @@ public class Chunk : MonoBehaviour, IChunk
 
                 break;
             case (43):
-                if (triangles == _topTriangles || triangles == _bottomTriangles)
+                if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
                         TriangleLists[51].Add(vPos + tri);
@@ -1039,7 +815,7 @@ public class Chunk : MonoBehaviour, IChunk
 
                 break;
             case (44): //half slabs             
-                if (triangles == _topTriangles || triangles == _bottomTriangles)
+                if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
                         TriangleLists[51].Add(vPos + tri);
@@ -1052,12 +828,12 @@ public class Chunk : MonoBehaviour, IChunk
 
                 break;
             case (46):
-                if (triangles == _topTriangles)
+                if (triangles == ChunkInfo._topTriangles)
                 {
                     foreach (var tri in triangles)
                         TriangleLists[52].Add(vPos + tri);
                 }
-                else if (triangles == _bottomTriangles)
+                else if (triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
                         TriangleLists[53].Add(vPos + tri);
@@ -1070,7 +846,7 @@ public class Chunk : MonoBehaviour, IChunk
 
                 break;
             case 47:
-                if (triangles == _topTriangles || triangles == _bottomTriangles)
+                if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
                         TriangleLists[54].Add(vPos + tri);
