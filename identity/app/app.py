@@ -38,8 +38,12 @@ app.include_router(
 )
 app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["users"])
 app.include_router(
-    # Todo: redirect url?
-    fastapi_users.get_oauth_router(google_oauth_client, auth_backend, "SECRET"),
+    fastapi_users.get_oauth_router(
+        google_oauth_client,
+        auth_backend,
+        settings.GOOGLE_OAUTH_CLIENT_SECRET,
+        redirect_url="https://snappervibes.com/yooo.html",
+    ),
     prefix="/auth/google",
     tags=["auth"],
 )

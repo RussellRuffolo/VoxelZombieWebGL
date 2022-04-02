@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class LavaSwimmingMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints)
+    public Vector3 GetVelocity(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
+        return Vector3.zero;
     }
 
     public void Enter()
@@ -16,7 +18,8 @@ public class LavaSwimmingMoveState : IMoveState
     {
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints, IWorld world)
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
+        IWorld world, Vector3 lastVelocity)
     {
         throw new System.NotImplementedException();
     }

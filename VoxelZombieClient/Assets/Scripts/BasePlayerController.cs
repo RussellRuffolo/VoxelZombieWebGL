@@ -7,7 +7,7 @@ namespace Client
     {
         public GameObject rotationTracker;
 
-        
+
         protected Dictionary<MoveState, IMoveState> MoveStates = new Dictionary<MoveState, IMoveState>()
         {
             {MoveState.basicGrounded, new BasicGroundedMoveState()},
@@ -20,6 +20,7 @@ namespace Client
             {MoveState.basicSliding, new BasicSlidingMoveState()},
             {MoveState.basicCrawling, new BasicCrawlingMoveState()},
             {MoveState.slideAir, new SlideAirMoveState()},
+            {MoveState.slideLand, new SlideLandMoveState()},
             {MoveState.wallJump, new WallJumpMoveState()},
             {MoveState.groundedHalfBlock, new GroundedHalfBlockMoveState()},
             {MoveState.crouchJump, new CrouchJumpMoveState()},
@@ -86,6 +87,7 @@ namespace Client
                     currentInputs.Jump,
                     currentInputs.Slide, tickNumber);
 
+                
                 //Apply the inputs to change player velocity
                 ApplyInputs(playerRB, currentInputs);
 

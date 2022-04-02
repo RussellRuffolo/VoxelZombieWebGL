@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+
 using UnityEngine;
 
 public class WaterFallingMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
+    public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
-        float yVel = playerRb.velocity.y;
+        float yVel = lastVelocity.y;
 
         
         if (yVel < -PlayerStats.verticalWaterMaxSpeed)
@@ -25,7 +27,7 @@ public class WaterFallingMoveState : IMoveState
             }
         }
         
-        playerRb.velocity = currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
+        return currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
 
     }
 
@@ -37,7 +39,8 @@ public class WaterFallingMoveState : IMoveState
     {
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints, World world)
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
+        IWorld world, Vector3 lastVelocity)
     {
         if (PlayerUtils.CheckWater(playerRb, contactPoints, world))
         {

@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class SlideAirMoveState : CrouchingMoveState
 {
-    public override void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
+    public override Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs,
+        List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
-        Vector3 horizontalVelocity = new Vector3(playerRb.velocity.x, 0, playerRb.velocity.z);
-        float ySpeed = playerRb.velocity.y;
+        Vector3 velocity = (playerRb.transform.position - lastPosition) / Time.fixedDeltaTime;
+        
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
+        float ySpeed = velocity.y;
         horizontalVelocity += currentInputs.MoveVector.normalized * PlayerStats.AirAcceleration * Time.fixedDeltaTime;
 
         if (horizontalVelocity.magnitude > PlayerStats.playerSpeed)
@@ -17,20 +21,21 @@ public class SlideAirMoveState : CrouchingMoveState
 
         ySpeed -= PlayerStats.gravAcceleration * Time.fixedDeltaTime;
 
-        playerRb.velocity = horizontalVelocity + ySpeed * Vector3.up;
+       return horizontalVelocity + ySpeed * Vector3.up;
     }
 
 
     public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
-        List<ContactPoint> contactPoints, IWorld world)
+        List<ContactPoint> contactPoints, IWorld world, Vector3 lastVelocity)
     {
         if (PlayerUtils.CheckGrounded(contactPoints))
         {
             if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
             {
-                if (playerRb.velocity.magnitude > PlayerStats.crawlSpeed)
+                if (lastVelocity.magnitude > PlayerStats.crawlSpeed)
                 {
-                    return MoveState.basicSliding;
+                    Debug.Log("return slide land");
+                    return MoveState.slideLand;
                 }
 
                 return MoveState.basicCrawling;

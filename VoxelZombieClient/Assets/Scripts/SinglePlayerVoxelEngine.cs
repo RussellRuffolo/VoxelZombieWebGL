@@ -8,16 +8,26 @@ using Random = UnityEngine.Random;
 
 public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 {
-    public IWorld World { get; } = new SinglePlayerWorld();
-    public List<Material> materialList;
+    public IWorld World { get; } = new World();
+
+    [SerializeField] private List<Material> Materials;
+    public List<Material> materialList => Materials;
 
     public BoundaryController bController;
 
+    public Material WaterMaterial;
+    [SerializeField] public Texture2D[] ordinaryTextures;
 
-
+    [SerializeField] public Material MaterialaArray;
+    private static readonly int MainTex = Shader.PropertyToID("_MainTex");
     public int Length { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
+
+    private void Awake()
+    {
+        //CreateTextureArray();
+    }
 
     public void LoadMap(string mapName)
     {
@@ -57,6 +67,32 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
         StartCoroutine(GetMapData(url));
     }
 
+
+    // private void CreateTextureArray()
+    // {
+    //     // Create Texture2DArray
+    //     Texture2DArray texture2DArray = new
+    //         Texture2DArray(ordinaryTextures[0].width,
+    //             ordinaryTextures[0].height, ordinaryTextures.Length,
+    //             TextureFormat.RGBA32, true, false);
+    //     // Apply settings
+    //     texture2DArray.filterMode = FilterMode.Bilinear;
+    //     texture2DArray.wrapMode = TextureWrapMode.Repeat;
+    //     // Loop through ordinary textures and copy pixels to the
+    //     // Texture2DArray
+    //     for (int i = 0; i < ordinaryTextures.Length; i++)
+    //     {
+    //         texture2DArray.SetPixels(ordinaryTextures[i].GetPixels(0),
+    //             i, 0);
+    //     }
+    //
+    //     // Apply our changes
+    //     texture2DArray.Apply();
+    //     // Set the texture to a material
+    //     MaterialaArray.SetTexture(MainTex, texture2DArray);
+    // }
+
+
     private IEnumerator GetMapData(string url)
     {
         using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -95,14 +131,13 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
                     newChunkObj.transform.position = new Vector3(x * 16, y * 16, z * 16);
 
 
-                    EightBlockChunk chunk = newChunkObj.AddComponent<EightBlockChunk>();
-                    chunk.world = World;
-                    chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
+                    Chunk chunk = newChunkObj.AddComponent<Chunk>();
                     ChunkID newID = new ChunkID(x, y, z);
                     World.Chunks.Add(newID, chunk);
                     chunk.ID = newID;
                     chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
-
+                    chunk.world = World;
+             //       chunk.WaterMat = WaterMaterial;
                     chunk.init();
                 }
             }
@@ -143,7 +178,6 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
                     }
                 }
             }
-            
         }
 
 
@@ -166,7 +200,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
     public void UnloadMap()
     {
-        foreach (EightBlockChunk toDestroy in World.Chunks.Values)
+        foreach (Chunk toDestroy in World.Chunks.Values)
         {
             Destroy(toDestroy.gameObject);
         }

@@ -14,6 +14,8 @@ namespace Client
 
         public LineRenderer blockOutline;
 
+        public ParticleSystem blockBreakParticleSystem;
+
         private Vector3[] _frontVertices = new[]
         {
             new Vector3(0, 0, -.05f),
@@ -359,7 +361,13 @@ namespace Client
                     return;
                 }
 
-                OnBreakBlock((ushort) x, (ushort) y, (ushort) z);
+                blockBreakParticleSystem.GetComponent<Renderer>().material =
+                    vEngine.materialList[(int) (breakSpotTag - 1)];
+                blockBreakParticleSystem.transform.position = selectionPosition;
+                blockBreakParticleSystem.Play();
+                //
+                //
+                 OnBreakBlock((ushort) x, (ushort) y, (ushort) z);
 
 
                 return;
@@ -387,7 +395,7 @@ namespace Client
 
                     if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
                     {
-                        OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, (ushort)placeBlockTag);
+                        OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, (ushort) placeBlockTag);
                     }
                 }
             }
@@ -401,7 +409,7 @@ namespace Client
 
                 if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
                 {
-                    OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, (ushort)placeBlockTag);
+                    OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, (ushort) placeBlockTag);
                 }
             }
         }

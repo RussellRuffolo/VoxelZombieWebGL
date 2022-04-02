@@ -18,6 +18,7 @@ public interface IVoxelEngine
     int Width { get; set; }
     
     int Height { get; set; }
+    List<Material> materialList { get; }
 }
 
 
@@ -27,7 +28,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 {
     public IWorld World { get; } = new World();
     
-    public List<Material> materialList;
+    public List<Material> materialList { get; }
 
     public BoundaryController bController;
 

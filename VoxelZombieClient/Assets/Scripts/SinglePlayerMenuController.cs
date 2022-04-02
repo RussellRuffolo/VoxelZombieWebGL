@@ -12,6 +12,7 @@ public class SinglePlayerMenuController : MonoBehaviour
     [SerializeField] private Dropdown MapSelectionDropdown;
 
     [SerializeField] private SinglePlayerVoxelEngine vEngine;
+    public ParticleSystem BreakBlockParticleSystem;
 
 
     public GameObject SingePlayerPrefab;
@@ -49,7 +50,6 @@ public class SinglePlayerMenuController : MonoBehaviour
         Debug.Log("On Load Map");
         string mapName = MapSelectionDropdown.options[MapSelectionDropdown.value].text;
 
-        
 
         vEngine.LoadMap(mapName);
 
@@ -60,28 +60,20 @@ public class SinglePlayerMenuController : MonoBehaviour
         Vector3 eulerRotation = Vector3.zero;
 
 
-        GameObject LocalPlayer = GameObject.Instantiate(SingePlayerPrefab,
+        GameObject LocalPlayer = Instantiate(SingePlayerPrefab,
             position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-        GameObject LocalPlayerSim = GameObject.Instantiate(SinglerPlayerSimulator,
+        GameObject LocalPlayerSim = Instantiate(SinglerPlayerSimulator,
             position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-        GameObject Menu = GameObject.Instantiate(PlayerMenu);
+        Instantiate(PlayerMenu);
 
         LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
             LocalPlayerSim.transform;
         LocalPlayerSim.GetComponent<SinglePlayerPlayerController>().camController =
             LocalPlayer.GetComponent<ClientCameraController>();
-        //
-        // vEngine.MapLoadedDelegate += spawnPosition =>
-        // {
-        //     LocalPlayerSim.transform.position = spawnPosition;
-        //     LocalPlayer.transform.position = spawnPosition;
-        // };
 
-
-        // localPlayerTransform = LocalPlayer.transform;
-        //     localSimTransform = LocalPlayerSim.transform;
-        // VoxelClient.LoadSinglePlayerMap(mapName);
+        LocalPlayer.GetComponent<SinglePlayerBlockEditor>().blockBreakParticleSystem =
+            Instantiate(BreakBlockParticleSystem, null);
     }
 }

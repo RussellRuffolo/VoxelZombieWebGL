@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 
 public abstract class CrouchingMoveState : IMoveState
@@ -6,7 +7,8 @@ public abstract class CrouchingMoveState : IMoveState
     public BoxCollider slidingCollider;
     public BoxCollider standingCollider;
 
-    public abstract void ApplyInput(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints);
+    public abstract Vector3 GetVelocity(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition);
 
     public virtual void Enter()
     {
@@ -21,5 +23,5 @@ public abstract class CrouchingMoveState : IMoveState
     }
 
     public abstract MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
-        List<ContactPoint> contactPoints, World world);
+        List<ContactPoint> contactPoints, IWorld world, Vector3 lastVelocity);
 }

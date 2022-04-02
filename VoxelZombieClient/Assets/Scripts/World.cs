@@ -13,7 +13,7 @@ public class World : IWorld
         set { }
     }
 
-    public UInt64 this[int x, int y, int z]
+    public UInt16 this[int x, int y, int z]
     {
         get
         {

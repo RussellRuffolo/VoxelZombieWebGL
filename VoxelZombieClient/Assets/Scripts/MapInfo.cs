@@ -43,7 +43,7 @@ public static class MapInfo
             "carson", new Vector3(10, 35.5f, 120)
         },
         {
-            "Sunspots", new Vector3(60, 112.5f, 108)
+            "sunspots", new Vector3(60, 112.5f, 108)
         },
         {
             "hawaiiMod", new Vector3(1, 67.5f, 43)

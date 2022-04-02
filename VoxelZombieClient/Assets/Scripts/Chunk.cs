@@ -11,17 +11,6 @@ public class Chunk : MonoBehaviour, IChunk
     public IWorld world;
     private UInt16[] voxels = new ushort[16 * 16 * 16];
 
-    public UInt64 this[int x, int y, int z]
-    {
-        get
-        {
-            return 0;
-        }
-        set
-        {
-            
-        }
-    }
 
     private MeshFilter meshFilter;
     private MeshCollider meshCollider;
@@ -243,11 +232,11 @@ public class Chunk : MonoBehaviour, IChunk
         Vector3.up
     };
 
-    // public UInt32 this[int x, int y, int z]
-    // {
-    //     get { return voxels[x * 16 * 16 + y * 16 + z]; }
-    //     set { voxels[x * 16 * 16 + y * 16 + z] = (UInt16) value; }
-    // }
+    public UInt16 this[int x, int y, int z]
+    {
+        get { return voxels[x * 16 * 16 + y * 16 + z]; }
+        set { voxels[x * 16 * 16 + y * 16 + z] = (UInt16) value; }
+    }
 
     private List<int> _transparentBlockIDs = new List<int>
     {
@@ -310,6 +299,8 @@ public class Chunk : MonoBehaviour, IChunk
         lavaMeshFilter = lavaChunk.AddComponent<MeshFilter>();
         lavaMeshCollider = lavaChunk.AddComponent<MeshCollider>();
 
+        mesh = new Mesh();
+        waterMesh = new Mesh();
 
         flower1 = Resources.Load<GameObject>("Flower1");
         flower2 = Resources.Load<GameObject>("Flower2");
@@ -319,6 +310,10 @@ public class Chunk : MonoBehaviour, IChunk
         mushroom3 = Resources.Load<GameObject>("Mushroom3");
         mushroom4 = Resources.Load<GameObject>("Mushroom4");
     }
+
+    private Mesh mesh;
+    private Mesh waterMesh;
+
 
     private void Update()
     {
@@ -947,7 +942,7 @@ public class Chunk : MonoBehaviour, IChunk
 
         //FOR MEMORY PURPOSES TRY TO CHANGE THIS TO NOT MAKE A NEW MESH EVERY TIME
         //MESH.CLEAR() should work but need to make it the first time
-        var mesh = new Mesh();
+        mesh.Clear();
         mesh.subMeshCount = 55;
         mesh.SetVertices(vertices);
         for (int i = 0; i < 55; i++)
@@ -963,7 +958,7 @@ public class Chunk : MonoBehaviour, IChunk
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
 
-        var waterMesh = new Mesh();
+        waterMesh.Clear();
         waterMesh.subMeshCount = 1;
         waterMesh.SetVertices(waterVertices);
         waterMesh.SetTriangles(waterTriangles.ToArray(), 0);

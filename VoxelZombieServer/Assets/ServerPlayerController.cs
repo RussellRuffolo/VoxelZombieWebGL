@@ -14,7 +14,7 @@ public class ServerPlayerController : MonoBehaviour
     [SerializeField] public BoxCollider slidingCollider;
 
     private IMoveState CurrentMoveState;
-    private World world;
+    private IWorld world;
 
     public MoveState MoveState;
 
@@ -31,6 +31,7 @@ public class ServerPlayerController : MonoBehaviour
         {MoveState.basicSliding, new BasicSlidingMoveState()},
         {MoveState.basicCrawling, new BasicCrawlingMoveState()},
         {MoveState.slideAir, new SlideAirMoveState()},
+        {MoveState.slideLand, new SlideLandMoveState()},
         {MoveState.wallJump, new WallJumpMoveState()},
         {MoveState.groundedHalfBlock, new GroundedHalfBlockMoveState()},
         {MoveState.crouchJump, new CrouchJumpMoveState()},
@@ -58,9 +59,14 @@ public class ServerPlayerController : MonoBehaviour
         }
     }
 
+    public Vector3 lastVelocity = Vector3.zero;
+    public Vector3 currentVelocity = Vector3.zero;
+
+    public Vector3 lastPosition = Vector3.zero;
+
     public void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs)
     {
-        MoveState state = MoveStates[MoveState].CheckMoveState(playerRB, currentInputs, allCPs, world);
+        MoveState state = MoveStates[MoveState].CheckMoveState(playerRB, currentInputs, allCPs, world, lastVelocity);
 
         MoveState = state;
         if (CurrentMoveState != MoveStates[state])
@@ -70,8 +76,14 @@ public class ServerPlayerController : MonoBehaviour
             CurrentMoveState.Enter();
         }
 
-        CurrentMoveState.ApplyInput(playerRB, currentInputs, allCPs);
+        currentVelocity = CurrentMoveState.GetVelocity(playerRB, currentInputs, allCPs, lastVelocity, lastPosition);
         allCPs.Clear();
+        
+        lastPosition = playerRB.transform.position;
+        playerRb.MovePosition(playerRb.transform.position +
+                              (currentVelocity) * Time.fixedDeltaTime);
+
+        lastVelocity = currentVelocity;
     }
 
     private void OnCollisionEnter(Collision collision)

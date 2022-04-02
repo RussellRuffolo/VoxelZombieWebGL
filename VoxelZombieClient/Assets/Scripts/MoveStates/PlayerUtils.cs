@@ -125,21 +125,39 @@ public static class PlayerUtils
             {
                 if (Vector3.Dot(playerInputs.MoveVector, -contactPoint.normal) > 0)
                 {
+                    // Vector3 testPosition = playerRb.transform.position + Vector3.up * .51f +
+                    //                        playerInputs.MoveVector.normalized * .01f;
+                    //
+                    // Collider[] colliders = Physics.OverlapBox(testPosition, PlayerStats.StandingHalfExtents,
+                    //     playerRb.transform.rotation,
+                    //     Physics.AllLayers
+                    // );
+                    //
+                    // foreach (Collider collider in colliders)
+                    // {
+                    //     if (collider.CompareTag("Ground"))
+                    //     {
+                    //         return false;
+                    //     }
+                    // }
+                    //
+                    // return true;
+                    
                     Vector3 footPosition = playerRb.transform.position + FootOffset;
                     Vector3 blockPosition = new Vector3(contactPoint.point.x, footPosition.y, contactPoint.point.z) +
                                             playerInputs.MoveVector.normalized * .1f;
-
+                    
                     Vector3 floorPosition = footPosition - .5f * Vector3.up;
-
+                    
                     ushort floorX = (ushort) Mathf.FloorToInt(floorPosition.x);
                     ushort floorY = (ushort) Mathf.FloorToInt(floorPosition.y);
                     ushort floorZ = (ushort) Mathf.FloorToInt(floorPosition.z);
-
-
+                    
+                    
                     ushort x = (ushort) Mathf.FloorToInt(blockPosition.x);
                     ushort y = (ushort) Mathf.FloorToInt(blockPosition.y);
                     ushort z = (ushort) Mathf.FloorToInt(blockPosition.z);
-
+                    
                     if (world[x, y, z] == 44)
                     {
                         if (world[x, y + 1, z] == 0 && world[x, y + 2, z] == 0)
@@ -147,7 +165,7 @@ public static class PlayerUtils
                             return true;
                         }
                     }
-
+                    
                     if (world[floorX, floorY, floorZ] == 44)
                     {
                         if (IsSolidBlock(world[x, y, z]) && world[x, y + 1, z] == 0 && world[x, y + 2, z] == 0)

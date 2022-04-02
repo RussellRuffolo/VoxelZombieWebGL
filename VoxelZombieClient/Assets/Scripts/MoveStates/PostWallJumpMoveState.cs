@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class PostWallJumpMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
+    public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
-        Vector3 horizontalVelocity = new Vector3(playerRb.velocity.x, 0, playerRb.velocity.z);
-        float ySpeed = playerRb.velocity.y;
+        Vector3 horizontalVelocity = new Vector3(lastVelocity.x, 0, lastVelocity.z);
+        float ySpeed = lastVelocity.y;
         horizontalVelocity += currentInputs.MoveVector.normalized * PlayerStats.AirAcceleration * Time.fixedDeltaTime;
 
         if (horizontalVelocity.magnitude > PlayerStats.playerSpeed)
@@ -17,7 +18,7 @@ public class PostWallJumpMoveState : IMoveState
 
         ySpeed -= PlayerStats.gravAcceleration * Time.fixedDeltaTime;
 
-        playerRb.velocity = horizontalVelocity + ySpeed * Vector3.up;
+        return horizontalVelocity + ySpeed * Vector3.up;
     }
 
     public void Enter()
@@ -29,9 +30,8 @@ public class PostWallJumpMoveState : IMoveState
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
-        IWorld world)
+        IWorld world, Vector3 lastVelocity)
     {
-        Debug.Log("post wall jump");
         if (PlayerUtils.CheckGrounded(contactPoints))
         {
             if (playerInputs.Slide)

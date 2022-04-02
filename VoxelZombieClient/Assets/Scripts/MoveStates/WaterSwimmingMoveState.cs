@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class WaterSwimmingMoveState : IMoveState
 {
-    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
+    public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
-        float yVel = playerRb.velocity.y;
+        float yVel = lastVelocity.y;
 
         if (yVel >= PlayerStats.verticalWaterMaxSpeed)
         {
@@ -18,7 +19,7 @@ public class WaterSwimmingMoveState : IMoveState
         }
 
 
-        playerRb.velocity = currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
+       return currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
     }
 
     public void Enter()
@@ -30,7 +31,7 @@ public class WaterSwimmingMoveState : IMoveState
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
-        IWorld world)
+        IWorld world, Vector3 lastVelocity)
     {
         if (PlayerUtils.CheckWater(playerRb, contactPoints, world))
         {

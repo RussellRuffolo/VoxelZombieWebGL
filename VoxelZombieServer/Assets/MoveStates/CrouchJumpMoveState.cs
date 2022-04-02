@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 
 public class CrouchJumpMoveState : CrouchingMoveState
@@ -6,14 +7,14 @@ public class CrouchJumpMoveState : CrouchingMoveState
     private bool Jumped;
 
 
-    public override void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
+    public override Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs,
+        List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
         Vector3 horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.crawlSpeed;
-
-
-        playerRb.velocity = horizontalVelocity + PlayerStats.jumpSpeed * Vector3.up;
-
         Jumped = true;
+
+        return horizontalVelocity + PlayerStats.jumpSpeed * Vector3.up;
     }
 
     public override void Exit()
@@ -22,7 +23,7 @@ public class CrouchJumpMoveState : CrouchingMoveState
     }
 
     public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
-        List<ContactPoint> contactPoints, World world)
+        List<ContactPoint> contactPoints, IWorld world, Vector3 lastVelocity)
     {
         if (Jumped)
         {
@@ -30,7 +31,7 @@ public class CrouchJumpMoveState : CrouchingMoveState
             {
                 if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
                 {
-                    if (playerRb.velocity.magnitude > PlayerStats.crawlSpeed)
+                    if (lastVelocity.magnitude > PlayerStats.crawlSpeed)
                     {
                         return MoveState.basicSliding;
                     }

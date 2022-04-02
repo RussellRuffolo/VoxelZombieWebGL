@@ -419,7 +419,8 @@
 public enum BlockFace
 {
     Top,
-    Side
+    Side,
+    Bottom
 }
 //
 //

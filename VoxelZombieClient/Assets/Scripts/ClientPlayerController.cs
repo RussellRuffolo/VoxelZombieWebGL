@@ -56,12 +56,13 @@ namespace Client
         }
 
         public Vector3 lastVelocity = Vector3.zero;
-
+        public Vector3 lastPosition = Vector3.zero;
         private MoveState lastState = 0;
 
         public override void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs)
         {
-            MoveState state = MoveStates[MoveState].CheckMoveState(playerRB, currentInputs, allCPs, world);
+            MoveState state = MoveStates[MoveState]
+                .CheckMoveState(playerRB, currentInputs, allCPs, world, lastVelocity);
 
             MoveState = state;
             if (CurrentMoveState != MoveStates[state])
@@ -71,124 +72,10 @@ namespace Client
                 CurrentMoveState.Enter();
             }
 
-            CurrentMoveState.ApplyInput(playerRB, currentInputs, allCPs);
+            CurrentMoveState.GetVelocity(playerRB, currentInputs, allCPs, lastVelocity, lastPosition);
             allCPs.Clear();
-        }
 
-        public MoveState CheckMoveState(ClientInputs inputs)
-        {
-            Vector3 feetPosition = new Vector3(transform.position.x, transform.position.y - .08f - (1.76f / 2),
-                transform.position.z);
-            Vector3 headPosition = new Vector3(transform.position.x, transform.position.y - .08f + (1.76f / 2),
-                transform.position.z);
-
-            ushort jumpTag = (ushort) world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y + .2f),
-                Mathf.FloorToInt(feetPosition.z)];
-            if (jumpTag == 9 || jumpTag == 11)
-            {
-                hasWaterJump = true;
-            }
-
-            Collider[] thingsHit = Physics.OverlapBox(transform.position + Vector3.down * .08f, colliderHalfExtents);
-
-
-            foreach (Collider col in thingsHit)
-            {
-                if (col.CompareTag("Water"))
-                {
-                    lastState = MoveState.waterSwimming;
-                    return MoveState.waterSwimming;
-                }
-
-                if (col.CompareTag("Lava"))
-                {
-                    lastState = MoveState.lavaSwimming;
-                    return MoveState.lavaSwimming;
-                }
-            }
-
-
-            if (world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y),
-                    Mathf.FloorToInt(feetPosition.z)] != 9 &&
-                world[Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y),
-                    Mathf.FloorToInt(headPosition.z)] != 9 &&
-                world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y),
-                    Mathf.FloorToInt(feetPosition.z)] != 11 && world[Mathf.FloorToInt(headPosition.x),
-                    Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)] != 11)
-            {
-                if ((lastState == MoveState.waterSwimming || lastState == MoveState.lavaSwimming) && inputs.Jump)
-                {
-                    lastState = MoveState.waterJump;
-                    return MoveState.waterJump;
-                }
-
-                hasWaterJump = false;
-
-                if (!CheckGrounded())
-                {
-                    if (!inputs.Jump)
-                    {
-                        hasWallJump = true;
-                    }
-
-                    if (hasWallJump && inputs.Jump && CheckWallContact())
-                    {
-                        hasWallJump = false;
-                        lastState = MoveState.wallJump;
-                        return MoveState.wallJump;
-                    }
-
-                    if (inputs.Slide)
-                    {
-                        lastState = MoveState.slideAir;
-                        return MoveState.slideAir;
-                    }
-
-                    lastState = MoveState.basicAir;
-
-                    return MoveState.basicAir;
-                }
-
-
-                if (inputs.Jump)
-                {
-                    lastState = MoveState.basicJump;
-
-                    return MoveState.basicJump;
-                }
-
-                if (inputs.Slide)
-                {
-                    Vector3 velocity = playerRb.velocity;
-                    Vector3 horizontalMomentum = new Vector3(velocity.x, 0, velocity.z);
-
-                    if (horizontalMomentum.magnitude > PlayerStats.crawlSpeed)
-                    {
-                        lastState = MoveState.basicSliding;
-
-                        return MoveState.basicSliding;
-                    }
-
-                    lastState = MoveState.basicCrawling;
-                    return MoveState.basicCrawling;
-                }
-
-                lastState = MoveState.basicGrounded;
-
-                return MoveState.basicGrounded;
-            }
-
-            if (world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y),
-                    Mathf.FloorToInt(feetPosition.z)] == 9 && world[Mathf.FloorToInt(headPosition.x),
-                    Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)] == 9)
-            {
-                lastState = MoveState.waterSwimming;
-                return MoveState.waterSwimming;
-            }
-
-
-            lastState = MoveState.lavaSwimming;
-            return MoveState.lavaSwimming;
+            lastVelocity = playerRB.velocity;
         }
 
         public override bool CheckGrounded()

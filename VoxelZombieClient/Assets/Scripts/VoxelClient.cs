@@ -26,6 +26,8 @@ namespace Client
         public GameObject SingePlayerPrefab;
         public GameObject SinglerPlayerSimulator;
 
+        public ParticleSystem BreakBlockParticleSystem;
+
         public GameObject PlayerMenu;
 
         Dictionary<ushort, Transform> NetworkPlayerDictionary = new Dictionary<ushort, Transform>();
@@ -115,19 +117,21 @@ namespace Client
 
                 if (PlayerID == clientId)
                 {
-                    GameObject Menu = GameObject.Instantiate(PlayerMenu);
+                    Instantiate(PlayerMenu);
 
-                    GameObject LocalPlayer = GameObject.Instantiate(LocalPlayerPrefab,
+                    GameObject LocalPlayer = Instantiate(LocalPlayerPrefab,
                         position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-                    GameObject LocalPlayerSim = GameObject.Instantiate(LocalPlayerSimulator,
+                    GameObject LocalPlayerSim = Instantiate(LocalPlayerSimulator,
                         position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
+                    ClientCameraController cameraController = LocalPlayer.GetComponent<ClientCameraController>();
+                    cameraController.LocalPlayerSim = LocalPlayerSim.transform;
 
-                    LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
-                        LocalPlayerSim.transform;
                     LocalPlayerSim.GetComponent<ClientPlayerController>().camController =
-                        LocalPlayer.GetComponent<ClientCameraController>();
+                        cameraController;
+                    LocalPlayer.GetComponent<ClientBlockEditor>().blockBreakParticleSystem =
+                        Instantiate(BreakBlockParticleSystem);
                     if (StateTag == 0)
                     {
                         LocalPlayer.GetComponent<MeshRenderer>().material.color = Color.white;

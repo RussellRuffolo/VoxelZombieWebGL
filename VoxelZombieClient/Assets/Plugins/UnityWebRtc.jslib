@@ -13,7 +13,7 @@ mergeInto(LibraryManager.library, {
 
   SendAnswer: function (offer) {
 
-  const SendAnswerUrl = "https://crashblox.net/send-answer-get-candidate"
+  const SendAnswerUrl = "https://rtc.crashbloxserver.net/send-answer-get-candidate/"
 
   // 1. Create the client side PeerConnection
   peerConnection = new RTCPeerConnection({
@@ -103,9 +103,12 @@ SendUnreliableMessage: function(message){
 Connect__deps: ['SendAnswer', 'AddIceCandidate', 'Pack'],
 Connect: function (baseUrl) {
   var url = Pointer_stringify(baseUrl)
+
+  console.log("Log One")
   try{
     fetch(url)
     .then(function(response) {
+	console.log("Log Two")
       return response.json()
     })
     .then(function(offer){

@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 
 public class BasicJumpMoveState : IMoveState
 {
     private bool Jumped;
 
-    public void ApplyInput(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints)
+    public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
     {
         Vector3 horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
 
-
-        playerRb.velocity = horizontalVelocity + PlayerStats.jumpSpeed * Vector3.up;
-
         Jumped = true;
+        return horizontalVelocity + PlayerStats.jumpSpeed * Vector3.up;
     }
 
     public void Enter()
@@ -24,7 +24,8 @@ public class BasicJumpMoveState : IMoveState
         Jumped = false;
     }
 
-    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints, World world)
+    public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
+        IWorld world, Vector3 lastVelocity)
     {
         if (Jumped)
         {
@@ -34,6 +35,7 @@ public class BasicJumpMoveState : IMoveState
                 {
                     return MoveState.postJump;
                 }
+
                 return MoveState.basicGrounded;
             }
 
