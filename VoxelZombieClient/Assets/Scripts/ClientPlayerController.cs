@@ -42,22 +42,12 @@ namespace Client
                     crouchingMoveState.slidingCollider = slidingCollider;
                 }
             }
-            // BasicSlidingMoveState slidingMoveState = ((BasicSlidingMoveState) MoveStates[MoveState.basicSliding]);
-            // slidingMoveState.standingCollider = standingCollider;
-            // slidingMoveState.slidingCollider = slidingCollider;
-            //
-            // SlideAirMoveState slideAirMoveState = ((SlideAirMoveState) MoveStates[MoveState.slideAir]);
-            // slideAirMoveState.standingCollider = standingCollider;
-            // slideAirMoveState.slidingCollider = slidingCollider;
-            //
-            // BasicCrawlingMoveState crawlingMoveState = ((BasicCrawlingMoveState) MoveStates[MoveState.basicCrawling]);
-            // crawlingMoveState.standingCollider = standingCollider;
-            // crawlingMoveState.slidingCollider = slidingCollider;
         }
 
         public Vector3 lastVelocity = Vector3.zero;
         public Vector3 lastPosition = Vector3.zero;
         private MoveState lastState = 0;
+        public Vector3 currentVelocity = Vector3.zero;
 
         public override void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs)
         {
@@ -65,6 +55,7 @@ namespace Client
                 .CheckMoveState(playerRB, currentInputs, allCPs, world, lastVelocity);
 
             MoveState = state;
+            
             if (CurrentMoveState != MoveStates[state])
             {
                 CurrentMoveState.Exit();
@@ -72,10 +63,14 @@ namespace Client
                 CurrentMoveState.Enter();
             }
 
-            CurrentMoveState.GetVelocity(playerRB, currentInputs, allCPs, lastVelocity, lastPosition);
+            currentVelocity = CurrentMoveState.GetVelocity(playerRB, currentInputs, allCPs, lastVelocity, lastPosition);
             allCPs.Clear();
 
-            lastVelocity = playerRB.velocity;
+            lastPosition = playerRB.transform.position;
+            playerRb.MovePosition(playerRb.transform.position +
+                                  (currentVelocity) * Time.fixedDeltaTime);
+
+            lastVelocity = currentVelocity;
         }
 
         public override bool CheckGrounded()
@@ -103,29 +98,15 @@ namespace Client
             return found;
         }
 
-        bool CheckWallContact()
-        {
-            foreach (ContactPoint cp in allCPs)
-            {
-                //Pointing horizontally
-                if (cp.normal.y == 0)
-                {
-                    return true;
-                }
-            }
 
-            return false;
-        }
 
         private void OnCollisionEnter(Collision collision)
         {
-            //       Debug.Log("Adding " + collision.contacts.Length);
             allCPs.AddRange(collision.contacts);
         }
 
         void OnCollisionStay(Collision col)
         {
-//            Debug.Log("Adding " + col.contacts.Length);
             allCPs.AddRange(col.contacts);
         }
 
