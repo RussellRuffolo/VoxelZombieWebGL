@@ -7,7 +7,7 @@ const app = express();
 const cors = require('cors');
 var path = require('path')
 
-const hostname = '192.168.0.171';
+const hostname = '192.168.0.137';
 const localHostName = '127.0.0.1';
 const port = 25565
 

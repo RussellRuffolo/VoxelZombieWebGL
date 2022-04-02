@@ -22,7 +22,7 @@ class _Settings(BaseSettings):
     # PROJECT_NAME: str
 
     GOOGLE_OAUTH_CLIENT_ID: str = "183180074220-lhc38kq4uc7itth69oadejcc0fnep8lj.apps.googleusercontent.com"
-    GOOGLE_OAUTH_CLIENT_SECRET: str = "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"
+    GOOGLE_OAUTH_CLIENT_SECRET: str = "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"
     #
     # DB_SERVER: str
     # DB_USER: str
