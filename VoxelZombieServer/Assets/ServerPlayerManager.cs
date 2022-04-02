@@ -51,7 +51,8 @@ public class ServerPlayerManager : MonoBehaviour
         newPlayer.GetComponent<ServerPositionTracker>().ID = PlayerID;
 
         PlayerInformation newPlayerInfo = new PlayerInformation(newPlayer.transform,
-            newPlayer.transform.GetComponent<ServerPlayerController>(), newPlayer.transform.GetComponent<Rigidbody>(), name, stateTag);
+            newPlayer.transform.GetComponent<ServerPlayerController>(), newPlayer.transform.GetComponent<Rigidbody>(),
+            name, stateTag);
         PlayerDictionary.Add(PlayerID, newPlayerInfo);
         PlayerDictionary[PlayerID].timeJoined = Time.time;
 
@@ -130,7 +131,7 @@ public class ServerPlayerManager : MonoBehaviour
         //having all players be kinematic allows each one to be simulated 
         //seperately as inputs arrive
         playerRB.isKinematic = false;
-       // playerRB.velocity = PlayerVelocities[clientId];
+        // playerRB.velocity = PlayerVelocities[clientId];
 
         //number of inputs received from the client
         int numInputs = reader.ReadInt();
@@ -160,13 +161,13 @@ public class ServerPlayerManager : MonoBehaviour
 
 
                 //apply the clients inputs to change the player velocity
-              //  ApplyInputs(clientId, new ClientInputs(moveVector, lookDirection, Jump, Slide));
 
+                PlayerVelocities[clientId] = ApplyInputs(clientId,
+                    new ClientInputs(moveVector, lookDirection, Jump, Slide), PlayerVelocities[clientId]);
                 //simulate one tick
                 if (!vEngine.loadingMap)
                 {
-                 //   Physics.Simulate(Time.fixedDeltaTime);
-                 PlayerVelocities[clientId] = ApplyInputs(clientId, new ClientInputs(moveVector, lookDirection, Jump, Slide),  PlayerVelocities[clientId]);
+                    Physics.Simulate(Time.fixedDeltaTime);
                 }
                 else
                 {
@@ -186,7 +187,7 @@ public class ServerPlayerManager : MonoBehaviour
         }
 
         //store the players velocity and remove it from simulation
-       // PlayerVelocities[clientId] = playerRB.velocity;
+        // PlayerVelocities[clientId] = playerRB.velocity;
         playerRB.isKinematic = true;
     }
 
