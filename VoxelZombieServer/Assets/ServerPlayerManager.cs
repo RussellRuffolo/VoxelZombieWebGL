@@ -130,7 +130,7 @@ public class ServerPlayerManager : MonoBehaviour
         //having all players be kinematic allows each one to be simulated 
         //seperately as inputs arrive
         playerRB.isKinematic = false;
-        playerRB.velocity = PlayerVelocities[clientId];
+       // playerRB.velocity = PlayerVelocities[clientId];
 
         //number of inputs received from the client
         int numInputs = reader.ReadInt();
@@ -160,12 +160,13 @@ public class ServerPlayerManager : MonoBehaviour
 
 
                 //apply the clients inputs to change the player velocity
-                ApplyInputs(clientId, new ClientInputs(moveVector, lookDirection, Jump, Slide));
+              //  ApplyInputs(clientId, new ClientInputs(moveVector, lookDirection, Jump, Slide));
 
                 //simulate one tick
                 if (!vEngine.loadingMap)
                 {
-                    Physics.Simulate(Time.fixedDeltaTime);
+                 //   Physics.Simulate(Time.fixedDeltaTime);
+                 PlayerVelocities[clientId] = ApplyInputs(clientId, new ClientInputs(moveVector, lookDirection, Jump, Slide),  PlayerVelocities[clientId]);
                 }
                 else
                 {
@@ -185,15 +186,15 @@ public class ServerPlayerManager : MonoBehaviour
         }
 
         //store the players velocity and remove it from simulation
-        PlayerVelocities[clientId] = playerRB.velocity;
+       // PlayerVelocities[clientId] = playerRB.velocity;
         playerRB.isKinematic = true;
     }
 
-    private void ApplyInputs(ushort id, ClientInputs inputs)
+    private Vector3 ApplyInputs(ushort id, ClientInputs inputs, Vector3 lastVelocity)
     {
         ServerPlayerController playerController = PlayerDictionary[id].PlayerController;
 
-        playerController.ApplyInputs(PlayerDictionary[id].playerRb, inputs);
+        return playerController.ApplyInputs(PlayerDictionary[id].playerRb, inputs, lastVelocity);
 
         // Transform playerTransform = PlayerDictionary[id].transform;
         // Rigidbody playerRB = playerTransform.GetComponent<Rigidbody>();

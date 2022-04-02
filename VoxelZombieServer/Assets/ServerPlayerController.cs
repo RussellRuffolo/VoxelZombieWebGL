@@ -59,12 +59,12 @@ public class ServerPlayerController : MonoBehaviour
         }
     }
 
-    public Vector3 lastVelocity = Vector3.zero;
+  //  public Vector3 lastVelocity = Vector3.zero;
     public Vector3 currentVelocity = Vector3.zero;
 
     public Vector3 lastPosition = Vector3.zero;
 
-    public void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs)
+    public Vector3 ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs, Vector3 lastVelocity)
     {
         MoveState state = MoveStates[MoveState].CheckMoveState(playerRB, currentInputs, allCPs, world, lastVelocity);
 
@@ -83,7 +83,7 @@ public class ServerPlayerController : MonoBehaviour
         playerRb.MovePosition(playerRb.transform.position +
                               (currentVelocity) * Time.fixedDeltaTime);
 
-        lastVelocity = currentVelocity;
+       return currentVelocity;
     }
 
     private void OnCollisionEnter(Collision collision)
