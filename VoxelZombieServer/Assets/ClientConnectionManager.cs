@@ -269,7 +269,7 @@ public class ClientConnectionManager : MonoBehaviour
             {
                 Debug.Log("Candidate: " + client.IceCandidate.Candidate);
                 string candidate = client.IceCandidate.Candidate;
-                string newCandidate = candidate.Replace("192.168.0.171", "209.6.75.168");
+                string newCandidate = candidate.Replace("192.168.0.137", "209.6.75.168");
 
 
                 JObject jObject = JObject.FromObject(new
