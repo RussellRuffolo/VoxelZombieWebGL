@@ -81,7 +81,7 @@ namespace Client
                 int bufferIndex = tickNumber % 1024;
 
                 //store the state and inputs in circular buffers
-                LoggedStates[bufferIndex] = new PlayerState(transform.position, playerRB.velocity, tickNumber);
+                LoggedStates[bufferIndex] = new PlayerState(transform.position, lastVelocity, tickNumber);
 
                 LoggedInputs[bufferIndex] = new ClientInputs(currentInputs.MoveVector, currentInputs.PlayerForward,
                     currentInputs.Jump,
@@ -157,6 +157,7 @@ namespace Client
 
         public abstract void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs);
         public abstract bool CheckGrounded();
+        public Vector3 lastVelocity = Vector3.zero;
 
         //This is called when a server state packet arrives
         //The server state is compared to the saved client state and if it doesn't match
@@ -172,13 +173,14 @@ namespace Client
                 LoggedStates[bufferIndex] = new PlayerState(serverPosition, serverVelocity, ClientTickNumber);
             }
 
+           
             //check error between position/velocity at the tick supplied
             Vector3 positionError = LoggedStates[bufferIndex].position - serverPosition;
             if (positionError.sqrMagnitude > 0.001f)
             {
                 //rewind to the given tick and replay to current tick
                 transform.position = serverPosition;
-                playerRB.velocity = serverVelocity;
+                lastVelocity = serverVelocity;
 
                 ushort simulMoveState = moveState;
 
@@ -192,7 +194,7 @@ namespace Client
                     ApplyInputs(playerRB, currentInputs);
 
                     LoggedStates[rewindTickNumber % 1024] =
-                        new PlayerState(transform.position, playerRB.velocity, rewindTickNumber);
+                        new PlayerState(transform.position, lastVelocity, rewindTickNumber);
 
                     Physics.Simulate(Time.fixedDeltaTime);
 

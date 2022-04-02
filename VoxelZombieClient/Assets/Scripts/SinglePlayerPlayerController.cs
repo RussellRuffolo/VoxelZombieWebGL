@@ -41,7 +41,7 @@ namespace Client
             }
         }
 
-        public Vector3 lastVelocity = Vector3.zero;
+       // public Vector3 lastVelocity = Vector3.zero;
         public Vector3 currentVelocity = Vector3.zero;
         private MoveState lastState = 0;
 

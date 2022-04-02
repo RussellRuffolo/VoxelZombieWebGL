@@ -44,9 +44,7 @@ namespace Client
             }
         }
 
-        public Vector3 lastVelocity = Vector3.zero;
         public Vector3 lastPosition = Vector3.zero;
-        private MoveState lastState = 0;
         public Vector3 currentVelocity = Vector3.zero;
 
         public override void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs)
