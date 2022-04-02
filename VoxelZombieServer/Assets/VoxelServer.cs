@@ -765,8 +765,7 @@ public class VoxelServer : MonoBehaviour
 
             if (PlayerManager.PlayerDictionary.ContainsKey(c.ID))
             {
-                PlayerManager.PlayerDictionary[c.ID].transform.GetComponent<Rigidbody>().velocity =
-                    Vector3.zero;
+                PlayerManager.PlayerVelocities[c.ID] = Vector3.zero;
                 PlayerManager.PlayerDictionary[c.ID].transform.position = spawnPosition;
             }
 

@@ -183,7 +183,7 @@ public class ServerPlayerManager : MonoBehaviour
         if (appliedInput)
         {
             //send the client a state update with the corresponding tick
-            vServer.SendPositionUpdate(clientId, client, targetPlayer.position, TickDic[clientId], playerRB.velocity);
+            vServer.SendPositionUpdate(clientId, client, targetPlayer.position, TickDic[clientId], PlayerVelocities[clientId]);
         }
 
         //store the players velocity and remove it from simulation
