@@ -1386,7 +1386,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fca66dd45c76aeb48a210b8c5425f4db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chatCanvas: {fileID: 1190044661}
   inputText: {fileID: 1209646357}
   logPanel: {fileID: 2063540378}
   inputPanel: {fileID: 1402527461}
@@ -1620,7 +1619,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1190044661}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -2103,6 +2102,10 @@ MonoBehaviour:
   vEngine: {fileID: 1112098554}
   BreakBlockParticleSystem: {fileID: 1236815689844116050, guid: e66cc4b17bb65604a94f5e5702c43525,
     type: 3}
+  InputText: {fileID: 1209646357}
+  LogPanel: {fileID: 2063540378}
+  InputPanel: {fileID: 1402527461}
+  DisplayedLogs: {fileID: 1000763726}
   SingePlayerPrefab: {fileID: 7401463790989363328, guid: e51d19dc5312dd549bf7e273bc2cc19d,
     type: 3}
   SinglerPlayerSimulator: {fileID: 2883746582918297131, guid: 829617cec4a0a9d44b8c611caf276a58,

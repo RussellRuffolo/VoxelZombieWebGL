@@ -37,7 +37,7 @@ namespace Client
         // Update is called once per frame
         void Update()
         {
-            if (!menuController.MenuOpen)
+            if (PlayerController.InputState == InputState.Standard)
                 CameraLook();
         }
 

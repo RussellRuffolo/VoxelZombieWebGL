@@ -10,9 +10,6 @@ namespace Client
 
         [SerializeField] public Rigidbody playerRb;
 
-        [SerializeField] public BoxCollider standingCollider;
-
-        [SerializeField] public BoxCollider slidingCollider;
 
         private IMoveState CurrentMoveState;
         private IWorld world;
@@ -27,7 +24,8 @@ namespace Client
 
             colliderHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
 
-
+            InputStates.Add(InputState.Chat, new SinglePlayerChatInputState());
+            
             MoveState = MoveState.basicAir;
             CurrentMoveState = MoveStates[MoveState];
             lastPosition = transform.position;
@@ -41,7 +39,7 @@ namespace Client
             }
         }
 
-       // public Vector3 lastVelocity = Vector3.zero;
+        // public Vector3 lastVelocity = Vector3.zero;
         public Vector3 currentVelocity = Vector3.zero;
         private MoveState lastState = 0;
 
@@ -61,7 +59,7 @@ namespace Client
             }
 
             currentVelocity = CurrentMoveState.GetVelocity(playerRB, currentInputs, allCPs, lastVelocity, lastPosition);
-            
+
             allCPs.Clear();
 
             lastPosition = playerRB.transform.position;

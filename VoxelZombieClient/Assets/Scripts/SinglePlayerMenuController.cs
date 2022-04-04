@@ -14,12 +14,20 @@ public class SinglePlayerMenuController : MonoBehaviour
     [SerializeField] private SinglePlayerVoxelEngine vEngine;
     public ParticleSystem BreakBlockParticleSystem;
 
+    
+    public Text InputText;
+    public Image LogPanel;
+    public Image InputPanel;
+    public Text DisplayedLogs;
 
     public GameObject SingePlayerPrefab;
     public GameObject SinglerPlayerSimulator;
 
     public GameObject PlayerMenu;
 
+    private SinglePlayerPlayerController singlePlayerPlayerController;
+
+   // public Canvas ChatCanvas;
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +67,7 @@ public class SinglePlayerMenuController : MonoBehaviour
 
         Vector3 eulerRotation = Vector3.zero;
 
+        Instantiate(PlayerMenu);
 
         GameObject LocalPlayer = Instantiate(SingePlayerPrefab,
             position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
@@ -66,14 +75,21 @@ public class SinglePlayerMenuController : MonoBehaviour
         GameObject LocalPlayerSim = Instantiate(SinglerPlayerSimulator,
             position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-        Instantiate(PlayerMenu);
-
+      
         LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
             LocalPlayerSim.transform;
-        LocalPlayerSim.GetComponent<SinglePlayerPlayerController>().camController =
+        singlePlayerPlayerController = LocalPlayerSim.GetComponent<SinglePlayerPlayerController>();
+        singlePlayerPlayerController.camController =
             LocalPlayer.GetComponent<ClientCameraController>();
 
         LocalPlayer.GetComponent<SinglePlayerBlockEditor>().blockBreakParticleSystem =
             Instantiate(BreakBlockParticleSystem, null);
+        
+        
+        singlePlayerPlayerController.InputText = InputText;
+        singlePlayerPlayerController.LogPanel = LogPanel;
+        singlePlayerPlayerController.InputPanel = InputPanel;
+        singlePlayerPlayerController.DisplayedLogs = DisplayedLogs;
+
     }
 }

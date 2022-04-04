@@ -350,14 +350,12 @@ namespace Client
 
                 if (breakSpotTag == 0)
                 {
-                    Debug.Log("Error, no block there");
                     return;
                 }
 
                 //bedrock, water, and lava can not be broken
                 if (breakSpotTag == 7 || breakSpotTag == 9 || breakSpotTag == 11)
                 {
-                    Debug.Log("Can't break water lava or bedrock");
                     return;
                 }
 

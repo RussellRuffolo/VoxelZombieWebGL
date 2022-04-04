@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Client
 {
@@ -10,9 +11,6 @@ namespace Client
 
         [SerializeField] public Rigidbody playerRb;
 
-        [SerializeField] public BoxCollider standingCollider;
-
-        [SerializeField] public BoxCollider slidingCollider;
 
         private IMoveState CurrentMoveState;
         private IWorld world;
@@ -30,6 +28,10 @@ namespace Client
             colliderHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
 
             vClient = GameObject.FindGameObjectWithTag("Network").GetComponent<VoxelClient>();
+
+
+            InputStates.Add(InputState.Chat, new ChatInputState());
+
 
             MoveState = MoveState.basicAir;
             CurrentMoveState = MoveStates[MoveState];
@@ -53,7 +55,7 @@ namespace Client
                 .CheckMoveState(playerRB, currentInputs, allCPs, world, lastVelocity);
 
             MoveState = state;
-            
+
             if (CurrentMoveState != MoveStates[state])
             {
                 CurrentMoveState.Exit();
@@ -95,7 +97,6 @@ namespace Client
 
             return found;
         }
-
 
 
         private void OnCollisionEnter(Collision collision)

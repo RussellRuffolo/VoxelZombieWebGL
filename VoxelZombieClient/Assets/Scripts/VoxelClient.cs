@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 namespace Client
@@ -39,9 +40,13 @@ namespace Client
 
         List<ChunkID> dirtiedChunks = new List<ChunkID>();
 
+        public Text InputText;
+        public Image LogPanel;
+        public Image InputPanel;
+        public Text DisplayedLogs;
 
         private ClientPlayerController ClientPlayerController;
-        
+
         [DllImport("__Internal")]
         private static extern void SendReliableMessage(string message);
 
@@ -86,7 +91,6 @@ namespace Client
 
             Vector3 velocity = new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat());
             ClientPlayerController.ClientPrediction(serverPosition, clientTickNumber, velocity);
-  
         }
 
 
@@ -134,7 +138,14 @@ namespace Client
                     LocalPlayer.GetComponent<ClientBlockEditor>().blockBreakParticleSystem =
                         Instantiate(BreakBlockParticleSystem);
 
-                    ClientPlayerController = LocalPlayerSim.GetComponent<ClientPlayerController>(); 
+                    ClientPlayerController = LocalPlayerSim.GetComponent<ClientPlayerController>();
+
+                    ClientPlayerController.InputText = InputText;
+                    ClientPlayerController.LogPanel = LogPanel;
+                    ClientPlayerController.InputPanel = InputPanel;
+                    ClientPlayerController.DisplayedLogs = DisplayedLogs;
+
+
                     if (StateTag == 0)
                     {
                         LocalPlayer.GetComponent<MeshRenderer>().material.color = Color.white;
@@ -282,7 +293,7 @@ namespace Client
                 ushort y = reader.ReadUShort();
                 ushort z = reader.ReadUShort();
 
-                byte blockTag = (byte)reader.ReadUShort();
+                byte blockTag = (byte) reader.ReadUShort();
                 world[x, y, z] = blockTag;
 
                 dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, z));
@@ -402,8 +413,15 @@ namespace Client
 
             LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
                 LocalPlayerSim.transform;
-            LocalPlayerSim.GetComponent<SinglePlayerPlayerController>().camController =
+            SinglePlayerPlayerController singlePlayerPlayerController =
+                LocalPlayerSim.GetComponent<SinglePlayerPlayerController>();
+            singlePlayerPlayerController.camController =
                 LocalPlayer.GetComponent<ClientCameraController>();
+            
+            singlePlayerPlayerController.InputText = InputText;
+            singlePlayerPlayerController.LogPanel = LogPanel;
+            singlePlayerPlayerController.InputPanel = InputPanel;
+            singlePlayerPlayerController.DisplayedLogs = DisplayedLogs;
 
             // vEngine.MapLoadedDelegate += spawnPosition =>
             // {

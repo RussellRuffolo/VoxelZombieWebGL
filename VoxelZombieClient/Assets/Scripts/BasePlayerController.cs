@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Client
 {
@@ -30,14 +32,29 @@ namespace Client
             {MoveState.postWallJump, new PostWallJumpMoveState()}
         };
 
+        protected Dictionary<InputState, IInputState> InputStates = new Dictionary<InputState, IInputState>()
+        {
+            {InputState.Standard, new StandardInputState()},
+            {InputState.Menu, new MenuInputState()}
+        };
 
         protected float rotationY = 0f;
         private float rotationX = 0f;
 
-        public ushort moveState = 0;
+        public Text InputText;
+        public Image LogPanel;
+        public Image InputPanel;
+        public Text DisplayedLogs;
+
+
+        [SerializeField] public BoxCollider standingCollider;
+
+        [SerializeField] public BoxCollider slidingCollider;
 
         public MoveState MoveState;
+        public InputState InputState;
 
+        private IInputState CurrentInputState;
         ClientChatManager chatClient;
         public ClientCameraController camController;
 
@@ -51,17 +68,48 @@ namespace Client
 
         public Rigidbody playerRB;
 
+        private ClientInputs EmptyInputs = new ClientInputs();
+
+
         private void Awake()
         {
             playerRB = GetComponent<Rigidbody>();
             chatClient = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientChatManager>();
             playerRB = GetComponent<Rigidbody>();
 
+            for (int i = 0; i < 1024; i++)
+            {
+                LoggedInputs[i] = new ClientInputs();
+                LoggedStates[i] = new PlayerState();
+            }
+
+            ((MenuInputState) InputStates[InputState.Menu]).MenuCanvas =
+                GameObject.FindGameObjectWithTag("MenuCanvas").GetComponent<Canvas>();
+
+            InputState = InputState.Standard;
+            CurrentInputState = InputStates[InputState];
+            
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            
             OnAwake();
+        }
+
+        private void Start()
+        {
+            BaseChatInputState chatInputState = (BaseChatInputState) InputStates[InputState.Chat];
+
+            chatInputState.inputPanel = InputPanel;
+            chatInputState.inputText = InputText;
+            chatInputState.logPanel = LogPanel;
+            chatInputState.DisplayedLogs = DisplayedLogs;
+
+            chatInputState.vClient = GameObject.FindGameObjectWithTag("Network").GetComponent<VoxelClient>();
         }
 
         protected abstract void OnAwake();
 
+        private int currentBufferIndex;
 
         // Update is called once per frame
         void Update()
@@ -69,8 +117,46 @@ namespace Client
             GetMouseRotation();
 
             //current inputs are the player inputs for this frame
-            ClientInputs currentInputs = GetInputs();
+            ClientInputs clientInputs = GetInputs();
 
+            InputState newState = InputStates[InputState].CheckInputState(clientInputs);
+
+
+            // if (CurrentMoveState != MoveStates[state])
+            // {
+            //     CurrentMoveState.Exit();
+            //     CurrentMoveState = MoveStates[state];
+            //     CurrentMoveState.Enter();
+            // }
+            //
+            // currentVelocity = CurrentMoveState.GetVelocity(playerRB, currentInputs, allCPs, lastVelocity, lastPosition);
+
+            if (newState != InputState)
+            {
+                InputState = newState;
+                CurrentInputState.Exit();
+                CurrentInputState = InputStates[newState];
+                CurrentInputState.Enter();
+            }
+
+            CurrentInputState.ApplyInputs(clientInputs);
+
+            if (InputState == InputState.Standard)
+            {
+                Simulate(clientInputs);
+            }
+            else
+            {
+                Simulate(EmptyInputs);
+            }
+
+
+            //Send all unconfirmed inputs to the server
+            SendInputs();
+        }
+
+        private void Simulate(ClientInputs clientInputs)
+        {
             //run the physics for as many ticks fit since last frame
             timer += Time.deltaTime;
 
@@ -78,26 +164,23 @@ namespace Client
             {
                 timer -= Time.fixedDeltaTime;
 
-                int bufferIndex = tickNumber % 1024;
+                currentBufferIndex = tickNumber % 1024;
 
                 //store the state and inputs in circular buffers
-                LoggedStates[bufferIndex] = new PlayerState(transform.position, lastVelocity, tickNumber);
+                LoggedStates[currentBufferIndex].position = transform.position;
+                LoggedStates[currentBufferIndex].velocity = lastVelocity;
+                LoggedStates[currentBufferIndex].Tick = tickNumber;
 
-                LoggedInputs[bufferIndex] = new ClientInputs(currentInputs.MoveVector, currentInputs.PlayerForward,
-                    currentInputs.Jump,
-                    currentInputs.Slide, tickNumber);
+                LoggedInputs[currentBufferIndex] = clientInputs;
+                LoggedInputs[currentBufferIndex].TickNumber = tickNumber;
 
-                
                 //Apply the inputs to change player velocity
-                ApplyInputs(playerRB, currentInputs);
+                ApplyInputs(playerRB, clientInputs);
 
                 //Simulate one tick and increment the tick number
                 Physics.Simulate(Time.fixedDeltaTime);
                 tickNumber++;
             }
-
-            //Send all unconfirmed inputs to the server
-            SendInputs();
         }
 
         //sends all inputs to the server that the server hasn't yet confirmed it has run
@@ -142,6 +225,10 @@ namespace Client
 
             bool slide = Input.GetKey(KeyCode.LeftShift);
 
+            bool chat = Input.GetKeyDown(KeyCode.T) || Input.GetKeyDown(KeyCode.Return);
+
+            bool menu = Input.GetKeyDown(KeyCode.M);
+
             //can't move or jump if chatting
             if (chatClient.chatEnabled)
             {
@@ -151,13 +238,20 @@ namespace Client
 
             int inputTickNumber = tickNumber;
 
-            ClientInputs currentInputs = new ClientInputs(speedVector, playerForward, jump, slide, inputTickNumber);
+            ClientInputs currentInputs =
+                new ClientInputs(speedVector, playerForward, jump, slide, menu, chat, inputTickNumber);
             return currentInputs;
         }
 
         public abstract void ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs);
         public abstract bool CheckGrounded();
         public Vector3 lastVelocity = Vector3.zero;
+
+        private int bufferIndex;
+        private int rewindTickNumber;
+        private Vector3 predictionError;
+
+        private ClientInputs currentInputs;
 
         //This is called when a server state packet arrives
         //The server state is compared to the saved client state and if it doesn't match
@@ -166,30 +260,28 @@ namespace Client
         {
             lastReceivedStateTick = ClientTickNumber;
 
-            int bufferIndex = (ClientTickNumber) % 1024;
+            bufferIndex = (ClientTickNumber) % 1024;
 
             if (LoggedStates[bufferIndex] == null)
             {
                 LoggedStates[bufferIndex] = new PlayerState(serverPosition, serverVelocity, ClientTickNumber);
             }
 
-           
+
             //check error between position/velocity at the tick supplied
-            Vector3 positionError = LoggedStates[bufferIndex].position - serverPosition;
-            if (positionError.sqrMagnitude > 0.001f)
+            predictionError = LoggedStates[bufferIndex].position - serverPosition;
+            if (predictionError.sqrMagnitude > 0.001f)
             {
                 //rewind to the given tick and replay to current tick
                 transform.position = serverPosition;
                 lastVelocity = serverVelocity;
 
-                ushort simulMoveState = moveState;
-
-                int rewindTickNumber = ClientTickNumber;
+                rewindTickNumber = ClientTickNumber;
                 //Simulate each tick until the current tick is reached
-                while (rewindTickNumber < this.tickNumber)
+                while (rewindTickNumber < tickNumber)
                 {
                     bufferIndex = rewindTickNumber % 1024;
-                    ClientInputs currentInputs = LoggedInputs[bufferIndex];
+                    currentInputs = LoggedInputs[bufferIndex];
 
                     ApplyInputs(playerRB, currentInputs);
 

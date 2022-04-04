@@ -637,6 +637,10 @@ MonoBehaviour:
     type: 3}
   PlayerMenu: {fileID: 1187478391641481103, guid: ff91b10a5f6205b44978185609362132,
     type: 3}
+  InputText: {fileID: 1942814535}
+  LogPanel: {fileID: 1786748613}
+  InputPanel: {fileID: 1882310663}
+  DisplayedLogs: {fileID: 28276109}
 --- !u!114 &250310965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -692,7 +696,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fca66dd45c76aeb48a210b8c5425f4db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chatCanvas: {fileID: 1950941782}
   inputText: {fileID: 1942814535}
   logPanel: {fileID: 1786748613}
   inputPanel: {fileID: 1882310663}

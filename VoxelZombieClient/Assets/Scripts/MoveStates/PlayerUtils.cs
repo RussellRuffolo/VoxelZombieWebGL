@@ -78,7 +78,6 @@ public static class PlayerUtils
         {
             if (collider.CompareTag("Water"))
             {
-                Debug.Log("Colliding with water");
                 return true;
             }
         }
@@ -90,7 +89,6 @@ public static class PlayerUtils
 
         if (world[x, y, z] == 9)
         {
-            Debug.Log("In Water");
             return true;
         }
 
