@@ -6,6 +6,7 @@ from fastapi_users.db import (
     SQLAlchemyBaseUserTable,
     SQLAlchemyUserDatabase,
 )
+from sqlalchemy import Column, String
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
@@ -17,6 +18,7 @@ Base: DeclarativeMeta = declarative_base()
 
 
 class UserTable(Base, SQLAlchemyBaseUserTable):
+    username = Column(String(length=24), unique=True, nullable=True)
     oauth_accounts = relationship("OAuthAccountTable")
 
 

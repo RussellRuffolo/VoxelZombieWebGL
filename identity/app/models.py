@@ -1,3 +1,6 @@
+from typing import Optional
+from pydantic import constr
+
 from fastapi_users import models
 
 
@@ -10,7 +13,7 @@ class UserCreate(models.BaseUserCreate):
 
 
 class UserUpdate(models.BaseUserUpdate):
-    pass
+    username: Optional[constr(max_length=24)]
 
 
 class UserDB(User, models.BaseUserDB):
