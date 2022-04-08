@@ -3,8 +3,7 @@ const app = express();
 const cors = require('cors');
 var path = require('path')
 
-const hostname = '192.168.0.137'; 
-const port = 80
+const configData = require('./config.json');
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'Public')));
@@ -15,10 +14,4 @@ app.use(function (req, res, next) {
     next()
 })
 
-// app.get('/Landing.html', function (req, res) {
-//     console.log("Got a GET request for the homepage");
-//     res.send('Hello GET');
-//  })
-
-
-app.listen(port, hostname, () => console.log('WebGL Server is listening on port: ' + port));
+app.listen(configData.crashbloxServerPort, configData.hostAddress, () => console.log('WebGL Server is listening on port: ' + configData.crashbloxServerPort));
