@@ -198,6 +198,7 @@ public class ClientConnectionManager : MonoBehaviour
 
         resp.Headers["content-type"] = "application/json";
         string sdp = offerOp.Desc.sdp;
+        Debug.Log("Sdp: " + sdp);
         string newSdp = sdp.Replace("c=IN IP4 0.0.0.0", "c=IN IP4 209.6.75.168");
         GetOfferResponse respObject = new GetOfferResponse(clientId, newSdp);
         string jsonResponse = JsonUtility.ToJson(respObject);
