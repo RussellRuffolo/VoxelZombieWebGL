@@ -3,8 +3,13 @@
   <head>
   <title>Login - Crashblox</title>
   <style>
+    html, body {
+  margin:0;
+  height:100%;
+  overflow: hidden;
+}
     h1{
-      color: rgb(0, 117, 108);
+      color: rgb(255, 136, 0);
       font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
    
     }
@@ -17,13 +22,31 @@
       background: grey;
       margin: 0px 0px;
       padding: 0;
+      display: flex;
+      flex-direction: row;
+    }
+    div{
+      margin: auto;
     }
     section{
       background-image: url('images/sunspots.png');
       background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: 100% 100%
+       background-size: auto;
+
+            display: flex;
+            flex-direction: column;
+
+  
     }
+    .bg-container {
+      background-image: url('images/sunspots.png');
+      background-repeat: no-repeat;
+       background-size: cover;
+  width:100%;
+  height:100%;
+  border:5px solid orange;
+  box-sizing: border-box;
+}
   </style>
 
   <script defer src="yooo.js"></script>
@@ -32,13 +55,14 @@
 
   <body>
     <header>
-      <h1>crashblox</h1>
-      <button class="sign_in" id="google">Sign in with Google</button>
+       <h1>crashblox</h1>
+    <div>     
+       <button class="sign_in" id="google">Sign in with Google</button>
+    </div>
 
     </header>
-    <section>
-      Test Text
-    </section>
+    <div class="bg-container">
+    </div>
    
   </body>
 </html>
