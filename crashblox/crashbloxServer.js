@@ -8,11 +8,6 @@ const configData = require('./config.json');
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'Public/Static')));
 
-app.use(express.static(path.join(__dirname, 'Public/TemplateData')));
-
-app.use(express.static(path.join(__dirname, 'Public/Build')));
-app.use(express.static(path.join(__dirname, 'Public/StreamingAssets')));
-
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'Public/index.html'))
   })
