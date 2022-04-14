@@ -28,7 +28,7 @@ public class SlideAirMoveState : CrouchingMoveState
     public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
         List<ContactPoint> contactPoints, IWorld world, Vector3 lastVelocity)
     {
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
         {
             if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
             {
@@ -50,5 +50,56 @@ public class SlideAirMoveState : CrouchingMoveState
         }
 
         return MoveState.basicAir;
+    }
+}
+
+public class EmptySlideAirMoveState : CrouchingMoveState
+{
+    public override Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs,
+        List<ContactPoint> contactPoints,
+        Vector3 lastVelocity, Vector3 lastPosition)
+    {
+        Vector3 velocity = (playerRb.transform.position - lastPosition) / Time.fixedDeltaTime;
+        
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
+        float ySpeed = velocity.y;
+        horizontalVelocity += currentInputs.MoveVector.normalized * PlayerStats.AirAcceleration * Time.fixedDeltaTime;
+
+        if (horizontalVelocity.magnitude > PlayerStats.playerSpeed)
+        {
+            horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
+        }
+
+        ySpeed -= PlayerStats.gravAcceleration * Time.fixedDeltaTime;
+
+        return horizontalVelocity + ySpeed * Vector3.up;
+    }
+
+
+    public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
+        List<ContactPoint> contactPoints, IWorld world, Vector3 lastVelocity)
+    {
+        if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
+        {
+            if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
+            {
+                if (lastVelocity.magnitude > PlayerStats.crawlSpeed)
+                {
+                    Debug.Log("return basic");
+                    return MoveState.basicSliding;
+                }
+
+                return MoveState.basicCrawling;
+            }
+
+            return MoveState.basicGrounded;
+        }
+        return MoveState.emptySlideAir;
+        // if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
+        // {
+        //     return MoveState.emptySlideAir;
+        // }
+        //
+        // return MoveState.basicAir;
     }
 }

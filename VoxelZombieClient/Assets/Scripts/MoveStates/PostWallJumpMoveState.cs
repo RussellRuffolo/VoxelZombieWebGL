@@ -32,7 +32,7 @@ public class PostWallJumpMoveState : IMoveState
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         IWorld world, Vector3 lastVelocity)
     {
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
         {
             if (playerInputs.Slide)
             {
@@ -42,6 +42,12 @@ public class PostWallJumpMoveState : IMoveState
             return MoveState.basicGrounded;
         }
 
+        
+        if (playerInputs.Slide)
+        {
+            return MoveState.slideAir;
+        }
+        
         return MoveState.postWallJump;
     }
 }

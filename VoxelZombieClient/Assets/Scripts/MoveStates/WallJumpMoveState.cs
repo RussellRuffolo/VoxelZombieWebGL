@@ -44,7 +44,7 @@ public class WallJumpMoveState : IMoveState
     {
         if (Jumped)
         {
-            if (PlayerUtils.CheckGrounded(contactPoints))
+            if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
             {
                 return MoveState.basicGrounded;
             }

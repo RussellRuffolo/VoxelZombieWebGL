@@ -27,7 +27,7 @@ public class CrouchJumpMoveState : CrouchingMoveState
     {
         if (Jumped)
         {
-            if (PlayerUtils.CheckGrounded(contactPoints))
+            if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
             {
                 if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
                 {

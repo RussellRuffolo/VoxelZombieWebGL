@@ -18,7 +18,7 @@ public class BasicCrawlingMoveState : CrouchingMoveState
         List<ContactPoint> contactPoints,
         IWorld world, Vector3 lastVelocity)
     {
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
         {
             if (playerInputs.Jump)
             {

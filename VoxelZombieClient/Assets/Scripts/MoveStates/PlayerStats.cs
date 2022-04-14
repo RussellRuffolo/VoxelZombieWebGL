@@ -8,7 +8,7 @@ public static class PlayerStats
 
     public static float crawlSpeed = 1.5f;
     public static float slideFriction = .05f;
-    public static float slideBoost = 1f;
+    public static float slideBoost = .5f;
     public static float AirAcceleration = 8.5f;
     public static float jumpSpeed = 8;
     public static float gravAcceleration = 25;

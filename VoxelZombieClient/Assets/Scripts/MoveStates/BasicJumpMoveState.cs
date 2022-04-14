@@ -29,7 +29,7 @@ public class BasicJumpMoveState : IMoveState
     {
         if (Jumped)
         {
-            if (PlayerUtils.CheckGrounded(contactPoints))
+            if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
             {
                 if (playerInputs.Jump)
                 {

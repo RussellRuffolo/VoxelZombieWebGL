@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Client;
 using UnityEngine;
 
-public class GroundedHalfBlockMoveState : IMoveState
+public class SlidingGroundedHalfBlockMoveState : IMoveState
 {
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {
         playerRb.transform.position += Vector3.up * .5f;
-        //perhaps also tp you in the direction of your velocity the amount you should have moved last frame but didn't because of collision with block. 
+        
+        Vector3 velocity = new Vector3(playerRb.position.x - lastPosition.x, 0, playerRb.position.z - lastPosition.z) /
+                           Time.fixedDeltaTime;
+        //velocity -= velocity.normalized * PlayerStats.slideFriction;
 
-        Vector3 horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
-
-        return horizontalVelocity;//+ lastVelocity.y * Vector3.up;
+        return velocity;
     }
 
     public void Enter()
@@ -28,19 +29,16 @@ public class GroundedHalfBlockMoveState : IMoveState
     {
         if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
         {
-            if (playerInputs.Jump)
-            {
-                return MoveState.basicJump;
-            }
+        
 
             // if (PlayerUtils.CheckHalfBlock(playerRb, playerInputs, contactPoints, world))
             // {
             //     return MoveState.groundedHalfBlock;
             // }
 
-            return MoveState.basicGrounded;
+            return MoveState.basicSliding;
         }
 
-        return MoveState.basicAir;
+        return MoveState.emptySlideAir;
     }
 }

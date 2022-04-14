@@ -42,7 +42,7 @@ public class BasicAirMoveState : IMoveState
             return MoveState.waterFalling;
         }
 
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
         {
             return MoveState.basicGrounded;
         }

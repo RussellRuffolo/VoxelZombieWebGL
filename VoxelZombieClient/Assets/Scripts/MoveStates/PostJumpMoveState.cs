@@ -42,7 +42,7 @@ public class PostJumpMoveState : IMoveState
 
         if (JumpRefreshCooldown > 5)
         {
-            if (PlayerUtils.CheckGrounded(contactPoints))
+            if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
             {
                 return MoveState.basicGrounded;
             }
@@ -53,7 +53,7 @@ public class PostJumpMoveState : IMoveState
             return MoveState.postJump;
         }
 
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
         {
             return MoveState.basicGrounded;
         }
