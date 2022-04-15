@@ -42,7 +42,7 @@ app.include_router(
         google_oauth_client,
         auth_backend,
         settings.GOOGLE_OAUTH_CLIENT_SECRET,
-        redirect_url="https://crashbloxserver.net/landing.html",
+        redirect_url=settings.REDIRECT_URL,
     ),
     prefix="/auth/google",
     tags=["auth"],

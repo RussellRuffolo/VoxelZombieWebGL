@@ -9,6 +9,8 @@ python = "^3.9"
 fastapi-users = {extras = ["sqlalchemy2", "oauth"], version = "^9.2.5"}
 uvicorn = "^0.17.6"
 aiosqlite = "^0.17.0"
+fastapi = {extras = ["dotenv"], version = "^0.75.1"}
+python-dotenv = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"

@@ -18,6 +18,7 @@ Base: DeclarativeMeta = declarative_base()
 
 
 class UserTable(Base, SQLAlchemyBaseUserTable):
+    username = Column(String(length=24), unique=True, nullable=True)
     oauth_accounts = relationship("OAuthAccountTable")
     username = Column(String(length=24), index=True, nullable=False, unique=True)
 
