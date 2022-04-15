@@ -1,19 +1,18 @@
 from typing import Optional
-from pydantic import constr
 
 from fastapi_users import models
 
 
 class User(models.BaseUser, models.BaseOAuthAccountMixin):
-    username: str
+    username: Optional[str]
 
 
 class UserCreate(models.BaseUserCreate):
-    pass
+    username: Optional[str]
 
 
 class UserUpdate(models.BaseUserUpdate):
-    username: Optional[constr(max_length=24)]
+    username: Optional[str]
 
 
 class UserDB(User, models.BaseUserDB):
