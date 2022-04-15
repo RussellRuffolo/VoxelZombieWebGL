@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "VoxelZombieClient",
+"productVersion": "0.1",
+"dataUrl": "VoxelClientWebGL.data.unityweb",
+"wasmCodeUrl": "VoxelClientWebGL.wasm.code.unityweb",
+"wasmFrameworkUrl": "VoxelClientWebGL.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.2.21f1"
+}

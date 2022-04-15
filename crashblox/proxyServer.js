@@ -7,9 +7,8 @@ const app = express();
 const cors = require('cors');
 var path = require('path')
 
-const hostname = '192.168.0.137';
-const localHostName = '127.0.0.1';
-const port = 25565
+
+const configData = require('./config.json');
 
 app.use(cors());
 
@@ -60,5 +59,5 @@ app.get('/get-offer', (req, res) => {
 //   key: fs.readFileSync('www.crashblox.net.key'),
 //   cert: fs.readFileSync('www.crashblox.net.crt')
 // };
-app.listen(port, hostname, () => console.log('Proxy Server is listening on port: ' + port));
+app.listen(configData.proxyServerPort, configData.hostAddress, () => console.log('Proxy Server is listening on port: ' + configData.proxyServerPort));
 // https.createServer(options, app).listen(port, () => console.log('Proxy Server is listening on port: ' + port));

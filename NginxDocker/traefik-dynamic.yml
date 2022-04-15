@@ -1,0 +1,11 @@
+# traefik-dynamic.yml
+http:
+  services:
+    identity:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:8000
+  routers:
+    identity:
+      rule: "Host(`id.localhost`)"
+      service: identity
