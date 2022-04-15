@@ -20,6 +20,7 @@ namespace Client
             {MoveState.lavaSwimming, new LavaSwimmingMoveState()},
             {MoveState.waterJump, new WaterJumpMoveState()},
             {MoveState.basicSliding, new BasicSlidingMoveState()},
+            {MoveState.slideJump, new SlideJumpMoveState()},
             {MoveState.basicCrawling, new BasicCrawlingMoveState()},
             {MoveState.slideAir, new SlideAirMoveState()},
             {MoveState.emptySlideAir, new EmptySlideAirMoveState()},

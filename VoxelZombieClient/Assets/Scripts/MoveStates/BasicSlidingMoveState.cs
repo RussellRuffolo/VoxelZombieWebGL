@@ -21,6 +21,11 @@ public class BasicSlidingMoveState : CrouchingMoveState
     {
         if (PlayerUtils.CheckGrounded(contactPoints, playerRb))
         {
+            if (playerInputs.Jump)
+            {
+                return MoveState.slideJump;
+            }
+            
             if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
             {
                 if (PlayerUtils.CheckHalfBlock(playerRb, playerInputs, contactPoints, world))

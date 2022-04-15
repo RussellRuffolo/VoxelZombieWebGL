@@ -10,6 +10,7 @@
         basicJump,
         waterJump,
         basicSliding,
+        slideJump,
         basicCrawling,
         slideAir,
         emptySlideAir,

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Client;
 using UnityEngine;
 
-public class SlideAirMoveState : CrouchingMoveState
+public class EmptySlideAirMoveState : CrouchingMoveState
 {
     public override Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs,
         List<ContactPoint> contactPoints,
@@ -14,14 +14,14 @@ public class SlideAirMoveState : CrouchingMoveState
         float ySpeed = velocity.y;
         horizontalVelocity += currentInputs.MoveVector.normalized * PlayerStats.AirAcceleration * Time.fixedDeltaTime;
 
-        if (horizontalVelocity.magnitude > PlayerStats.playerSpeed)
-        {
-            horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
-        }
+        // if (horizontalVelocity.magnitude > PlayerStats.playerSpeed)
+        // {
+        //     horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
+        // }
 
         ySpeed -= PlayerStats.gravAcceleration * Time.fixedDeltaTime;
 
-       return horizontalVelocity + ySpeed * Vector3.up;
+        return horizontalVelocity + ySpeed * Vector3.up;
     }
 
 
@@ -34,8 +34,8 @@ public class SlideAirMoveState : CrouchingMoveState
             {
                 if (lastVelocity.magnitude > PlayerStats.crawlSpeed)
                 {
-                    Debug.Log("return slide land");
-                    return MoveState.slideLand;
+                    Debug.Log("return basic");
+                    return MoveState.basicSliding;
                 }
 
                 return MoveState.basicCrawling;
@@ -43,12 +43,12 @@ public class SlideAirMoveState : CrouchingMoveState
 
             return MoveState.basicGrounded;
         }
-
-        if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
-        {
-            return MoveState.slideAir;
-        }
-
-        return MoveState.basicAir;
+        return MoveState.emptySlideAir;
+        // if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
+        // {
+        //     return MoveState.emptySlideAir;
+        // }
+        //
+        // return MoveState.basicAir;
     }
 }

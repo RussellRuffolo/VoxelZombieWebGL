@@ -8,8 +8,8 @@ public class SlideLandMoveState : CrouchingMoveState
         List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {
-        Vector3 direction = new Vector3(lastVelocity.x, 0, lastVelocity.z).normalized;
-        Vector3 velocity = direction * Mathf.Abs(lastVelocity.y) * PlayerStats.slideBoost;
+        Vector3 horizontalVelocity = new Vector3(lastVelocity.x, 0, lastVelocity.z);
+        Vector3 velocity = horizontalVelocity + horizontalVelocity.normalized * Mathf.Abs(lastVelocity.y) * PlayerStats.slideBoost;
         Debug.Log("Slide Land: " + velocity);
         return velocity;
     }
