@@ -12,12 +12,12 @@ public class SlideAirMoveState : CrouchingMoveState
         
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
         float ySpeed = velocity.y;
-        horizontalVelocity += currentInputs.MoveVector.normalized * PlayerStats.AirAcceleration * Time.fixedDeltaTime;
-
-        if (horizontalVelocity.magnitude > PlayerStats.playerSpeed)
-        {
-            horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
-        }
+        // horizontalVelocity += currentInputs.MoveVector.normalized * PlayerStats.AirAcceleration * Time.fixedDeltaTime;
+        //
+        // if (horizontalVelocity.magnitude > PlayerStats.playerSpeed)
+        // {
+        //     horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
+        // }
 
         ySpeed -= PlayerStats.gravAcceleration * Time.fixedDeltaTime;
 

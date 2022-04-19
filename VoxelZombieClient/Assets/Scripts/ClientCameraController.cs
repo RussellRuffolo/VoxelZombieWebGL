@@ -24,6 +24,8 @@ namespace Client
 
         private BasePlayerController PlayerController;
 
+        public GameObject playerModel;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -72,6 +74,7 @@ namespace Client
 
 
             playerCam.transform.localEulerAngles = new Vector3(-rotationX, rotationY, 0);
+            playerModel.transform.rotation = Quaternion.Euler(0, rotationY, 0);
         }
     }
 }

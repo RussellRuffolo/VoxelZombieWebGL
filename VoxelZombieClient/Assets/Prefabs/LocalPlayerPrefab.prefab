@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &88941900625817837
 Transform:
   m_ObjectHideFlags: 0
@@ -129,6 +129,7 @@ MonoBehaviour:
   editDistance: 7
   stepDistance: 0.01
   blockOutline: {fileID: -1066980457660310490}
+  blockBreakParticleSystem: {fileID: 0}
 --- !u!120 &-1066980457660310490
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -240,12 +241,10 @@ MonoBehaviour:
   LocalPlayerSim: {fileID: 0}
   minimumX: -90
   maximumX: 90
-  minimumY: -360
-  maximumY: 360
   sensitivityX: 5
   sensitivityY: 5
   rotationY: 0
-  MenuOpen: 0
+  playerModel: {fileID: 3216656299325978814}
 --- !u!1 &7198119557326670883
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,10 +403,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2621967566746856849, guid: b5f81310300755145b4a3494a52d66b4,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: b5f81310300755145b4a3494a52d66b4,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: b5f81310300755145b4a3494a52d66b4,
         type: 3}
       propertyPath: m_Name
       value: UntexPlayer_full
+      objectReference: {fileID: 0}
+    - target: {fileID: 400919785853437769, guid: b5f81310300755145b4a3494a52d66b4,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2345211957819186503, guid: b5f81310300755145b4a3494a52d66b4,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7172811627706036409, guid: b5f81310300755145b4a3494a52d66b4,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5f81310300755145b4a3494a52d66b4, type: 3}

@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class BasicJumpMoveState : IMoveState
 {
-    private bool Jumped;
+ //   private bool Jumped;
 
-    public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+ public Animator PlayerAnimator { get; set; }
+
+ public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {
         Vector3 horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
 
-        Jumped = true;
+ //       Jumped = true;
         return horizontalVelocity + PlayerStats.jumpSpeed * Vector3.up;
     }
 
@@ -21,32 +23,50 @@ public class BasicJumpMoveState : IMoveState
 
     public void Exit()
     {
-        Jumped = false;
+  //      Jumped = false;
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         IWorld world, Vector3 lastVelocity)
     {
-        if (Jumped)
-        {
-            if (PlayerUtils.CheckGrounded(contactPoints))
-            {
-                if (playerInputs.Jump)
-                {
-                    return MoveState.postJump;
-                }
+        return MoveState.postJump;
+        // if (Jumped)
+        // {
+        //     if (PlayerUtils.CheckGrounded(contactPoints))
+        //     {
+        //         if (playerInputs.Jump)
+        //         {
+        //             return MoveState.postJump;
+        //         }
+        //
+        //         return MoveState.basicGrounded;
+        //     }
+        //
+        //     if (playerInputs.Jump)
+        //     {
+        //         return MoveState.postJump;
+        //     }
+        //
+        //     return MoveState.basicAir;
+        // }
+        //
+        // return MoveState.basicJump;
+    }
+}
 
-                return MoveState.basicGrounded;
-            }
+public class SlideJumpMoveState : CrouchingMoveState
+{
+    public override Vector3 GetVelocity(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+        Vector3 lastVelocity,
+        Vector3 lastPosition)
+    {
+        return lastVelocity + PlayerStats.jumpSpeed * Vector3.up;
+    }
 
-            if (playerInputs.Jump)
-            {
-                return MoveState.postJump;
-            }
-
-            return MoveState.basicAir;
-        }
-
-        return MoveState.basicJump;
+    public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
+        List<ContactPoint> contactPoints, IWorld world,
+        Vector3 lastVelocity)
+    {
+        return MoveState.slideAir;
     }
 }

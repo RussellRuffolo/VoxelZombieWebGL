@@ -140,6 +140,7 @@ namespace Client
 
                     ClientPlayerController = LocalPlayerSim.GetComponent<ClientPlayerController>();
 
+                    ClientPlayerController.PlayerAnimator = LocalPlayer.GetComponentInChildren<Animator>();
                     ClientPlayerController.InputText = InputText;
                     ClientPlayerController.LogPanel = LogPanel;
                     ClientPlayerController.InputPanel = InputPanel;
@@ -383,55 +384,7 @@ namespace Client
 
         public void OnSinglePlayer()
         {
-            Debug.Log("On Single Player");
-
             SceneManager.LoadScene("SinglePlayerScene");
-
-
-            // LoginClient.OnSinglePlayer();
-            // SinglePlayerMenuController.OnSinglePlayer();
-        }
-
-        public void LoadSinglePlayerMap(string mapName)
-        {
-            Debug.Log("Load Single Player Map");
-            vEngine.LoadMap(mapName);
-
-
-            Vector3 position = MapInfo.SpawnPositions[mapName];
-
-            Vector3 eulerRotation = Vector3.zero;
-
-
-            GameObject LocalPlayer = GameObject.Instantiate(SingePlayerPrefab,
-                position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
-
-            GameObject LocalPlayerSim = GameObject.Instantiate(SinglerPlayerSimulator,
-                position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
-
-            GameObject Menu = GameObject.Instantiate(PlayerMenu);
-
-            LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
-                LocalPlayerSim.transform;
-            SinglePlayerPlayerController singlePlayerPlayerController =
-                LocalPlayerSim.GetComponent<SinglePlayerPlayerController>();
-            singlePlayerPlayerController.camController =
-                LocalPlayer.GetComponent<ClientCameraController>();
-            
-            singlePlayerPlayerController.InputText = InputText;
-            singlePlayerPlayerController.LogPanel = LogPanel;
-            singlePlayerPlayerController.InputPanel = InputPanel;
-            singlePlayerPlayerController.DisplayedLogs = DisplayedLogs;
-
-            // vEngine.MapLoadedDelegate += spawnPosition =>
-            // {
-            //     LocalPlayerSim.transform.position = spawnPosition;
-            //     LocalPlayer.transform.position = spawnPosition;
-            // };
-
-
-            localPlayerTransform = LocalPlayer.transform;
-            localSimTransform = LocalPlayerSim.transform;
         }
 
         public void SetPlayerState(ushort clientId, RtcMessageReader reader)

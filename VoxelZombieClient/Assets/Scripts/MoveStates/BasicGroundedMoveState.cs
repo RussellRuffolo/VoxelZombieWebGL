@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Client;
 using UnityEngine;
 
 public class BasicGroundedMoveState : IMoveState
 {
+    public Animator PlayerAnimator { get; set; }
+
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {
@@ -16,6 +17,7 @@ public class BasicGroundedMoveState : IMoveState
 
     public void Enter()
     {
+        PlayerAnimator.SetBool("Moving", true);
     }
 
     public void Exit()
@@ -55,6 +57,11 @@ public class BasicGroundedMoveState : IMoveState
             if (PlayerUtils.CheckHalfBlock(playerRb, playerInputs, contactPoints, world))
             {
                 return MoveState.groundedHalfBlock;
+            }
+
+            if (playerInputs.MoveVector == Vector3.zero)
+            {
+                return MoveState.idle;
             }
 
             return MoveState.basicGrounded;

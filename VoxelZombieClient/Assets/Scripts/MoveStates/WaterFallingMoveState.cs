@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class WaterFallingMoveState : IMoveState
 {
+    public Animator PlayerAnimator { get; set; }
+
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {
         float yVel = lastVelocity.y;
 
-        
+
         if (yVel < -PlayerStats.verticalWaterMaxSpeed)
         {
             yVel += PlayerStats.verticalWaterAcceleration * Time.fixedDeltaTime;
@@ -26,17 +28,18 @@ public class WaterFallingMoveState : IMoveState
                 yVel = -PlayerStats.verticalWaterMaxSpeed;
             }
         }
-        
-        return currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
 
+        return currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
     }
 
     public void Enter()
     {
+        PlayerAnimator.SetBool("InWater", true);
     }
 
     public void Exit()
     {
+        PlayerAnimator.SetBool("InWater", false);
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,

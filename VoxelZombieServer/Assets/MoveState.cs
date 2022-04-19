@@ -2,6 +2,7 @@
     public enum MoveState
     {
         basicGrounded,
+        idle,
         basicAir,
         postJump,
         waterSwimming,
@@ -10,6 +11,7 @@
         basicJump,
         waterJump,
         basicSliding,
+        slideJump,
         basicCrawling,
         slideAir,
         slideLand,

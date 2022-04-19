@@ -7,6 +7,8 @@ public abstract class CrouchingMoveState : IMoveState
     public BoxCollider slidingCollider;
     public BoxCollider standingCollider;
 
+    
+
     public abstract Vector3 GetVelocity(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition);
 

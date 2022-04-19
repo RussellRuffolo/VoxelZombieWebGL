@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WaterJumpMoveState : IMoveState
 {
+    
+
     private bool Jumped;
 
 

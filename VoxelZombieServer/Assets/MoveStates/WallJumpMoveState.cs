@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class WallJumpMoveState : IMoveState
 {
+    
+    
+
     private bool Jumped;
     private Vector3 normal = Vector3.zero;
 

@@ -9,10 +9,12 @@ namespace Client
     {
         public GameObject rotationTracker;
 
+        public Animator PlayerAnimator;
 
         protected Dictionary<MoveState, IMoveState> MoveStates = new Dictionary<MoveState, IMoveState>()
         {
             {MoveState.basicGrounded, new BasicGroundedMoveState()},
+            {MoveState.idle, new IdleMoveState()},
             {MoveState.basicAir, new BasicAirMoveState()},
             {MoveState.basicJump, new BasicJumpMoveState()},
             {MoveState.waterSwimming, new WaterSwimmingMoveState()},
@@ -20,6 +22,7 @@ namespace Client
             {MoveState.lavaSwimming, new LavaSwimmingMoveState()},
             {MoveState.waterJump, new WaterJumpMoveState()},
             {MoveState.basicSliding, new BasicSlidingMoveState()},
+            {MoveState.slideJump, new SlideJumpMoveState()},
             {MoveState.basicCrawling, new BasicCrawlingMoveState()},
             {MoveState.slideAir, new SlideAirMoveState()},
             {MoveState.slideLand, new SlideLandMoveState()},
@@ -77,6 +80,8 @@ namespace Client
             chatClient = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientChatManager>();
             playerRB = GetComponent<Rigidbody>();
 
+     
+
             for (int i = 0; i < 1024; i++)
             {
                 LoggedInputs[i] = new ClientInputs();
@@ -88,10 +93,10 @@ namespace Client
 
             InputState = InputState.Standard;
             CurrentInputState = InputStates[InputState];
-            
+
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            
+
             OnAwake();
         }
 
@@ -105,6 +110,11 @@ namespace Client
             chatInputState.DisplayedLogs = DisplayedLogs;
 
             chatInputState.vClient = GameObject.FindGameObjectWithTag("Network").GetComponent<VoxelClient>();
+            
+            foreach (IMoveState moveState in MoveStates.Values)
+            {
+                moveState.PlayerAnimator = PlayerAnimator;
+            }
         }
 
         protected abstract void OnAwake();

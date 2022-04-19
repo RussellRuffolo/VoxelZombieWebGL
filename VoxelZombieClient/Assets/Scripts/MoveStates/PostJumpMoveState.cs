@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PostJumpMoveState : IMoveState
 {
+    
+    public Animator PlayerAnimator { get; set; }
+
     private int JumpRefreshCooldown = 0;
 
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,

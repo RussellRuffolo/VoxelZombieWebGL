@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WallHangMoveState : IMoveState
 {
+    
+
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {

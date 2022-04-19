@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PostWallJumpMoveState : IMoveState
 {
+    public Animator PlayerAnimator { get; set; }
+
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {

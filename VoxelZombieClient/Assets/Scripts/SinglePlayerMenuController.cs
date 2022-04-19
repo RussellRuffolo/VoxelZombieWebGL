@@ -81,6 +81,9 @@ public class SinglePlayerMenuController : MonoBehaviour
         singlePlayerPlayerController = LocalPlayerSim.GetComponent<SinglePlayerPlayerController>();
         singlePlayerPlayerController.camController =
             LocalPlayer.GetComponent<ClientCameraController>();
+        
+        singlePlayerPlayerController.PlayerAnimator = LocalPlayer.GetComponentInChildren<Animator>();
+        singlePlayerPlayerController.PlayerAnimator.SetBool("IsHuman", true);
 
         LocalPlayer.GetComponent<SinglePlayerBlockEditor>().blockBreakParticleSystem =
             Instantiate(BreakBlockParticleSystem, null);
