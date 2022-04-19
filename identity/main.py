@@ -1,4 +1,7 @@
 import uvicorn
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import json
 f = open('../crashblox/config.json')
