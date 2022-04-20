@@ -19,6 +19,16 @@ html, body {
         padding: 10px 16px;        display: flex;
         flex-direction: row;
       }
+      .developerSection{
+        display: flex;
+        flex-direction: row;
+      
+      }
+      .developerText{
+        display: flex;
+        flex-direction: column;
+        margin: 20px;
+      }
       /* The sticky class is added to the header with JS when it reaches its scroll position */
   .sticky {
     position: fixed;

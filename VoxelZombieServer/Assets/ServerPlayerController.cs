@@ -22,6 +22,8 @@ public class ServerPlayerController : MonoBehaviour
     private Dictionary<MoveState, IMoveState> MoveStates = new Dictionary<MoveState, IMoveState>()
     {
         {MoveState.basicGrounded, new BasicGroundedMoveState()},
+        {MoveState.idle, new IdleMoveState()},
+        {MoveState.slideJump, new SlideJumpMoveState()},
         {MoveState.basicAir, new BasicAirMoveState()},
         {MoveState.basicJump, new BasicJumpMoveState()},
         {MoveState.waterSwimming, new WaterSwimmingMoveState()},
