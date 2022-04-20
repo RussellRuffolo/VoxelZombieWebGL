@@ -63,6 +63,14 @@ html, body {
     box-sizing: border-box;
     background-position: center;
   }
+  .crashtodon-container {
+   background: rgba(128,128,128,.9);
+   display: flex;
+   flex-direction: row;
+width:80%;
+height:100%;
+
+}
   .bg-container1 {
         background-image: url('images/asylum.png');
         background-repeat: no-repeat;
