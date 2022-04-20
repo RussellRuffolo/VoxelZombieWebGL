@@ -24,6 +24,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'Public/developers.html'))
   })
 
+  app.get('/crashtodon.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Public/crashtodon.html'))
+  })
+
   app.get('/game.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'Public/game.html'))
   })
