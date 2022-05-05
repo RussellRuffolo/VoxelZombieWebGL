@@ -55,30 +55,17 @@ public class ClientConnectionManager : MonoBehaviour
         StartHttpListener(HttpListener);
     }
 
-    private static X509Certificate2Collection GetUserCertificates()
-    {
-        var localMachineStore = new X509Store(StoreLocation.LocalMachine);
-        localMachineStore.Open(OpenFlags.ReadWrite);
-        var certificates = localMachineStore.Certificates;
-        localMachineStore.Close();
-        return certificates;
-    }
-
     private async void StartHttpListener(HttpListener listener)
     {
         listener.Start();
-        Debug.Log("Starting Listener");
+
 
         while (true)
         {
             HttpListenerContext ctx = await listener.GetContextAsync();
-            //  Peel out the requests and response objects
+
             HttpListenerRequest req = ctx.Request;
             HttpListenerResponse resp = ctx.Response;
-
-            resp.Headers.Add("Access-Control-Allow-Origin", "*");
-            resp.Headers.Add("Access-Control-Allow-Private-Network", "true");
-
 
             if (req.Url.AbsolutePath == "/get-offer")
             {
@@ -95,7 +82,6 @@ public class ClientConnectionManager : MonoBehaviour
 
     private IEnumerator HandleGetOffer(HttpListenerRequest req, HttpListenerResponse resp)
     {
-        Debug.Log("Handle Get Offer");
         ushort clientId = nextClientId;
         nextClientId++;
 

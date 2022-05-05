@@ -78,16 +78,7 @@ mergeInto(LibraryManager.library, {
     }
 },
 
-Pack: function(bytes) {
-  var chars = []
-  for(var i = 0, n = bytes.length; i < n;) 
-  {
-      chars.push(((bytes[i++] & 0xff) << 8) | (bytes[i++] & 0xff))
-  }
 
-  return String.fromCharCode.apply(null, chars)
-  
-},
 
 
 SendReliableMessage: function(message){
@@ -100,15 +91,14 @@ SendUnreliableMessage: function(message){
 },
 
 
-Connect__deps: ['SendAnswer', 'AddIceCandidate', 'Pack'],
+Connect__deps: ['SendAnswer', 'AddIceCandidate'],
 Connect: function (baseUrl) {
+
   var url = Pointer_stringify(baseUrl)
 
-  console.log("Log One")
   try{
     fetch(url)
     .then(function(response) {
-	console.log("Log Two")
       return response.json()
     })
     .then(function(offer){
