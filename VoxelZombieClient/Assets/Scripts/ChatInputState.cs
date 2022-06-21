@@ -79,7 +79,7 @@ public class ChatInputState : BaseChatInputState
 
     public override InputState CheckInputState(ClientInputs clientInputs)
     {
-        if (Input.GetKey(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return))
         {
             return InputState.Standard;
         }

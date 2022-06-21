@@ -26,6 +26,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
     private void Awake()
     {
+        LoadMap("fortress");
         //CreateTextureArray();
     }
 

@@ -14,6 +14,9 @@ namespace Client
     {
         public bool loadedFirstMap = false;
 
+
+        public GameObject MenuCamera;
+
         [SerializeField] public Canvas ZombieCanvas;
 
         [SerializeField] public SinglePlayerMenuController SinglePlayerMenuController;
@@ -122,6 +125,9 @@ namespace Client
 
                 if (PlayerID == clientId)
                 {
+                    //Remove Menu Main Camera Here
+                    Destroy(MenuCamera);
+
                     Instantiate(PlayerMenu);
 
                     GameObject LocalPlayer = Instantiate(LocalPlayerPrefab,

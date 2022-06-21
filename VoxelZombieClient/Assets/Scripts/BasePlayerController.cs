@@ -235,7 +235,7 @@ namespace Client
 
             bool slide = Input.GetKey(KeyCode.LeftShift);
 
-            bool chat = Input.GetKeyDown(KeyCode.T) || Input.GetKeyDown(KeyCode.Return);
+            bool chat = Input.GetKeyDown(KeyCode.Return);
 
             bool menu = Input.GetKeyDown(KeyCode.M);
 
