@@ -1,6 +1,9 @@
 # Voxel Zombies WebGL
 
 This is a mutliplayer Unity game that runs in the browser. It features multiplayer networking using webRTC data channels.
+
+It is available to play at https://crashblox.net.
+
 ## How to run
 
 Instructions for setting up the various servers that make up Crashblox.
