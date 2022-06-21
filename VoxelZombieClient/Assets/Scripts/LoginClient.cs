@@ -26,7 +26,7 @@ namespace Client
         private static extern void Connect(string baseUrl);
 
 
-        private const string baseUrl = "https://rtc.crashbloxserver.net";
+        private const string baseUrl = "https://rtc.crashblox.net";
 
         // Start is called before the first frame update
         void Start()

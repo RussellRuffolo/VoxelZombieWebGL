@@ -1,7 +1,7 @@
 const google_sign_in_button = document.querySelector("#google")
 google_sign_in_button.addEventListener("click", function () {
     console.log("Hello")
-    fetch("https://id.crashbloxserver.net/auth/google/authorize")
+    fetch("https://id.crashblox.net/auth/google/authorize")
         .then(response => {console.log(response);
             return response.json()})
         .then(data => data.authorization_url)

@@ -13,7 +13,7 @@ mergeInto(LibraryManager.library, {
 
   SendAnswer: function (offer) {
 
-  const SendAnswerUrl = "https://rtc.crashbloxserver.net/send-answer-get-candidate/"
+  const SendAnswerUrl = "https://rtc.crashblox.net/send-answer-get-candidate/"
 
   // 1. Create the client side PeerConnection
   peerConnection = new RTCPeerConnection({

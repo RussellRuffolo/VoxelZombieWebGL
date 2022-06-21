@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security;
@@ -49,7 +50,7 @@ public class ClientConnectionManager : MonoBehaviour
         WebRTC.Initialize();
 
         HttpListener = new HttpListener();
-
+        HttpListener.Prefixes.Add("http://192.168.0.171:25565/");
         HttpListener.Prefixes.Add("http://127.0.0.1:25565/");
 
         StartHttpListener(HttpListener);
@@ -64,6 +65,7 @@ public class ClientConnectionManager : MonoBehaviour
         {
             HttpListenerContext ctx = await listener.GetContextAsync();
 
+            Debug.Log("Context");
             HttpListenerRequest req = ctx.Request;
             HttpListenerResponse resp = ctx.Response;
 
@@ -185,7 +187,8 @@ public class ClientConnectionManager : MonoBehaviour
         resp.Headers["content-type"] = "application/json";
         string sdp = offerOp.Desc.sdp;
         Debug.Log("Sdp: " + sdp);
-        string newSdp = sdp.Replace("c=IN IP4 0.0.0.0", "c=IN IP4 130.44.112.230");
+        string newSdp = sdp.Replace("c=IN IP4 0.0.0.0", "c=IN IP4 98.50.67.155");
+        Debug.Log("Sdp: " + newSdp);
         GetOfferResponse respObject = new GetOfferResponse(clientId, newSdp);
         string jsonResponse = JsonUtility.ToJson(respObject);
         byte[] respBytes = Encoding.UTF8.GetBytes(jsonResponse);
@@ -236,6 +239,7 @@ public class ClientConnectionManager : MonoBehaviour
 
     private IEnumerator HandleSendAnswer(HttpListenerRequest req, HttpListenerResponse resp)
     {
+       
         Debug.Log("Handle Send Answer");
         using (var reader = new StreamReader(req.InputStream,
                    req.ContentEncoding))
@@ -256,12 +260,12 @@ public class ClientConnectionManager : MonoBehaviour
             {
                 Debug.Log("Candidate: " + client.IceCandidate.Candidate);
                 string candidate = client.IceCandidate.Candidate;
-                string newCandidate = candidate.Replace("192.168.0.137", "130.44.112.230");
+                string newCandidate = candidate.Replace("192.168.0.171", "98.50.67.155");
 
 
                 JObject jObject = JObject.FromObject(new
                 {
-                    address = "130.44.112.230",
+                    address = "98.50.67.155",
                     candidate = newCandidate,
                     component = "rtp",
                     foundation = client.IceCandidate.Foundation,
