@@ -14,14 +14,14 @@ namespace Client
             vClient = GameObject.FindGameObjectWithTag("Network").GetComponent<VoxelClient>();
         }
 
-        protected override void OnBreakBlock(ushort x, ushort y, ushort z)
+        protected override void OnBreakBlock(float x, float y, float z)
         {
-            vClient.SendBlockEdit(x, y, z, 0);
+            vClient.SendBlockEdit((ushort)x, (ushort)y, (ushort)z, 0);
         }
 
-        protected override void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag)
+        protected override void OnPlaceBlock(float x, float y, float z, UInt32 blockTag)
         {
-            vClient.SendBlockEdit(x, y, z, blockTag);
+            vClient.SendBlockEdit((ushort)x, (ushort)y, (ushort)z, blockTag);
         }
     }
 }

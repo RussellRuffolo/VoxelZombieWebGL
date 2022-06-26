@@ -1,4 +1,5 @@
-﻿using Client;
+﻿using System;
+using Client;
 using UnityEngine;
 public class MessageReceiver : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class MessageReceiver : MonoBehaviour
 
     private void Awake()
     {
+        UInt64 test = 0;
+        test.Pack(1,2,3,4,5,6,7,8);
+        
+        Debug.Log("Unpacked test: " + test._000() + " "+ test._001() + " "+ test._101() + " "+ test._100() + " "+ test._010() + " "+ test._011() + " "+ test._111() + " "+ test._110() + " ");
+        
         VoxelClient = GetComponent<VoxelClient>();
         LoginClient = GetComponent<LoginClient>();
     }

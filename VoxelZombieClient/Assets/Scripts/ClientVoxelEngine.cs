@@ -78,14 +78,14 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
                     newChunkObj.transform.position = new Vector3(x * 16, y * 16, z * 16);
 
 
-                    var chunk = newChunkObj.AddComponent<Chunk>();
+                    var chunk = newChunkObj.AddComponent<GreedyChunk>();
                     chunk.world = World;
                     chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
                     ChunkID newID = new ChunkID(x, y, z);
                     World.Chunks.Add(newID, chunk);
                     chunk.ID = newID;
 
-                    chunk.GetComponent<Chunk>().init();
+                    chunk.GetComponent<GreedyChunk>().init();
                 }
             }
         }
@@ -127,7 +127,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 
     public void UnloadMap()
     {
-        foreach (Chunk toDestroy in World.Chunks.Values)
+        foreach (GreedyChunk toDestroy in World.Chunks.Values)
         {
             Destroy(toDestroy.gameObject);
         }

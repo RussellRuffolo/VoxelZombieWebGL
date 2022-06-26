@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Net;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -271,13 +272,13 @@ namespace Client
             SendUnreliableMessage(inputMessage.GetMessage());
         }
 
-        public void SendBlockEdit(ushort x, ushort y, ushort z, ushort blockTag)
+        public void SendBlockEdit(ushort x, ushort y, ushort z, UInt32 blockTag)
         {
             RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
             blockEditMessage.WriteUShort(x);
             blockEditMessage.WriteUShort(y);
             blockEditMessage.WriteUShort(z);
-            blockEditMessage.WriteUShort(blockTag);
+            blockEditMessage.WriteUShort((ushort)blockTag);
             SendReliableMessage(blockEditMessage.GetMessage());
         }
 

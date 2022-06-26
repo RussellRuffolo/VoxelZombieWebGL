@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Client
@@ -18,16 +19,16 @@ namespace Client
             world = vEngine.World;
         }
 
-        protected override void OnBreakBlock(ushort x, ushort y, ushort z)
+        protected override void OnBreakBlock(float x, float y, float z)
         {
             world[x, y, z] = 0;
-            CheckChunks(x, y, z);
+            CheckChunks((int)x, (int)y, (int)z);
         }
 
-        protected override void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag)
+        protected override void OnPlaceBlock(float x, float y, float z, UInt32 blockTag)
         {
-            world[x, y, z] = blockTag;
-            CheckChunks(x, y, z);
+            world[x, y, z] = (byte)blockTag;
+            CheckChunks((int)x, (int)y, (int)z);
         }
 
         void CheckChunks(int x, int y, int z)

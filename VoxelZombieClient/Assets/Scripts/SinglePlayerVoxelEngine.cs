@@ -26,7 +26,6 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
     private void Awake()
     {
-        LoadMap("fortress");
         //CreateTextureArray();
     }
 
@@ -46,15 +45,17 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
             for (int i = 0; i < 16 * 16 * 16; i++)
             {
-                bool placeBlock = i % 2 == 0;
-                if (placeBlock)
-                {
-                    mapData[i] = (byte) Random.Range(1, 55);
-                }
-                else
-                {
-                    mapData[i] = 0;
-                }
+                // bool placeBlock = i % 2 == 0;
+                // if (placeBlock)
+                // {
+                //     mapData[i] = (byte) Random.Range(1, 55);
+                // }
+                // else
+                // {
+                //     mapData[i] = 0;
+                // }
+                //mapData[i] = (byte) Random.Range(1, 55);
+                mapData[i] = 1;
             }
 
             ApplyMapData(mapData);
@@ -110,7 +111,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
             Width = width;
             Height = height;
             //TODO fix this needless copy
-            ApplyMapData(test.Skip(6).ToArray());
+            ApplyMapData(test);
         }
     }
 
@@ -132,7 +133,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
                     newChunkObj.transform.position = new Vector3(x * 16, y * 16, z * 16);
 
 
-                    Chunk chunk = newChunkObj.AddComponent<Chunk>();
+                    GreedyChunk chunk = newChunkObj.AddComponent<GreedyChunk>();
                     ChunkID newID = new ChunkID(x, y, z);
                     World.Chunks.Add(newID, chunk);
                     chunk.ID = newID;
@@ -145,7 +146,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
         }
 
 
-        int blockCount = 0;
+        int blockCount = 6;
         for (int y = 0; y < Height; y++)
         {
             for (int x = 0; x < Length; x++)
@@ -157,17 +158,17 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
                     try
                     {
                         byte blockId = mapBytes[blockCount];
-                        // ulong combinedId = 0;
-                        // if (blockId == 44)
-                        // {
-                        //     combinedId.Pack(44, 44, 44, 44, 0, 0, 0, 0);
-                        // }
-                        // else
-                        // {
-                        //     combinedId.Pack(blockId, blockId, blockId, blockId, blockId, blockId, blockId, blockId);
-                        // }
+                        ulong combinedId = 0;
+                        if (blockId == 44)
+                        {
+                            combinedId.Pack(44, 44, 44, 44, 0, 0, 0, 0);
+                        }
+                        else
+                        {
+                            combinedId.Pack(blockId, blockId, blockId, blockId, blockId, blockId, blockId, blockId);
+                        }
 
-                        World[x, y, z] = blockId;
+                        World[x, y, z] = combinedId;
                         //           World[x, y + .5F, z] = mapBytes[blockCount];
                         blockCount++;
                     }
@@ -201,7 +202,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
     public void UnloadMap()
     {
-        foreach (Chunk toDestroy in World.Chunks.Values)
+        foreach (GreedyChunk toDestroy in World.Chunks.Values)
         {
             Destroy(toDestroy.gameObject);
         }
