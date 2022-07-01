@@ -173,7 +173,7 @@ public class ClientConnectionManager : MonoBehaviour
 
         clients.Add(clientId, client);
 
-        RTCOfferOptions options = new RTCOfferOptions();
+        RTCOfferAnswerOptions options = new RTCOfferAnswerOptions();
 
 
         RTCSessionDescriptionAsyncOperation offerOp = peerConnection.CreateOffer(ref options);
