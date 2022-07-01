@@ -58,4 +58,13 @@ public class RtcMessageReader
         position += 4;
         return (ushort) ((uint) ushortBytes[0] << 8 | (uint) ushortBytes[1]);
     }
+    
+    public byte ReadByte()
+    {
+        byte[] byteArray = Convert.FromBase64String(Message.Substring(position, 2));
+        
+        position += 2;
+        
+        return byteArray[0];
+    }
 }

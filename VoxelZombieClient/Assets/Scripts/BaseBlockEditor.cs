@@ -82,6 +82,9 @@ namespace Client
         };
 
         private Vector3 selectionPosition;
+
+        private ushort selectionX, selectionY, selectionZ;
+
         private Vector3 selectionNormal;
 
         private Vector3 halfBlockNormal = new Vector3(0, .1f, 0);
@@ -179,9 +182,6 @@ namespace Client
 
             float distanceStepped = 0;
 
-            int currentBlock;
-            Vector3 lastRaycastedTarget = new Vector3(-1, 0, 0);
-
 
             while (distanceStepped < editDistance)
             {
@@ -192,10 +192,10 @@ namespace Client
                 if (CheckBlock(currentPosition))
                 {
                     // selectionPosition = new Vector3(x, y, z);
-                    float x = (int) (currentPosition.x * 2) / 2f;
-                    float y = (int) (currentPosition.y * 2) / 2f;
-                    float z = (int) (currentPosition.z * 2) / 2f;
-                    selectionPosition = new Vector3(x, y, z);
+                     selectionX = (ushort) (currentPosition.x * 2);
+                     selectionY = (ushort) (currentPosition.y * 2);
+                     selectionZ = (ushort) (currentPosition.z * 2);
+                    selectionPosition = new Vector3(selectionX / 2f, selectionY  / 2f, selectionZ / 2f);
                     FindNormal(currentPosition, -direction);
 
                     return;
@@ -331,22 +331,22 @@ namespace Client
                 blockBreakParticleSystem.Play();
                 //
                 //
-                OnBreakBlock(selectionPosition.x, selectionPosition.y, selectionPosition.z);
+                OnBreakBlock(selectionX, selectionY, selectionZ);
 
 
                 return;
             }
         }
 
-        protected abstract void OnBreakBlock(float x, float y, float z);
+        protected abstract void OnBreakBlock(ushort x, ushort y, ushort z);
 
         void PlaceBlock()
         {
             if (selectionNormal != Vector3.zero)
             {
-                float x = selectionPosition.x + selectionNormal.x * .5f;
-                float y = selectionPosition.y + selectionNormal.y * .5f;
-                float z =  selectionPosition.z + selectionNormal.z * .5f;
+                ushort x = (ushort)(selectionX + selectionNormal.x);
+                ushort y =  (ushort)(selectionY + selectionNormal.y);
+                ushort z =  (ushort)(selectionZ + selectionNormal.z);
 
                 byte placeSpotTag = currentWorld[x, y, z];
 
@@ -357,7 +357,7 @@ namespace Client
             }
         }
 
-        protected abstract void OnPlaceBlock(float x, float y, float z, UInt32 blockTag);
+        protected abstract void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag);
 
         void SelectBlock()
         {

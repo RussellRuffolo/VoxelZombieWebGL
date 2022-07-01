@@ -82,6 +82,8 @@ public class RtcMessage
     }
 
 
+
+
     public string GetMessage()
     {
         return messageString;

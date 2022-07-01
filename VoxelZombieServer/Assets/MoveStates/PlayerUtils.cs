@@ -123,23 +123,24 @@ public static class PlayerUtils
             {
                 if (Vector3.Dot(playerInputs.MoveVector, -contactPoint.normal) > 0)
                 {
-                    // Vector3 testPosition = playerRb.transform.position + Vector3.up * .51f +
-                    //                        playerInputs.MoveVector.normalized * .01f;
-                    //
-                    // Collider[] colliders = Physics.OverlapBox(testPosition, PlayerStats.StandingHalfExtents,
-                    //     playerRb.transform.rotation,
-                    //     Physics.AllLayers
-                    // );
-                    //
-                    // foreach (Collider collider in colliders)
-                    // {
-                    //     if (collider.CompareTag("Ground"))
-                    //     {
-                    //         return false;
-                    //     }
-                    // }
-                    //
-                    // return true;
+                    Debug.Log("HIT WALL");
+                    Vector3 testPosition = playerRb.transform.position + Vector3.up * .51f +
+                                           playerInputs.MoveVector.normalized * .01f;
+                    
+                    Collider[] colliders = Physics.OverlapBox(testPosition, PlayerStats.StandingHalfExtents,
+                        playerRb.transform.rotation,
+                        Physics.AllLayers
+                    );
+                    
+                    foreach (Collider collider in colliders)
+                    {
+                        if (collider.CompareTag("Ground"))
+                        {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
                     
                     Vector3 footPosition = playerRb.transform.position + FootOffset;
                     Vector3 blockPosition = new Vector3(contactPoint.point.x, footPosition.y, contactPoint.point.z) +

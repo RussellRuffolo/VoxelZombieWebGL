@@ -7,7 +7,37 @@ public class World : IWorld
 {
     public Dictionary<ChunkID, IChunk> Chunks { get; }= new Dictionary<ChunkID, IChunk>();
 
-    public UInt16 this[int x, int y, int z]
+    public byte this[float x, float y, float z]
+    {
+        get
+        {
+            UInt64 test = this[(int) x, (int) y, (int) z];
+            return test.GetByte(x, y, z);
+        }
+        set
+        {
+            UInt64 test = this[(int) x, (int) y, (int) z];
+            test.SetByte(x, y, z, value);
+            this[(int) x, (int) y, (int) z] = test;
+        }
+    }
+
+    public byte this[ushort x, ushort y, ushort z]
+    {
+        get
+        {
+            UInt64 test = this[x / 2, y /2, z / 2];
+            return test.GetByte(x, y, z);
+        }
+        set
+        {
+            UInt64 test = this[x / 2, y /2, z / 2];
+            test.SetByte(x, y, z, value);
+            this[x / 2, y /2, z / 2] = test;
+        }
+    }
+
+    public UInt64 this[int x, int y, int z]
     {
         get
         {
@@ -20,28 +50,13 @@ public class World : IWorld
             else
             {
                 //100 is no value
-                return 100;
+                return 0;
             }
-         
         }
         set
         {
-            /*
-            ChunkID toGet = ChunkID.FromWorldPos(x, y, z);
-            Chunk targetChunk;
-            if(Chunks.TryGetValue(toGet, out targetChunk))
-            {
-                var chunk = Chunks[ChunkID.FromWorldPos(x, y, z)];
-                chunk[x & 0xF, y & 0xF, z & 0xF] = value;
-            }
-            else
-            {
-                Debug.Log("x: " + x + " y: " + y + " z: " + z);
-            }
-            */
             var chunk = Chunks[ChunkID.FromWorldPos(x, y, z)];
             chunk[x & 0xF, y & 0xF, z & 0xF] = value;
-            chunk.dirty = true;
         }
     }
 }

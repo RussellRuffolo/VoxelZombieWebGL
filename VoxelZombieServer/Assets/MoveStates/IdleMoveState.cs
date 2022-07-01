@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class IdleMoveState : IMoveState
 {
-    
+    public Animator PlayerAnimator { get; set; }
 
     public Vector3 GetVelocity(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity,
@@ -16,6 +16,7 @@ public class IdleMoveState : IMoveState
 
     public void Enter()
     {
+       
     }
 
     public void Exit()
@@ -26,11 +27,46 @@ public class IdleMoveState : IMoveState
         IWorld world,
         Vector3 lastVelocity)
     {
-        if (playerInputs.MoveVector != Vector3.zero)
+        if (PlayerUtils.CheckWater(playerRb, contactPoints, world))
         {
+            if (playerInputs.Jump)
+            {
+                return MoveState.waterSwimming;
+            }
+
+            return MoveState.waterFalling;
+        }
+
+        if (PlayerUtils.CheckGrounded(contactPoints))
+        {
+            if (playerInputs.Jump)
+            {
+                return MoveState.basicJump;
+            }
+
+            if (playerInputs.Slide)
+            {
+                if (lastVelocity.magnitude > PlayerStats.crawlSpeed)
+                {
+                    return MoveState.basicSliding;
+                }
+
+                return MoveState.basicCrawling;
+            }
+
+            if (PlayerUtils.CheckHalfBlock(playerRb, playerInputs, contactPoints, world))
+            {
+                return MoveState.groundedHalfBlock;
+            }
+
+            if (playerInputs.MoveVector == Vector3.zero)
+            {
+                return MoveState.idle;
+            }
+
             return MoveState.basicGrounded;
         }
 
-        return MoveState.idle;
+        return MoveState.basicAir;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaterJumpMoveState : IMoveState
 {
-    
+    public Animator PlayerAnimator { get; set; }
 
     private bool Jumped;
 

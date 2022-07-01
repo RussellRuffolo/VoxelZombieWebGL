@@ -20,7 +20,10 @@ mergeInto(LibraryManager.library, {
     iceServers: [
       {
         urls: "stun:stun2.l.google.com:19302"
-      }
+      },
+{
+stun4.l.google.com:19302
+}
     ]
   });
   const clientId = offer.clientId

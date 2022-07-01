@@ -5,7 +5,7 @@ using UnityEngine;
 public class PostJumpMoveState : IMoveState
 {
     
-    
+    public Animator PlayerAnimator { get; set; }
 
     private int JumpRefreshCooldown = 0;
 

@@ -110,7 +110,6 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
             Length = length;
             Width = width;
             Height = height;
-            //TODO fix this needless copy
             ApplyMapData(test);
         }
     }

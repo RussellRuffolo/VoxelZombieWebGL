@@ -22,6 +22,21 @@ public class World : IWorld
         }
     }
 
+    public byte this[ushort x, ushort y, ushort z]
+    {
+        get
+        {
+            UInt64 test = this[x / 2, y /2, z / 2];
+            return test.GetByte(x, y, z);
+        }
+        set
+        {
+            UInt64 test = this[x / 2, y /2, z / 2];
+            test.SetByte(x, y, z, value);
+            this[x / 2, y /2, z / 2] = test;
+        }
+    }
+
     public UInt64 this[int x, int y, int z]
     {
         get

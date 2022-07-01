@@ -5,7 +5,7 @@ using UnityEngine;
 public class WallJumpMoveState : IMoveState
 {
     
-    
+    public Animator PlayerAnimator { get; set; }
 
     private bool Jumped;
     private Vector3 normal = Vector3.zero;

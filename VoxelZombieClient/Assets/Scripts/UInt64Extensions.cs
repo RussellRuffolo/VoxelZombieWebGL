@@ -69,6 +69,50 @@ public static class UInt64Extensions
 
         return value._111();
     }
+    
+    public static byte GetByte(ref this UInt64 value, ushort x, ushort y, ushort z)
+    {
+        bool xUp = x % 2 >= 1f;
+        bool yUp = y % 2 >= 1;
+        bool zUp = z % 2 >= 1;
+
+        if (!xUp)
+        {
+            if (!yUp)
+            {
+                if (!zUp)
+                {
+                    return value._000();
+                }
+
+                return value._001();
+            }
+
+            if (!zUp)
+            {
+                return value._010();
+            }
+
+            return value._011();
+        }
+
+        if (!yUp)
+        {
+            if (!zUp)
+            {
+                return value._100();
+            }
+
+            return value._101();
+        }
+
+        if (!zUp)
+        {
+            return value._110();
+        }
+
+        return value._111();
+    }
 
     public static void SetByte(ref this UInt64 value, float x, float y, float z, byte newValue)
     {
@@ -137,7 +181,72 @@ public static class UInt64Extensions
             newValue, value._110());
     }
 
+    public static void SetByte(ref this UInt64 value, ushort x, ushort y, ushort z, byte newValue)
+    {
+        bool xUp = x % 2 >= 1;
+        bool yUp = y % 2 >= 1;
+        bool zUp = z % 2 >= 1;
 
+        if (!xUp)
+        {
+            if (!yUp)
+            {
+                if (!zUp)
+                {
+                    value.Pack(newValue, value._001(), value._101(), value._100(), value._010(), value._011(),
+                        value._111(), value._110());
+
+
+                    return;
+                }
+
+                value.Pack(value._000(), newValue, value._101(), value._100(), value._010(), value._011(),
+                    value._111(), value._110());
+
+                return;
+            }
+
+            if (!zUp)
+            {
+                value.Pack(value._000(), value._001(), value._101(), value._100(), newValue, value._011(),
+                    value._111(), value._110());
+
+                return;
+            }
+
+            value.Pack(value._000(), value._001(), value._101(), value._100(), value._010(), newValue,
+                value._111(), value._110());
+
+            return;
+        }
+
+        if (!yUp)
+        {
+            if (!zUp)
+            {
+                value.Pack(value._000(), value._001(), value._101(), newValue, value._010(), value._011(),
+                    value._111(), value._110());
+
+                return;
+            }
+
+            value.Pack(value._000(), value._001(), newValue, value._100(), value._010(), value._011(),
+                value._111(), value._110());
+
+            return;
+        }
+
+        if (!zUp)
+        {
+            value.Pack(value._000(), value._001(), value._101(), value._100(), value._010(), value._011(),
+                value._111(), newValue);
+
+            return;
+        }
+
+        value.Pack(value._000(), value._001(), value._101(), value._100(), value._010(), value._011(),
+            newValue, value._110());
+    }
 
     public static byte _000(this UInt64 value)
     {

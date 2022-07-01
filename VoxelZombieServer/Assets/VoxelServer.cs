@@ -573,12 +573,12 @@ public class VoxelServer : MonoBehaviour
 
         RtcMessage blockEditMessage = new RtcMessage(BLOCK_EDIT_TAG);
 
-        foreach (BlockEdit bEdit in bEditor.EditedBlocks)
+        foreach (BlockLocation bLoc in bEditor.BlockEdits.Keys)
         {
-            blockEditMessage.WriteUShort(bEdit.x);
-            blockEditMessage.WriteUShort(bEdit.y);
-            blockEditMessage.WriteUShort(bEdit.z);
-            blockEditMessage.WriteUShort(bEdit.blockTag);
+            blockEditMessage.WriteUShort(bLoc.x);
+            blockEditMessage.WriteUShort(bLoc.y);
+            blockEditMessage.WriteUShort(bLoc.z);
+            blockEditMessage.WriteUShort(bEditor.BlockEdits[bLoc]);
         }
 
         client.SendReliableMessage(blockEditMessage);
@@ -598,12 +598,12 @@ public class VoxelServer : MonoBehaviour
 
             RtcMessage message = new RtcMessage(BLOCK_EDIT_TAG);
 
-            foreach (BlockEdit bEdit in bEditor.EditedBlocks)
+            foreach (BlockLocation bLoc in bEditor.BlockEdits.Keys)
             {
-                message.WriteUShort(bEdit.x);
-                message.WriteUShort(bEdit.y);
-                message.WriteUShort(bEdit.z);
-                message.WriteUShort(bEdit.blockTag);
+                message.WriteUShort(bLoc.x);
+                message.WriteUShort(bLoc.y);
+                message.WriteUShort(bLoc.z);
+                message.WriteUShort(bEditor.BlockEdits[bLoc]);
             }
 
             client.SendReliableMessage(message);
@@ -653,7 +653,7 @@ public class VoxelServer : MonoBehaviour
         ushort z = reader.ReadUShort();
 
         //the new blockTag the client requested
-        ushort blockTag = reader.ReadUShort();
+        byte blockTag = (byte)reader.ReadUShort();
 
         if (bEditor.TryApplyEdit(x, y, z, blockTag))
         {
@@ -747,7 +747,7 @@ public class VoxelServer : MonoBehaviour
 
     public void StartRound()
     {
-        bEditor.EditedBlocks.Clear();
+        bEditor.BlockEdits.Clear();
 
         foreach (ushort ID in PlayerManager.PlayerDictionary.Keys)
         {

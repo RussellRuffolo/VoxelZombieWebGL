@@ -7,5 +7,6 @@ public interface IWorld
     
   //  UInt16 this[int x, int y, int z] { get; set; }
     byte this[float x, float y, float z] { get; set; }
+    byte this[ushort x, ushort y, ushort z] { get; set; }
     UInt64 this[int x1, int y1, int z1] { get; set; }
 }
