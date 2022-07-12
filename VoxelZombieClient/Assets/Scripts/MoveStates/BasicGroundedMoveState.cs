@@ -37,7 +37,7 @@ public class BasicGroundedMoveState : IMoveState
             return MoveState.waterFalling;
         }
 
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             if (playerInputs.Jump)
             {

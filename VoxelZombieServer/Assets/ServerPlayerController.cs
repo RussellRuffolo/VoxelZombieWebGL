@@ -40,7 +40,8 @@ public class ServerPlayerController : MonoBehaviour
         {MoveState.aerialHalfBlock, new AerialHalfBlockMoveState()},
         {MoveState.wallHang, new WallHangMoveState()},
         {MoveState.postJump, new PostJumpMoveState()},
-        {MoveState.postWallJump, new PostWallJumpMoveState()}
+        {MoveState.postWallJump, new PostWallJumpMoveState()},
+        {MoveState.postWallJumpSlideAir, new PostWallJumpSlideAirMoveState()}
     };
 
     private void Awake()

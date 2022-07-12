@@ -44,7 +44,7 @@ public class BasicAirMoveState : IMoveState
             return MoveState.waterFalling;
         }
 
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             return MoveState.basicGrounded;
         }
@@ -54,10 +54,10 @@ public class BasicAirMoveState : IMoveState
             return MoveState.slideAir;
         }
 
-        if (PlayerUtils.CheckAerialHalfBlock(playerRb, playerInputs, contactPoints, world))
-        {
-            return MoveState.aerialHalfBlock;
-        }
+        // if (PlayerUtils.CheckAerialHalfBlock(playerRb, playerInputs, contactPoints, world))
+        // {
+        //     return MoveState.aerialHalfBlock;
+        // }
 
         if (PlayerUtils.CheckWall(playerRb, playerInputs, contactPoints, world))
         {

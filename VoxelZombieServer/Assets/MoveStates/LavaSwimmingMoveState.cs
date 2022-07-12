@@ -14,12 +14,12 @@ public class LavaSwimmingMoveState : IMoveState
 
     public void Enter()
     {
-        PlayerAnimator.SetBool("InWater", true);
+
     }
 
     public void Exit()
     {
-        PlayerAnimator.SetBool("InWater", false);
+
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,

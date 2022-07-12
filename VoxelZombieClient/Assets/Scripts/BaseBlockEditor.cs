@@ -178,6 +178,32 @@ namespace Client
 
         void FindBlock(Vector3 startPosition, Vector3 direction)
         {
+            var hits = Physics.RaycastAll(startPosition, direction, editDistance);
+            foreach (var raycastHit in hits)
+            {
+                if (raycastHit.transform.CompareTag("Ground"))
+                {
+                    Vector3 testPosition = raycastHit.point + (raycastHit.point - startPosition).normalized * .01f;
+
+                    selectionX = (ushort) (testPosition.x * 2);
+                    selectionY = (ushort) (testPosition.y * 2);
+                    selectionZ = (ushort) (testPosition.z * 2);
+                    testPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
+                    if (PlayerUtils.IsSolidBlock(currentWorld[testPosition.x, testPosition.y,
+                            testPosition.z]))
+                    {
+                        selectionPosition = testPosition;
+                        selectionNormal = raycastHit.normal;
+                        return;
+                    }
+                }
+            }
+
+            blockOutline.positionCount = 0;
+            selectionPosition = Vector3.zero;
+            selectionNormal = Vector3.zero;
+            return;
+
             Vector3 currentPosition = startPosition;
 
             float distanceStepped = 0;
@@ -192,10 +218,10 @@ namespace Client
                 if (CheckBlock(currentPosition))
                 {
                     // selectionPosition = new Vector3(x, y, z);
-                     selectionX = (ushort) (currentPosition.x * 2);
-                     selectionY = (ushort) (currentPosition.y * 2);
-                     selectionZ = (ushort) (currentPosition.z * 2);
-                    selectionPosition = new Vector3(selectionX / 2f, selectionY  / 2f, selectionZ / 2f);
+                    selectionX = (ushort) (currentPosition.x * 2);
+                    selectionY = (ushort) (currentPosition.y * 2);
+                    selectionZ = (ushort) (currentPosition.z * 2);
+                    selectionPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
                     FindNormal(currentPosition, -direction);
 
                     return;
@@ -344,9 +370,9 @@ namespace Client
         {
             if (selectionNormal != Vector3.zero)
             {
-                ushort x = (ushort)(selectionX + selectionNormal.x);
-                ushort y =  (ushort)(selectionY + selectionNormal.y);
-                ushort z =  (ushort)(selectionZ + selectionNormal.z);
+                ushort x = (ushort) (selectionX + selectionNormal.x);
+                ushort y = (ushort) (selectionY + selectionNormal.y);
+                ushort z = (ushort) (selectionZ + selectionNormal.z);
 
                 byte placeSpotTag = currentWorld[x, y, z];
 

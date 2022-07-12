@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using Client;
 using UnityEngine;
 
-public interface IInputState
+public interface IInputState : IState
 {
-    void Enter();
-
-    void Exit();
-
     InputState CheckInputState(ClientInputs clientInputs);
 
     void ApplyInputs(ClientInputs clientInputs);

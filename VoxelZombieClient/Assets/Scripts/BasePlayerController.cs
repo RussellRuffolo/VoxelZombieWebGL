@@ -25,6 +25,7 @@ namespace Client
             {MoveState.slideJump, new SlideJumpMoveState()},
             {MoveState.basicCrawling, new BasicCrawlingMoveState()},
             {MoveState.slideAir, new SlideAirMoveState()},
+            {MoveState.postWallJumpSlideAir, new PostWallJumpSlideAirMoveState()},
             {MoveState.slideLand, new SlideLandMoveState()},
             {MoveState.wallJump, new WallJumpMoveState()},
             {MoveState.groundedHalfBlock, new GroundedHalfBlockMoveState()},

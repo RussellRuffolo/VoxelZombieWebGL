@@ -6,7 +6,7 @@ google_sign_in_button.addEventListener("click", function () {
             return response.json()})
         .then(data => data.authorization_url)
         // Todo: figure out target
-        .then(oAuthUrl => window.open(oAuthUrl,null, 'width=972,height=660,modal=yes,alwaysRaised=yes'));
+        .then(oAuthUrl => window.open(oAuthUrl,null, 'width='+screen.width+',height='+screen.height+',modal=yes,alwaysRaised=yes'));
 })
 
 // When the user scrolls the page, execute myFunction

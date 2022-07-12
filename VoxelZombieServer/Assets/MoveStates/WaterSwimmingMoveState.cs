@@ -26,12 +26,12 @@ public class WaterSwimmingMoveState : IMoveState
 
     public void Enter()
     {
-        PlayerAnimator.SetBool("InWater", true);
+
     }
 
     public void Exit()
     {
-        PlayerAnimator.SetBool("InWater", false);
+
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
@@ -48,7 +48,7 @@ public class WaterSwimmingMoveState : IMoveState
         }
 
         //walk out of water onto land
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             return MoveState.basicGrounded;
         }

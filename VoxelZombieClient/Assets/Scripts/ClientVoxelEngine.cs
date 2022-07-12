@@ -38,6 +38,8 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 
     public MapLoadedDelegate MapLoadedDelegate;
 
+ 
+
     private void Awake()
     {
         foreach (Material mat in materialList)
@@ -79,6 +81,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 
 
                     var chunk = newChunkObj.AddComponent<GreedyChunk>();
+                 
                     chunk.world = World;
                     chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
                     ChunkID newID = new ChunkID(x, y, z);

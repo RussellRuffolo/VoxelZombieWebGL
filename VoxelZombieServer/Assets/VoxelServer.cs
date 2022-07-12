@@ -36,14 +36,6 @@ public class VoxelServer : MonoBehaviour
     //players who have loaded the current map
     List<RtcClient> loadedPlayers = new List<RtcClient>();
 
-    private string addAccountURL = "http://localhost/VoxelZombies/addAccount.php?";
-
-    private string loginAttemptURL = "http://localhost/VoxelZombies/loginAttempt.php?";
-
-    private string saltURL = "http://localhost/VoxelZombies/getSalt.php?";
-
-    private string playerStatsURL = "http://localhost/VoxelZombies/playerStats.php?";
-
 
     public Dictionary<ushort, string> playerNames = new Dictionary<ushort, string>();
 
@@ -251,7 +243,7 @@ public class VoxelServer : MonoBehaviour
                         }
                         else
                         {
-                            StartCoroutine(PrintPlayerStats(playerName, client.ID));
+                            //  StartCoroutine(PrintPlayerStats(playerName, client.ID));
                         }
                     }
                     else
@@ -280,36 +272,36 @@ public class VoxelServer : MonoBehaviour
         }
     }
 
-    IEnumerator PrintPlayerStats(string name, ushort recipientID)
-    {
-        WWWForm form = new WWWForm();
-
-        form.AddField("name", name);
-
-        UnityWebRequest stats_post = UnityWebRequest.Post(playerStatsURL, form);
-
-        yield return stats_post.SendWebRequest();
-
-        string returnText = stats_post.downloadHandler.text;
-
-        string[] stats = returnText.Split();
-
-        if (stats.Length == 4)
-        {
-            int kills = int.Parse(stats[0]);
-            int deaths = int.Parse(stats[1]);
-            int roundsWon = int.Parse(stats[2]);
-            int timeOnline = int.Parse(stats[3]);
-
-            SendPrivateChat(
-                name + "'s stats: \nKills: " + kills + "\nDeaths: " + deaths + "\nRounds Won: " + roundsWon +
-                "\nTime Online: " + timeOnline, 2, recipientID);
-        }
-        else
-        {
-            SendPrivateChat("Player: " + name + " not found.", 2, recipientID);
-        }
-    }
+    // IEnumerator PrintPlayerStats(string name, ushort recipientID)
+    // {
+    //     WWWForm form = new WWWForm();
+    //
+    //     form.AddField("name", name);
+    //
+    //     UnityWebRequest stats_post = UnityWebRequest.Post(playerStatsURL, form);
+    //
+    //     yield return stats_post.SendWebRequest();
+    //
+    //     string returnText = stats_post.downloadHandler.text;
+    //
+    //     string[] stats = returnText.Split();
+    //
+    //     if (stats.Length == 4)
+    //     {
+    //         int kills = int.Parse(stats[0]);
+    //         int deaths = int.Parse(stats[1]);
+    //         int roundsWon = int.Parse(stats[2]);
+    //         int timeOnline = int.Parse(stats[3]);
+    //
+    //         SendPrivateChat(
+    //             name + "'s stats: \nKills: " + kills + "\nDeaths: " + deaths + "\nRounds Won: " + roundsWon +
+    //             "\nTime Online: " + timeOnline, 2, recipientID);
+    //     }
+    //     else
+    //     {
+    //         SendPrivateChat("Player: " + name + " not found.", 2, recipientID);
+    //     }
+    // }
 
     public ushort GetIDFromName(string playerName)
     {
@@ -445,45 +437,19 @@ public class VoxelServer : MonoBehaviour
     }
 
 
-    void PostLoginAttempt(ushort clientId, RtcClient client, string name, string password)
+    void HandleLoginAttempt(ushort clientId, RtcClient client, string name)
     {
-        string returnText = "";
-
-
-        if (!playerNames.ContainsValue(name))
-        {
-            returnText = "Login Successful";
-        }
-        else
-        {
-            returnText = "No Username";
-        }
-        
         ushort succesfulLogin;
 
-        if (returnText == "Login Successful")
-        {
-            playerNames.Add(clientId, name);
 
-            InitializePlayer(clientId, client, name);
+        playerNames.Add(clientId, name);
 
-            SendPublicChat(playerNames[clientId] + " has joined the fray.", 2);
+        InitializePlayer(clientId, client, name);
 
-            succesfulLogin = 0;
-        }
-        else if (returnText == "No Username")
-        {
-            succesfulLogin = 1;
-        }
-        else if (returnText == "Password Mismatch")
-        {
-            succesfulLogin = 2;
-        }
-        else
-        {
-            succesfulLogin = 3;
-            Debug.LogError(returnText);
-        }
+        SendPublicChat(playerNames[clientId] + " has joined the fray.", 2);
+
+        succesfulLogin = 0;
+
 
         RtcMessage loginMessage = new RtcMessage(LOGIN_ATTEMPT_TAG);
         loginMessage.WriteInt(succesfulLogin);
@@ -495,7 +461,7 @@ public class VoxelServer : MonoBehaviour
     //otherwise tell client unsuccessful so they can attempt again
     private void HandleLogin(ushort clientId, RtcClient client, string name)
     {
-        PostLoginAttempt(clientId, client, name, "");
+        HandleLoginAttempt(clientId, client, name);
     }
 
     //On successful login player is initialized.
@@ -653,7 +619,7 @@ public class VoxelServer : MonoBehaviour
         ushort z = reader.ReadUShort();
 
         //the new blockTag the client requested
-        byte blockTag = (byte)reader.ReadUShort();
+        byte blockTag = (byte) reader.ReadUShort();
 
         if (bEditor.TryApplyEdit(x, y, z, blockTag))
         {

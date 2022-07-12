@@ -31,7 +31,7 @@ public class WaterJumpMoveState : IMoveState
     {
         if (Jumped)
         {
-            if (PlayerUtils.CheckGrounded(contactPoints))
+            if (PlayerUtils.CheckGrounded(playerRb))
             {
                 if (playerInputs.Jump)
                 {

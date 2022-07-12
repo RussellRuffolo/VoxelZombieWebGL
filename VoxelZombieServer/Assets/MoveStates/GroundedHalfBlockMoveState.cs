@@ -9,6 +9,7 @@ public class GroundedHalfBlockMoveState : IMoveState
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {
+        Debug.Log("Grounded half block");
         playerRb.transform.position += Vector3.up * .5f;
         //perhaps also tp you in the direction of your velocity the amount you should have moved last frame but didn't because of collision with block. 
 
@@ -28,7 +29,7 @@ public class GroundedHalfBlockMoveState : IMoveState
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         IWorld world, Vector3 lastVelocity)
     {
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             if (playerInputs.Jump)
             {

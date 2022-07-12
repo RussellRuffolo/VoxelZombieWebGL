@@ -16,7 +16,7 @@ public class IdleMoveState : IMoveState
 
     public void Enter()
     {
-       
+   
     }
 
     public void Exit()
@@ -37,7 +37,7 @@ public class IdleMoveState : IMoveState
             return MoveState.waterFalling;
         }
 
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             if (playerInputs.Jump)
             {

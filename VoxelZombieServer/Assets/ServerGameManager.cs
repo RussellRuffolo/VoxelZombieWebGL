@@ -37,7 +37,7 @@ public class ServerGameManager : MonoBehaviour
         inStartTime = true;
         vEngine.LoadMap(nextMap);
         vServer.StartRound();
-        RoundTime = 10 * 60;
+        RoundTime = 4 * 60;
         MinuteCounter = RoundTime - 60;
         StartCoroutine(StartDelay());
     }
@@ -113,21 +113,18 @@ public class ServerGameManager : MonoBehaviour
 
     public void CheckZombieWin()
     {
-        if (pMananger.PlayerDictionary.Count > 0)
+        foreach (PlayerInformation pInfo in pMananger.PlayerDictionary.Values)
         {
-            foreach (PlayerInformation pInfo in pMananger.PlayerDictionary.Values)
+            if (pInfo.stateTag == 0)
             {
-                if (pInfo.stateTag == 0)
-                {
-                    //If a player is a human return- zombies haven't won yet
-                    return;
-                }
+                //If a player is a human return- zombies haven't won yet
+                return;
             }
-
-            //if no players were human then zombies win
-            vServer.SendPublicChat("Zombies win!", 2);
-            EndRound();
         }
+
+        //if no players were human then zombies win
+        vServer.SendPublicChat("Zombies win!", 2);
+        EndRound();
     }
 
     public void CheckNoZombies()
@@ -199,6 +196,7 @@ public class ServerGameManager : MonoBehaviour
 
     IEnumerator VoteDelay()
     {
+        inVoteTime = true;
         yield return new WaitForSeconds(20);
         inVoteTime = false;
 

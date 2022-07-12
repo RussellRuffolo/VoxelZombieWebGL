@@ -20,10 +20,7 @@ mergeInto(LibraryManager.library, {
     iceServers: [
       {
         urls: "stun:stun2.l.google.com:19302"
-      },
-{
-stun4.l.google.com:19302
-}
+      }
     ]
   });
   const clientId = offer.clientId
@@ -112,5 +109,100 @@ Connect: function (baseUrl) {
   }
     
 },
+
+GetUsername: function() 
+{ 
+  var queryString = window.location.search;
+  console.log(queryString);
+  
+  var urlParams = new URLSearchParams(queryString);
+  
+  var state = urlParams.get('state')
+  
+  
+  var code = urlParams.get('code')
+  console.log(state);
+  console.log(code)
+  
+  
+  var callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
+  
+  var callbackParamData = {
+    code : code,
+    state : state
+  };
+  for(var k in callbackParamData){
+    callbackUrl.searchParams.append(k, callbackParamData[k]);
+  }
+  
+  fetch(callbackUrl)
+    .then(function(response)
+    {return response.json()} )
+    .then(function(data) { console.log(data);
+  
+       window.localStorage.token = data.access_token;
+
+        
+  console.log("At GetUsername token is: " + window.localStorage.token)
+ 
+  console.log("At GetUsername data.token is: " + data.access_token)
+
+       fetch("https://id.crashblox.net/users/me",
+       {
+       headers: { "Authorization": "Bearer " + data.access_token}
+       })
+     .then(function(response) {
+         return response.json()
+       })
+      .then(function(data) {
+       console.log(data);
+       if(!data.username){
+         unityInstance.SendMessage('Network', 'ReceiveNoUsername')
+       }
+       else{
+         unityInstance.SendMessage('Network', 'ReceiveUsername', data.username)
+       }
+   
+       })
+   
+
+    })
+
+
+
+ 
+
+
+},
+
+PatchUsername: function(username){
+  var newName = Pointer_stringify(username)
+  console.log(newName);
+  var userBody = {
+    "username": newName
+    };
+
+    console.log(JSON.stringify(userBody));
+    console.log("At PatchUsername token is: " + window.localStorage.token)
+
+  fetch("https://id.crashblox.net/users/me",
+    {
+      method: "PATCH",
+      body: JSON.stringify(userBody),
+      headers: { "Authorization": "Bearer " + window.localStorage.token,
+      "Content-Type": "application/json",
+      "accept": "application/json"}
+    })
+  .then(function(response) {
+      return response.json()
+    })
+   .then(function(data) {
+     console.log(data);
+     unityInstance.SendMessage('Network', 'ReceiveUsername', data.username);
+
+    })
+
+  
+} 
 
 });

@@ -32,7 +32,7 @@ public class BasicJumpMoveState : IMoveState
         return MoveState.postJump;
         // if (Jumped)
         // {
-        //     if (PlayerUtils.CheckGrounded(contactPoints))
+        //     if (PlayerUtils.CheckGrounded(playerRb))
         //     {
         //         if (playerInputs.Jump)
         //         {

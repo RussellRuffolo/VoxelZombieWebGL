@@ -48,7 +48,7 @@ public class WaterSwimmingMoveState : IMoveState
         }
 
         //walk out of water onto land
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             return MoveState.basicGrounded;
         }
