@@ -16,9 +16,9 @@ public class ServerGameManager : MonoBehaviour
     public bool inVoteTime = false;
 
     MapData map1, map2, map3;
+    
     public int map1Votes, map2Votes, map3Votes;
 
-    private string roundWonURL = "http://localhost/VoxelZombies/roundWon.php?";
 
     private void Awake()
     {

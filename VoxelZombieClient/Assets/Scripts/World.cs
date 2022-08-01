@@ -49,7 +49,7 @@ public class World : IWorld
             }
             else
             {
-                //100 is no value
+                //0 is no value
                 return 0;
             }
         }

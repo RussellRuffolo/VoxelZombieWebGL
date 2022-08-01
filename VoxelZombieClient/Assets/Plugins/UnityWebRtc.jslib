@@ -25,7 +25,7 @@ mergeInto(LibraryManager.library, {
   });
   const clientId = offer.clientId
 
-  unityInstance.SendMessage('Network', 'SetClientId', offer.clientId)
+  window.unityInstance.SendMessage('Network', 'SetClientId', offer.clientId)
 
   // 2. Set the offer on the PeerConnection
   peerConnection.setRemoteDescription(
@@ -62,16 +62,19 @@ mergeInto(LibraryManager.library, {
       if(dataChannel.label === 'Reliable'){
         peerConnection.reliableChannel = dataChannel
 
+	window.unityInstance.SendMessage('Network', 'ReliableChannelOpen');
+
+
         dataChannel.onmessage = function(event) {            
 
-          unityInstance.SendMessage('Network', 'ReceiveReliableMessage', event.data)
+          window.unityInstance.SendMessage('Network', 'ReceiveReliableMessage', event.data)
         }
       }
       else if(dataChannel.label === 'Unreliable'){
         peerConnection.unreliableChannel = dataChannel
 
         dataChannel.onmessage = function(event) {
-          unityInstance.SendMessage('Network', 'ReceiveUnreliableMessage', event.data)
+          window.unityInstance.SendMessage('Network', 'ReceiveUnreliableMessage', event.data)
         }
       }
    
@@ -110,7 +113,7 @@ Connect: function (baseUrl) {
     
 },
 
-GetUsername: function() 
+GetToken: function() 
 { 
   var queryString = window.location.search;
   console.log(queryString);
@@ -139,40 +142,11 @@ GetUsername: function()
     .then(function(response)
     {return response.json()} )
     .then(function(data) { console.log(data);
-  
-       window.localStorage.token = data.access_token;
+       
 
-        
-  console.log("At GetUsername token is: " + window.localStorage.token)
- 
-  console.log("At GetUsername data.token is: " + data.access_token)
-
-       fetch("https://id.crashblox.net/users/me",
-       {
-       headers: { "Authorization": "Bearer " + data.access_token}
-       })
-     .then(function(response) {
-         return response.json()
-       })
-      .then(function(data) {
-       console.log(data);
-       if(!data.username){
-         unityInstance.SendMessage('Network', 'ReceiveNoUsername')
-       }
-       else{
-         unityInstance.SendMessage('Network', 'ReceiveUsername', data.username)
-       }
-   
-       })
-   
+    window.unityInstance.SendMessage('Network', 'ReceiveToken', data.access_token)   
 
     })
-
-
-
- 
-
-
 },
 
 PatchUsername: function(username){
@@ -198,11 +172,23 @@ PatchUsername: function(username){
     })
    .then(function(data) {
      console.log(data);
-     unityInstance.SendMessage('Network', 'ReceiveUsername', data.username);
+     window.unityInstance.SendMessage('Network', 'ReceiveUsername', data.username);
 
     })
 
   
-} 
+},
+
+Foo: function () {
+        window.alert("Foo!");
+    },
+
+    Boo: async function () {
+        var s = function (ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        };
+        await s(2000);
+        window.alert("Boo!");
+    }
 
 });

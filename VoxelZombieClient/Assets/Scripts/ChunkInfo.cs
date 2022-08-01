@@ -19,9 +19,9 @@ public static class ChunkInfo
     public static Vector3[] _frontVertices = new[]
     {
         new Vector3(0, 0, 0),
-        new Vector3(1, 0, 0),
-        new Vector3(1, 1, 0),
-        new Vector3(0, 1, 0),
+        new Vector3(.5f, 0, 0),
+        new Vector3(.5f, .5f, 0),
+        new Vector3(0, .5f, 0),
     };
 
     public static Vector3[] _frontHalfVertices = new[]
@@ -40,10 +40,10 @@ public static class ChunkInfo
 
     public static Vector3[] _topVertices = new[]
     {
-        new Vector3(1, 1, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(0, 1, 1),
-        new Vector3(1, 1, 1),
+        new Vector3(.5f, .5f, 0),
+        new Vector3(0, .5f, 0),
+        new Vector3(0, .5f, .5f),
+        new Vector3(.5f, .5f, .5f),
     };
 
     public static Vector3[] _topHalfVertices = new[]
@@ -62,10 +62,10 @@ public static class ChunkInfo
 
     public static Vector3[] _rightVertices = new[]
     {
-        new Vector3(1, 0, 0),
-        new Vector3(1, 1, 0),
-        new Vector3(1, 1, 1),
-        new Vector3(1, 0, 1)
+        new Vector3(.5f, 0, 0),
+        new Vector3(.5f, .5f, 0),
+        new Vector3(.5f, .5f, .5f),
+        new Vector3(.5f, 0, .5f)
     };
 
     public static Vector3[] _rightHalfVertices = new[]
@@ -85,9 +85,9 @@ public static class ChunkInfo
     public static Vector3[] _leftVertices = new[]
     {
         new Vector3(0, 0, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(0, 1, 1),
-        new Vector3(0, 0, 1)
+        new Vector3(0, .5f, 0),
+        new Vector3(0, .5f, .5f),
+        new Vector3(0, 0, .5f)
     };
 
     public static Vector3[] _leftHalfVertices = new[]
@@ -106,10 +106,10 @@ public static class ChunkInfo
 
     public static Vector3[] _backVertices = new[]
     {
-        new Vector3(0, 1, 1),
-        new Vector3(1, 1, 1),
-        new Vector3(1, 0, 1),
-        new Vector3(0, 0, 1),
+        new Vector3(0, .5f, .5f),
+        new Vector3(.5f, .5f, .5f),
+        new Vector3(.5f, 0, .5f),
+        new Vector3(0, 0, .5f),
     };
 
     public static Vector3[] _backHalfVertices = new[]
@@ -129,9 +129,9 @@ public static class ChunkInfo
     public static Vector3[] _bottomVertices = new[]
     {
         new Vector3(0, 0, 0),
-        new Vector3(1, 0, 0),
-        new Vector3(1, 0, 1),
-        new Vector3(0, 0, 1)
+        new Vector3(.5f, 0, 0),
+        new Vector3(.5f, 0, .5f),
+        new Vector3(0, 0, .5f)
     };
 
     public static int[] _bottomTriangles = new[]
@@ -173,7 +173,13 @@ public static class ChunkInfo
         20, 37, 38, 39, 40, 44, 57, 61
     };
 
-    public static List<int> _transparentBlockIDs = new List<int>
+    // public static List<int> _transparentBlockIDs = new List<int>
+    // {
+    //     0, 9, 11, 18,
+    //     20, 37, 38, 39, 40, 44, 57, 61
+    // };
+
+    public static HashSet<int> _transparentBlockSet = new HashSet<int>()
     {
         0, 9, 11, 18,
         20, 37, 38, 39, 40, 44, 57, 61

@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 
 public class VoxelServer : MonoBehaviour
@@ -25,6 +26,9 @@ public class VoxelServer : MonoBehaviour
     public const char CHAT_TAG = 'l';
     public const char CLIENT_POSITION_TAG = 'm';
     public const char CREATE_ACCOUNT_TAG = 'n';
+    public const char TOKEN_TAG = 'o';
+    public const char USERNAME_TAG = 'p';
+    public const char PATCH_USERNAME_TAG = 'q';
 
     VoxelEngine vEngine;
     ServerPlayerManager PlayerManager;
@@ -126,9 +130,13 @@ public class VoxelServer : MonoBehaviour
         {
             HandlePlayerChat(client, reader);
         }
-        else if (messageTag == CREATE_ACCOUNT_TAG)
+        else if (messageTag == TOKEN_TAG)
         {
-            //  TryCreateAccount(e);
+            HandleToken(clientId, client, reader.ReadString());
+        }
+        else if (messageTag == PATCH_USERNAME_TAG)
+        {
+            HandlePatchUsername(clientId, client, reader.ReadString(), reader.ReadString());
         }
     }
 
@@ -462,6 +470,57 @@ public class VoxelServer : MonoBehaviour
     private void HandleLogin(ushort clientId, RtcClient client, string name)
     {
         HandleLoginAttempt(clientId, client, name);
+    }
+
+    private async void HandleToken(ushort clientId, RtcClient client, string token)
+    {
+        string response = await HttpAsyncClient.Instance.MakeTokenRequest("https://id.crashblox.net/users/me", token);
+
+        JObject responseObject = JObject.Parse(response);
+
+        string username = null;
+        try
+        {
+            username = (string) responseObject["username"];
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Caught exception parsing token response: " + e.Message);
+        }
+
+        RtcMessage usernameMessage = new RtcMessage(USERNAME_TAG);
+
+        usernameMessage.WriteStr(username);
+
+        client.SendReliableMessage(usernameMessage);
+
+        Debug.Log(response);
+    }
+
+    private async void HandlePatchUsername(ushort clientId, RtcClient client, string username, string token)
+    {
+        string response =
+            await HttpAsyncClient.Instance.MakeUsernamePatchRequest("https://id.crashblox.net/users/me", username,
+                token);
+        
+        JObject responseObject = JObject.Parse(response);
+
+        string returnName = null;
+        try
+        {
+            returnName = (string) responseObject["username"];
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Caught exception parsing patch response: " + e.Message);
+        }
+        
+        RtcMessage usernameMessage = new RtcMessage(USERNAME_TAG);
+
+        usernameMessage.WriteStr(returnName);
+
+        client.SendReliableMessage(usernameMessage);
+
     }
 
     //On successful login player is initialized.

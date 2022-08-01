@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Security.Cryptography;
 using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,10 +30,14 @@ namespace Client
         private static extern string Connect(string baseUrl);
 
         [DllImport("__Internal")]
-        private static extern void GetUsername();
+        private static extern void GetToken();
+
 
         [DllImport("__Internal")]
-        private static extern void PatchUsername(string username);
+        private static extern void Foo();
+
+        [DllImport("__Internal")]
+        private static extern void Boo();
 
 
         private const string baseUrl = "https://rtc.crashblox.net";
@@ -56,14 +61,50 @@ namespace Client
 
             if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
-                GetUsername();
-
-
                 Connect(baseUrl + "/get-offer/");
+
+                //get token
+
+
+                //send token to game server
+
+                //
             }
             else if (Application.platform == RuntimePlatform.Android)
             {
-                
+            }
+        }
+
+
+        public void ReceiveToken(string token)
+        {
+            m_token = token;
+            Debug.LogError("Received Token: " + token);
+            RtcMessage tokenMessage = new RtcMessage(Tags.TOKEN_TAG);
+
+            tokenMessage.WriteStr(token);
+
+            VoxelClient.SendReliableMessage(tokenMessage);
+        }
+
+        private string m_token;
+
+
+        public void ReliableChannelOpen()
+        {
+            Debug.LogError("Reliable Channel Open");
+            GetToken();
+        }
+
+        public void HandleUsername(string username)
+        {
+            if (String.IsNullOrEmpty(username))
+            {
+                ReceiveNoUsername();
+            }
+            else
+            {
+                ReceiveUsername(username);
             }
         }
 
@@ -76,7 +117,7 @@ namespace Client
         {
             if (string.IsNullOrEmpty(returnName))
             {
-                //show the input field and a submit button. on succesful patch show play button
+                //show the input field and a submit button. on successful patch show play button
                 nameEntry.SetActive(true);
             }
             else
@@ -96,7 +137,10 @@ namespace Client
             if (nameText.text != "")
             {
                 Debug.LogError("NameText is: " + nameText.text);
-                PatchUsername(nameText.text);
+                RtcMessage patchUsernameMessage = new RtcMessage(Tags.PATCH_USERNAME_TAG);
+                patchUsernameMessage.WriteStr(nameText.text);
+                patchUsernameMessage.WriteStr(m_token);
+                VoxelClient.SendReliableMessage(patchUsernameMessage);
                 // Debug.LogError(returnName);
                 //
                 // if (string.IsNullOrEmpty(returnName))
