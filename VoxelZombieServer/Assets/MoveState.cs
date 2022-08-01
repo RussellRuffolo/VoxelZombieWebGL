@@ -20,5 +20,6 @@
         aerialHalfBlock,
         crouchJump, 
         wallHang,
-        postWallJump
+        postWallJump,
+        postWallJumpSlideAir
     }

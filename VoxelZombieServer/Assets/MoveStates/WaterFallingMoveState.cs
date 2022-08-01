@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaterFallingMoveState : IMoveState
 {
-    
+    public Animator PlayerAnimator { get; set; }
 
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
@@ -34,10 +34,12 @@ public class WaterFallingMoveState : IMoveState
 
     public void Enter()
     {
+  
     }
 
     public void Exit()
     {
+     
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
@@ -54,7 +56,7 @@ public class WaterFallingMoveState : IMoveState
         }
 
         //walk out of water onto land
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             return MoveState.basicGrounded;
         }

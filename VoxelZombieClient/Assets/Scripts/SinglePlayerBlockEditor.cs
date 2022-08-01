@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Client
@@ -21,31 +22,31 @@ namespace Client
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)
         {
             world[x, y, z] = 0;
-            CheckChunks(x, y, z);
+            CheckChunks(x , y , z);
         }
 
         protected override void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag)
         {
             world[x, y, z] = blockTag;
-            CheckChunks(x, y, z);
+            CheckChunks(x , y , z);
         }
 
         void CheckChunks(int x, int y, int z)
         {
-            dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, z));
+            dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, z / 2));
 
             if (x % 16 == 0)
             {
                 if (x != 0)
                 {
-                    dirtiedChunks.Add(ChunkID.FromWorldPos(x - 1, y, z));
+                    dirtiedChunks.Add(ChunkID.FromWorldPos((x - 1) / 2, y / 2, z / 2));
                 }
             }
             else if (x % 16 == 15)
             {
-                if (x != vEngine.Length - 1)
+                if ((x + 1) / 2 != vEngine.Length)
                 {
-                    dirtiedChunks.Add(ChunkID.FromWorldPos(x + 1, y, z));
+                    dirtiedChunks.Add(ChunkID.FromWorldPos((x + 1) / 2, y / 2, z / 2));
                 }
             }
 
@@ -53,14 +54,14 @@ namespace Client
             {
                 if (y != 0)
                 {
-                    dirtiedChunks.Add(ChunkID.FromWorldPos(x, y - 1, z));
+                    dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y - 1) / 2, z / 2));
                 }
             }
             else if (y % 16 == 15)
             {
-                if (y != vEngine.Height - 1)
+                if ((y + 1) / 2 != vEngine.Height)
                 {
-                    dirtiedChunks.Add(ChunkID.FromWorldPos(x, y + 1, z));
+                    dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y + 1) / 2, z / 2));
                 }
             }
 
@@ -68,14 +69,14 @@ namespace Client
             {
                 if (z != 0)
                 {
-                    dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, z - 1));
+                    dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z - 1) / 2));
                 }
             }
             else if (z % 16 == 15)
             {
-                if (z != vEngine.Width - 1)
+                if ((z + 1) / 2 != vEngine.Width)
                 {
-                    dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, z + 1));
+                    dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z + 1) / 2));
                 }
             }
 

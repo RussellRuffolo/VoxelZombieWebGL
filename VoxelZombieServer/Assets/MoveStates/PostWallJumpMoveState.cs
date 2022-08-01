@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PostWallJumpMoveState : IMoveState
 {
-    
+    public Animator PlayerAnimator { get; set; }
 
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
@@ -34,7 +34,7 @@ public class PostWallJumpMoveState : IMoveState
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         IWorld world, Vector3 lastVelocity)
     {
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             if (playerInputs.Slide)
             {
@@ -42,6 +42,11 @@ public class PostWallJumpMoveState : IMoveState
             }
 
             return MoveState.basicGrounded;
+        }
+
+        if (playerInputs.Slide)
+        {
+            return MoveState.postWallJumpSlideAir;
         }
 
         return MoveState.postWallJump;

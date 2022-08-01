@@ -9,11 +9,21 @@ public static class PlayerUtils
     private static Vector3 FootOffset = new Vector3(0, -.08f - (1.76f / 2), 0);
 
 
-    public static bool CheckGrounded(List<ContactPoint> contactPoints)
+    public static bool CheckGrounded(Rigidbody playerRb)
     {
-        foreach (ContactPoint contactPoint in contactPoints)
+        // foreach (ContactPoint contactPoint in contactPoints)
+        // {
+        //     if (contactPoint.normal.y.Equals(1))
+        //     {
+        //         return true;
+        //     }
+        // }
+        var colliders =
+            Physics.OverlapBox(playerRb.position + FootOffset, new Vector3(.175f, .1f, .175f), playerRb.rotation);
+
+        foreach (var collider in colliders)
         {
-            if (contactPoint.normal.y.Equals(1))
+            if (collider.CompareTag("Ground"))
             {
                 return true;
             }
@@ -101,12 +111,12 @@ public static class PlayerUtils
         List<ContactPoint> contactPoints,
         IWorld world)
     {
-        Vector3 blockPosition = playerRb.transform.position + FootOffset - Vector3.up;
+        Vector3 blockPosition = playerRb.transform.position + FootOffset - Vector3.up * .4f;
         ushort x = (ushort) Mathf.FloorToInt(blockPosition.x);
         ushort y = (ushort) Mathf.FloorToInt(blockPosition.y);
         ushort z = (ushort) Mathf.FloorToInt(blockPosition.z);
 
-        if (!IsSolidBlock(world[x, y, z]))
+        if (!IsSolidBlock(world[blockPosition.x, blockPosition.y, blockPosition.z]))
         {
             return false;
         }
@@ -123,54 +133,62 @@ public static class PlayerUtils
             {
                 if (Vector3.Dot(playerInputs.MoveVector, -contactPoint.normal) > 0)
                 {
+                    Debug.Log("HIT WALL");
                     // Vector3 testPosition = playerRb.transform.position + Vector3.up * .51f +
                     //                        playerInputs.MoveVector.normalized * .01f;
+                    Vector3 testPosition = playerRb.transform.position + Vector3.up * .51f +
+                                         -contactPoint.normal * .05f;
+                    
+
+                    Collider[] colliders = Physics.OverlapBox(testPosition, PlayerStats.StandingHalfExtents,
+                        Quaternion.LookRotation(playerInputs.PlayerForward),
+                        Physics.AllLayers
+                    );
+                    bool hitGround = false;
+                    foreach (Collider collider in colliders)
+                    {
+                        if (collider.CompareTag("Ground"))
+                        {
+                            hitGround = true;
+                        }
+                    }
+
+                    if (!hitGround)
+                    {
+                        return true;
+                    }
+                   
+
+                    // Vector3 footPosition = playerRb.transform.position + FootOffset;
+                    // Vector3 blockPosition = new Vector3(contactPoint.point.x, footPosition.y, contactPoint.point.z) +
+                    //                         playerInputs.MoveVector.normalized * .1f;
                     //
-                    // Collider[] colliders = Physics.OverlapBox(testPosition, PlayerStats.StandingHalfExtents,
-                    //     playerRb.transform.rotation,
-                    //     Physics.AllLayers
-                    // );
+                    // Vector3 floorPosition = footPosition - .5f * Vector3.up;
                     //
-                    // foreach (Collider collider in colliders)
+                    // ushort floorX = (ushort) Mathf.FloorToInt(floorPosition.x);
+                    // ushort floorY = (ushort) Mathf.FloorToInt(floorPosition.y);
+                    // ushort floorZ = (ushort) Mathf.FloorToInt(floorPosition.z);
+                    //
+                    //
+                    // ushort x = (ushort) Mathf.FloorToInt(blockPosition.x);
+                    // ushort y = (ushort) Mathf.FloorToInt(blockPosition.y);
+                    // ushort z = (ushort) Mathf.FloorToInt(blockPosition.z);
+                    //
+                    // if (world[x, y, z] == 44)
                     // {
-                    //     if (collider.CompareTag("Ground"))
+                    //     if (world[x, y + 1, z] == 0 && world[x, y + 2, z] == 0)
                     //     {
-                    //         return false;
+                    //         return true;
                     //     }
                     // }
                     //
-                    // return true;
-                    
-                    Vector3 footPosition = playerRb.transform.position + FootOffset;
-                    Vector3 blockPosition = new Vector3(contactPoint.point.x, footPosition.y, contactPoint.point.z) +
-                                            playerInputs.MoveVector.normalized * .1f;
-                    
-                    Vector3 floorPosition = footPosition - .5f * Vector3.up;
-                    
-                    ushort floorX = (ushort) Mathf.FloorToInt(floorPosition.x);
-                    ushort floorY = (ushort) Mathf.FloorToInt(floorPosition.y);
-                    ushort floorZ = (ushort) Mathf.FloorToInt(floorPosition.z);
-                    
-                    
-                    ushort x = (ushort) Mathf.FloorToInt(blockPosition.x);
-                    ushort y = (ushort) Mathf.FloorToInt(blockPosition.y);
-                    ushort z = (ushort) Mathf.FloorToInt(blockPosition.z);
-                    
-                    if (world[x, y, z] == 44)
-                    {
-                        if (world[x, y + 1, z] == 0 && world[x, y + 2, z] == 0)
-                        {
-                            return true;
-                        }
-                    }
-                    
-                    if (world[floorX, floorY, floorZ] == 44)
-                    {
-                        if (IsSolidBlock(world[x, y, z]) && world[x, y + 1, z] == 0 && world[x, y + 2, z] == 0)
-                        {
-                            return true;
-                        }
-                    }
+                    // if (world[floorX, floorY, floorZ] == 44)
+                    // {
+                    //     if (IsSolidBlock(world[x, y, z]) && world[x, y + 1, z] == 0 && world[x, y + 2, z] == 0)
+                    //     {
+                    //         return true;
+                    //     }
+                    // }
                 }
             }
         }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaterJumpMoveState : IMoveState
 {
-    
+    public Animator PlayerAnimator { get; set; }
 
     private bool Jumped;
 
@@ -31,7 +31,7 @@ public class WaterJumpMoveState : IMoveState
     {
         if (Jumped)
         {
-            if (PlayerUtils.CheckGrounded(contactPoints))
+            if (PlayerUtils.CheckGrounded(playerRb))
             {
                 if (playerInputs.Jump)
                 {

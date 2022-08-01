@@ -20,6 +20,10 @@ namespace Client
         public const char CHAT_TAG = 'l';
         public const char CLIENT_POSITION_TAG = 'm';
         public const char CREATE_ACCOUNT_TAG = 'n';
+        public const char TOKEN_TAG = 'o';
+        public const char USERNAME_TAG = 'p';
+        public const char PATCH_USERNAME_TAG = 'q';
+
     }
 }
 

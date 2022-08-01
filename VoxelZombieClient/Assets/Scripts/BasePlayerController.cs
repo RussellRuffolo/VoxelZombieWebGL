@@ -25,6 +25,7 @@ namespace Client
             {MoveState.slideJump, new SlideJumpMoveState()},
             {MoveState.basicCrawling, new BasicCrawlingMoveState()},
             {MoveState.slideAir, new SlideAirMoveState()},
+            {MoveState.postWallJumpSlideAir, new PostWallJumpSlideAirMoveState()},
             {MoveState.slideLand, new SlideLandMoveState()},
             {MoveState.wallJump, new WallJumpMoveState()},
             {MoveState.groundedHalfBlock, new GroundedHalfBlockMoveState()},
@@ -235,7 +236,7 @@ namespace Client
 
             bool slide = Input.GetKey(KeyCode.LeftShift);
 
-            bool chat = Input.GetKeyDown(KeyCode.T) || Input.GetKeyDown(KeyCode.Return);
+            bool chat = Input.GetKeyDown(KeyCode.Return);
 
             bool menu = Input.GetKeyDown(KeyCode.M);
 

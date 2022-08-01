@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class PlayerStats
 {
-    public static float playerSpeed = 4.25f;
+    public static float playerSpeed = 4.0f;
 
     public static float crawlSpeed = 1.5f;
     public static float slideFriction = .05f;
@@ -24,5 +24,7 @@ public static class PlayerStats
     public static float waterExitSpeed = 5;
     
     public static Vector3 StandingHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
+    public static Vector3 SmallerHalfExtents = new Vector3(.6f / 2, 1.76f / 2, .6f / 2);
+
     public static Vector3 StandableHalfExtents = new Vector3(.708f / 2, 1.75f / 2, .708f / 2);
 }

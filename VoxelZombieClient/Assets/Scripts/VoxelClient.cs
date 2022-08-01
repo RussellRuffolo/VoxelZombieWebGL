@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Net;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -13,6 +14,9 @@ namespace Client
     public class VoxelClient : MonoBehaviour
     {
         public bool loadedFirstMap = false;
+
+
+        public GameObject MenuCamera;
 
         [SerializeField] public Canvas ZombieCanvas;
 
@@ -122,6 +126,9 @@ namespace Client
 
                 if (PlayerID == clientId)
                 {
+                    //Remove Menu Main Camera Here
+                    Destroy(MenuCamera);
+
                     Instantiate(PlayerMenu);
 
                     GameObject LocalPlayer = Instantiate(LocalPlayerPrefab,
@@ -265,7 +272,7 @@ namespace Client
             SendUnreliableMessage(inputMessage.GetMessage());
         }
 
-        public void SendBlockEdit(ushort x, ushort y, ushort z, ushort blockTag)
+        public void SendBlockEdit(ushort x, ushort y, ushort z, byte blockTag)
         {
             RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
             blockEditMessage.WriteUShort(x);
@@ -285,7 +292,7 @@ namespace Client
 
         public void ApplyBlockEdit(RtcMessageReader reader)
         {
-            int numBlocks = reader.GetMessageLength() / 16;
+            int numBlocks = reader.GetMessageLength() / 8;
 
 
             for (int i = 0; i < numBlocks; i++)
@@ -294,24 +301,24 @@ namespace Client
                 ushort y = reader.ReadUShort();
                 ushort z = reader.ReadUShort();
 
-                byte blockTag = (byte) reader.ReadUShort();
+                byte blockTag =  (byte)reader.ReadUShort();
                 world[x, y, z] = blockTag;
 
-                dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, z));
+                dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, z / 2));
 
                 //These checks determine if the edited block was on the edge of a chunk, and dirties the neighboring chunk if so. 
                 if (x % 16 == 0)
                 {
                     if (x != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x - 1, y, z));
+                        dirtiedChunks.Add(ChunkID.FromWorldPos((x - 1) / 2, y / 2, z / 2));
                     }
                 }
                 else if (x % 16 == 15)
                 {
-                    if (x != vEngine.Length - 1)
+                    if ((x + 1) / 2 != vEngine.Length)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x + 1, y, z));
+                        dirtiedChunks.Add(ChunkID.FromWorldPos((x + 1) / 2, y / 2, z / 2));
                     }
                 }
 
@@ -319,14 +326,14 @@ namespace Client
                 {
                     if (y != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x, y - 1, z));
+                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y - 1) / 2, z / 2));
                     }
                 }
                 else if (y % 16 == 15)
                 {
-                    if (y != vEngine.Height - 1)
+                    if ((y + 1) / 2 != vEngine.Height)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x, y + 1, z));
+                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y + 1) / 2, z / 2));
                     }
                 }
 
@@ -334,14 +341,14 @@ namespace Client
                 {
                     if (z != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, z - 1));
+                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z - 1) / 2));
                     }
                 }
                 else if (z % 16 == 15)
                 {
-                    if (z != vEngine.Width - 1)
-                    {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, z + 1));
+                    if ((z + 1) / 2 != vEngine.Width)
+                       {
+                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z + 1) / 2));
                     }
                 }
 

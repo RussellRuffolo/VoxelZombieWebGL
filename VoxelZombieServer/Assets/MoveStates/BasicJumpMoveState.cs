@@ -6,7 +6,7 @@ public class BasicJumpMoveState : IMoveState
 {
  //   private bool Jumped;
 
- 
+ public Animator PlayerAnimator { get; set; }
 
  public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
@@ -32,7 +32,7 @@ public class BasicJumpMoveState : IMoveState
         return MoveState.postJump;
         // if (Jumped)
         // {
-        //     if (PlayerUtils.CheckGrounded(contactPoints))
+        //     if (PlayerUtils.CheckGrounded(playerRb))
         //     {
         //         if (playerInputs.Jump)
         //         {

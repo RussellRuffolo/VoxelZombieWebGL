@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class AerialHalfBlockMoveState : IMoveState
 {
-    
+    public Animator PlayerAnimator { get; set; }
 
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {
+        Debug.Log("Aerial half block");
         float yPos = playerRb.transform.position.y;
         float yDec = yPos - (int) yPos;
         float yOffset;
@@ -40,7 +41,7 @@ public class AerialHalfBlockMoveState : IMoveState
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         IWorld world, Vector3 lastVelocity)
     {
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             if (playerInputs.Jump)
             {

@@ -77,14 +77,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationTracker: {fileID: 5507316863679401603}
-  moveState: 0
-  MoveState: 0
-  camController: {fileID: 0}
-  playerRB: {fileID: 6825067443827716579}
-  playerRb: {fileID: 6825067443827716579}
+  PlayerAnimator: {fileID: 0}
+  InputText: {fileID: 0}
+  LogPanel: {fileID: 0}
+  InputPanel: {fileID: 0}
+  DisplayedLogs: {fileID: 0}
   standingCollider: {fileID: 5458588273040198146}
   slidingCollider: {fileID: 5128777441807606117}
+  MoveState: 0
+  InputState: 0
+  camController: {fileID: 0}
+  playerRB: {fileID: 6825067443827716579}
   lastVelocity: {x: 0, y: 0, z: 0}
+  playerRb: {fileID: 6825067443827716579}
+  currentVelocity: {x: 0, y: 0, z: 0}
+  lastPosition: {x: 0, y: 0, z: 0}
 --- !u!65 &5128777441807606117
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -173,7 +173,7 @@ public class ClientConnectionManager : MonoBehaviour
 
         clients.Add(clientId, client);
 
-        RTCOfferOptions options = new RTCOfferOptions();
+        RTCOfferAnswerOptions options = new RTCOfferAnswerOptions();
 
 
         RTCSessionDescriptionAsyncOperation offerOp = peerConnection.CreateOffer(ref options);
@@ -187,7 +187,7 @@ public class ClientConnectionManager : MonoBehaviour
         resp.Headers["content-type"] = "application/json";
         string sdp = offerOp.Desc.sdp;
         Debug.Log("Sdp: " + sdp);
-        string newSdp = sdp.Replace("c=IN IP4 0.0.0.0", "c=IN IP4 98.50.67.155");
+        string newSdp = sdp.Replace("IN IP4 127.0.0.1", "IN IP4 98.50.67.155");
         Debug.Log("Sdp: " + newSdp);
         GetOfferResponse respObject = new GetOfferResponse(clientId, newSdp);
         string jsonResponse = JsonUtility.ToJson(respObject);

@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using fNbt;
 using System.IO;
+using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class VoxelEngine : MonoBehaviour
 {
@@ -48,7 +51,7 @@ public class VoxelEngine : MonoBehaviour
 
         MapData asylum = new MapData("asylum", 25, 129.5f, 30);
         mapList.Add(asylum);
-        
+
         // MapData asylum1 = new MapData("asylum", 25, 129.5f, 30);
         // mapList.Add(asylum1);
         //
@@ -137,12 +140,15 @@ public class VoxelEngine : MonoBehaviour
                     newChunkObj.transform.position = new Vector3(x * 16, y * 16, z * 16);
 
 
-                    var chunk = newChunkObj.AddComponent<Chunk>();
+                    var chunk = newChunkObj.AddComponent<GreedyChunk>();
                     chunk.world = world;
                     chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
                     ChunkID newID = new ChunkID(x, y, z);
                     world.Chunks.Add(newID, chunk);
                     chunk.ID = newID;
+
+
+                    chunk.init();
                 }
             }
         }
@@ -155,24 +161,42 @@ public class VoxelEngine : MonoBehaviour
             {
                 for (int z = 0; z < width; z++)
                 {
-                    world[x, y, z] = mapBytes[blockCount];
-                    blockCount++;
+                    //  UInt16 blockId = mapBytes[blockCount];
+                    //    UInt32 combinedId = (UInt32) ((blockId << 16) + blockId);
+                    try
+                    {
+                        byte blockId = mapBytes[blockCount];
+                        ulong combinedId = 0;
+                        if (blockId == 44)
+                        {
+                            combinedId.Pack(44, 44, 44, 44, 0, 0, 0, 0);
+                        }
+                        else
+                        {
+                            combinedId.Pack(blockId, blockId, blockId, blockId, blockId, blockId, blockId, blockId);
+                        }
+
+                        world[x, y, z] = combinedId;
+                        //           World[x, y + .5F, z] = mapBytes[blockCount];
+                        blockCount++;
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log("X: " + x + " Y: " + y + " Z: " + z);
+
+                        Debug.Log(e.Message);
+                    }
                 }
             }
         }
 
-        foreach (Chunk chunk in world.Chunks.Values)
-        {
-            chunk.init();
-            chunk.RenderToMesh();
-        }
 
         loadingMap = false;
     }
 
     public void UnloadMap()
     {
-        foreach (Chunk toDestroy in world.Chunks.Values)
+        foreach (GreedyChunk toDestroy in world.Chunks.Values)
         {
             Destroy(toDestroy.gameObject);
         }
@@ -183,7 +207,6 @@ public class VoxelEngine : MonoBehaviour
     //returns a map other than current map
     public MapData GetRandomMap()
     {
-
         return mapList[0];
         int mapIndex = Random.Range(0, mapList.Count);
         if (currentMap != mapList[mapIndex])

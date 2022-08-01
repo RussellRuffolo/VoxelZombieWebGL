@@ -5,7 +5,7 @@ using UnityEngine;
 public class PostJumpMoveState : IMoveState
 {
     
-    
+    public Animator PlayerAnimator { get; set; }
 
     private int JumpRefreshCooldown = 0;
 
@@ -38,14 +38,14 @@ public class PostJumpMoveState : IMoveState
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
         IWorld world, Vector3 lastVelocity)
     {
-        if (PlayerUtils.CheckAerialHalfBlock(playerRb, playerInputs, contactPoints, world))
-        {
-            return MoveState.aerialHalfBlock;
-        }
+        // if (PlayerUtils.CheckAerialHalfBlock(playerRb, playerInputs, contactPoints, world))
+        // {
+        //     return MoveState.aerialHalfBlock;
+        // }
 
         if (JumpRefreshCooldown > 5)
         {
-            if (PlayerUtils.CheckGrounded(contactPoints))
+            if (PlayerUtils.CheckGrounded(playerRb))
             {
                 return MoveState.basicGrounded;
             }
@@ -56,7 +56,7 @@ public class PostJumpMoveState : IMoveState
             return MoveState.postJump;
         }
 
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             return MoveState.basicGrounded;
         }

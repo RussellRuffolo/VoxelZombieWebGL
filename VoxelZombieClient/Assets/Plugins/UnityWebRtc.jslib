@@ -25,7 +25,7 @@ mergeInto(LibraryManager.library, {
   });
   const clientId = offer.clientId
 
-  unityInstance.SendMessage('Network', 'SetClientId', offer.clientId)
+  window.unityInstance.SendMessage('Network', 'SetClientId', offer.clientId)
 
   // 2. Set the offer on the PeerConnection
   peerConnection.setRemoteDescription(
@@ -62,16 +62,19 @@ mergeInto(LibraryManager.library, {
       if(dataChannel.label === 'Reliable'){
         peerConnection.reliableChannel = dataChannel
 
+	window.unityInstance.SendMessage('Network', 'ReliableChannelOpen');
+
+
         dataChannel.onmessage = function(event) {            
 
-          unityInstance.SendMessage('Network', 'ReceiveReliableMessage', event.data)
+          window.unityInstance.SendMessage('Network', 'ReceiveReliableMessage', event.data)
         }
       }
       else if(dataChannel.label === 'Unreliable'){
         peerConnection.unreliableChannel = dataChannel
 
         dataChannel.onmessage = function(event) {
-          unityInstance.SendMessage('Network', 'ReceiveUnreliableMessage', event.data)
+          window.unityInstance.SendMessage('Network', 'ReceiveUnreliableMessage', event.data)
         }
       }
    
@@ -109,5 +112,83 @@ Connect: function (baseUrl) {
   }
     
 },
+
+GetToken: function() 
+{ 
+  var queryString = window.location.search;
+  console.log(queryString);
+  
+  var urlParams = new URLSearchParams(queryString);
+  
+  var state = urlParams.get('state')
+  
+  
+  var code = urlParams.get('code')
+  console.log(state);
+  console.log(code)
+  
+  
+  var callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
+  
+  var callbackParamData = {
+    code : code,
+    state : state
+  };
+  for(var k in callbackParamData){
+    callbackUrl.searchParams.append(k, callbackParamData[k]);
+  }
+  
+  fetch(callbackUrl)
+    .then(function(response)
+    {return response.json()} )
+    .then(function(data) { console.log(data);
+       
+
+    window.unityInstance.SendMessage('Network', 'ReceiveToken', data.access_token)   
+
+    })
+},
+
+PatchUsername: function(username){
+  var newName = Pointer_stringify(username)
+  console.log(newName);
+  var userBody = {
+    "username": newName
+    };
+
+    console.log(JSON.stringify(userBody));
+    console.log("At PatchUsername token is: " + window.localStorage.token)
+
+  fetch("https://id.crashblox.net/users/me",
+    {
+      method: "PATCH",
+      body: JSON.stringify(userBody),
+      headers: { "Authorization": "Bearer " + window.localStorage.token,
+      "Content-Type": "application/json",
+      "accept": "application/json"}
+    })
+  .then(function(response) {
+      return response.json()
+    })
+   .then(function(data) {
+     console.log(data);
+     window.unityInstance.SendMessage('Network', 'ReceiveUsername', data.username);
+
+    })
+
+  
+},
+
+Foo: function () {
+        window.alert("Foo!");
+    },
+
+    Boo: async function () {
+        var s = function (ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        };
+        await s(2000);
+        window.alert("Boo!");
+    }
 
 });

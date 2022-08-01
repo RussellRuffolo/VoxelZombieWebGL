@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 
 public class WaterSwimmingMoveState : IMoveState
 {
+    public Animator PlayerAnimator { get; set; }
+
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
     {
@@ -18,15 +21,17 @@ public class WaterSwimmingMoveState : IMoveState
         }
 
 
-        return currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
+       return currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
     }
 
     public void Enter()
     {
+
     }
 
     public void Exit()
     {
+
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,
@@ -43,7 +48,7 @@ public class WaterSwimmingMoveState : IMoveState
         }
 
         //walk out of water onto land
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             return MoveState.basicGrounded;
         }

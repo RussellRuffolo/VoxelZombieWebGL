@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Client
 {
@@ -19,68 +20,71 @@ namespace Client
         private Vector3[] _frontVertices = new[]
         {
             new Vector3(0, 0, -.05f),
-            new Vector3(1, 0, -.05f),
-            new Vector3(1, 1, -.05f),
-            new Vector3(0, 1, -.05f),
+            new Vector3(.5f, 0, -.05f),
+            new Vector3(.5f, .5f - .05f),
+            new Vector3(0, .5f, -.05f),
             new Vector3(0, 0, -.05f)
         };
 
         private Vector3[] _topVertices = new[]
         {
-            new Vector3(1, 1.05f, 0),
-            new Vector3(0, 1.05f, 0),
-            new Vector3(0, 1.05f, 1),
-            new Vector3(1, 1.05f, 1),
-            new Vector3(1, 1.05f, 0)
+            new Vector3(.5f, .55f, 0),
+            new Vector3(0, .55f, 0),
+            new Vector3(0, .55f, .5f),
+            new Vector3(.5f, .55f, .5f),
+            new Vector3(.5f, .55f, 0)
         };
 
 
         private Vector3[] _topHalfVertices = new[]
         {
-            new Vector3(1, .55f, 0),
+            new Vector3(.5f, .55f, 0),
             new Vector3(0, .55f, 0),
-            new Vector3(0, .55f, 1),
-            new Vector3(1, .55f, 1),
-            new Vector3(1, .55f, 0)
+            new Vector3(0, .55f, .5f),
+            new Vector3(.5f, .55f, .5f),
+            new Vector3(.5f, .55f, 0)
         };
 
         private Vector3[] _rightVertices = new[]
         {
-            new Vector3(1.05f, 0, 0),
-            new Vector3(1.05f, 1, 0),
-            new Vector3(1.05f, 1, 1),
-            new Vector3(1.05f, 0, 1),
-            new Vector3(1.05f, 0, 0)
+            new Vector3(.55f, 0, 0),
+            new Vector3(.55f, .5f, 0),
+            new Vector3(.55f, .5f, .5f),
+            new Vector3(.55f, 0, .5f),
+            new Vector3(.55f, 0, 0)
         };
 
         private Vector3[] _leftVertices = new[]
         {
             new Vector3(-.05f, 0, 0),
-            new Vector3(-.05f, 1, 0),
-            new Vector3(-.05f, 1, 1),
-            new Vector3(-.05f, 0, 1),
+            new Vector3(-.05f, .5f, 0),
+            new Vector3(-.05f, .5f, .5f),
+            new Vector3(-.05f, 0, .5f),
             new Vector3(-.05f, 0, 0)
         };
 
         private Vector3[] _backVertices = new[]
         {
-            new Vector3(0, 1, 1.05f),
-            new Vector3(1, 1, 1.05f),
-            new Vector3(1, 0, 1.05f),
-            new Vector3(0, 0, 1.05f),
-            new Vector3(0, 1, 1.05f)
+            new Vector3(0, .5f, .55f),
+            new Vector3(.5f, .5f, .55f),
+            new Vector3(.5f, 0, .55f),
+            new Vector3(0, 0, .55f),
+            new Vector3(0, .5f, .55f)
         };
 
         private Vector3[] _bottomVertices = new[]
         {
             new Vector3(0, -.05f, 0),
-            new Vector3(1, -.05f, 0),
-            new Vector3(1, -.05f, 1),
-            new Vector3(0, -.05f, 1),
+            new Vector3(.5f, -.05f, 0),
+            new Vector3(.5f, -.05f, .5f),
+            new Vector3(0, -.05f, .5f),
             new Vector3(0, -.05f, 0)
         };
 
         private Vector3 selectionPosition;
+
+        private ushort selectionX, selectionY, selectionZ;
+
         private Vector3 selectionNormal;
 
         private Vector3 halfBlockNormal = new Vector3(0, .1f, 0);
@@ -124,33 +128,15 @@ namespace Client
         {
             FindBlock(playerCam.transform.position, playerCam.transform.forward);
 
-            int x = (int) selectionPosition.x;
-            int y = (int) selectionPosition.y;
-            int z = (int) selectionPosition.z;
 
-            Vector3 blockOffset = new Vector3(selectionPosition.x, selectionPosition.y, selectionPosition.z);
+            Vector3 blockOffset = selectionPosition;
+//            Debug.Log("Block offset is: " + blockOffset);
             blockOutline.positionCount = 5;
             if (selectionNormal == Vector3.up)
             {
-                if (currentWorld[x, y, z] == 44)
+                for (int i = 0; i < 5; i++)
                 {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        blockOutline.SetPosition(i, blockOffset + _topHalfVertices[i]);
-                    }
-
-
-                    selectionPosition = new Vector3(x, y, z);
-                    selectionNormal = halfBlockNormal;
-
-                    return;
-                }
-                else
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        blockOutline.SetPosition(i, blockOffset + _topVertices[i]);
-                    }
+                    blockOutline.SetPosition(i, blockOffset + _topVertices[i]);
                 }
             }
             else if (selectionNormal == Vector3.back)
@@ -192,12 +178,35 @@ namespace Client
 
         void FindBlock(Vector3 startPosition, Vector3 direction)
         {
+            var hits = Physics.RaycastAll(startPosition, direction, editDistance);
+            foreach (var raycastHit in hits)
+            {
+                if (raycastHit.transform.CompareTag("Ground"))
+                {
+                    Vector3 testPosition = raycastHit.point + (raycastHit.point - startPosition).normalized * .01f;
+
+                    selectionX = (ushort) (testPosition.x * 2);
+                    selectionY = (ushort) (testPosition.y * 2);
+                    selectionZ = (ushort) (testPosition.z * 2);
+                    testPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
+                    if (PlayerUtils.IsSolidBlock(currentWorld[testPosition.x, testPosition.y,
+                            testPosition.z]))
+                    {
+                        selectionPosition = testPosition;
+                        selectionNormal = raycastHit.normal;
+                        return;
+                    }
+                }
+            }
+
+            blockOutline.positionCount = 0;
+            selectionPosition = Vector3.zero;
+            selectionNormal = Vector3.zero;
+            return;
+
             Vector3 currentPosition = startPosition;
 
             float distanceStepped = 0;
-
-            int currentBlock;
-            Vector3 lastRaycastedTarget = new Vector3(-1, 0, 0);
 
 
             while (distanceStepped < editDistance)
@@ -206,39 +215,35 @@ namespace Client
                 distanceStepped += stepDistance;
 
 
-                currentBlock = CheckBlock(currentPosition);
-
-                int x = Mathf.FloorToInt(currentPosition.x);
-                int y = Mathf.FloorToInt(currentPosition.y);
-                int z = Mathf.FloorToInt(currentPosition.z);
-
-
-                if (currentBlock == 1)
+                if (CheckBlock(currentPosition))
                 {
-                    selectionPosition = new Vector3(x, y, z);
-
+                    // selectionPosition = new Vector3(x, y, z);
+                    selectionX = (ushort) (currentPosition.x * 2);
+                    selectionY = (ushort) (currentPosition.y * 2);
+                    selectionZ = (ushort) (currentPosition.z * 2);
+                    selectionPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
                     FindNormal(currentPosition, -direction);
 
                     return;
                 }
-                else if (currentBlock == 2 && lastRaycastedTarget != new Vector3(x, y, z))
-                {
-                    RaycastHit[] hitData = Physics.RaycastAll(
-                        playerCam.transform.position - playerCam.transform.forward, playerCam.transform.forward,
-                        editDistance);
-
-                    foreach (RaycastHit hit in hitData)
-                    {
-                        if (hit.collider.CompareTag("Model"))
-                        {
-                            selectionPosition = new Vector3(x, y, z);
-                            FindNormal(currentPosition, -direction);
-                            return;
-                        }
-                    }
-
-                    lastRaycastedTarget = new Vector3(x, y, z);
-                }
+                // else if (currentBlock == 2 && lastRaycastedTarget != new Vector3(x, y, z))
+                // {
+                //     RaycastHit[] hitData = Physics.RaycastAll(
+                //         playerCam.transform.position - playerCam.transform.forward, playerCam.transform.forward,
+                //         editDistance);
+                //
+                //     foreach (RaycastHit hit in hitData)
+                //     {
+                //         if (hit.collider.CompareTag("Model"))
+                //         {
+                //             selectionPosition = new Vector3(x, y, z);
+                //             FindNormal(currentPosition, -direction);
+                //             return;
+                //         }
+                //     }
+                //
+                //     lastRaycastedTarget = new Vector3(x, y, z);
+                // }
             }
 
             //If no block found
@@ -258,13 +263,14 @@ namespace Client
                 currentPosition += backDirection * .01f;
                 distanceStepped += .01f;
 
-                int block = CheckBlock(currentPosition);
-                if (block == 0)
-                {
-                    int x = Mathf.FloorToInt(currentPosition.x);
-                    int y = Mathf.FloorToInt(currentPosition.y);
-                    int z = Mathf.FloorToInt(currentPosition.z);
 
+                if (!CheckBlock(currentPosition))
+                {
+                    float x = (int) (currentPosition.x * 2) / 2f;
+                    float y = (int) (currentPosition.y * 2) / 2f;
+                    float z = (int) (currentPosition.z * 2) / 2f;
+
+                    //  Debug.Log("Normal x: " + x + " Y: " + y + " Z: " + z);
                     if (x != selectionPosition.x)
                     {
                         if (x > selectionPosition.x)
@@ -299,43 +305,29 @@ namespace Client
                         return;
                     }
                 }
-                else if (block == 3)
-                {
-                    selectionNormal = Vector3.up;
-                }
             }
         }
 
-        int CheckBlock(Vector3 checkPosition)
+        bool CheckBlock(Vector3 checkPosition)
         {
-            int x = Mathf.FloorToInt(checkPosition.x);
-            int y = Mathf.FloorToInt(checkPosition.y);
-            int z = Mathf.FloorToInt(checkPosition.z);
-
-            ulong blockTag = currentWorld[x, y, z];
+            byte blockTag = currentWorld[checkPosition.x, checkPosition.y, checkPosition.z];
 
 
             //untargetable blocks: air, water, lava, outside of map
             if (blockTag == 0 || blockTag == 9 || blockTag == 11 || blockTag == 100)
             {
-                return 0;
+                return false;
             }
 
-            //looking down on a halfblock
-            if (blockTag == 44)
-            {
-                if (checkPosition.y - Mathf.Floor(checkPosition.y) > .5f)
-                    return 3;
-            }
 
             //modeled blocks: flowers, mushorooms
             if (blockTag == 37 || blockTag == 38 || blockTag == 39 || blockTag == 40)
             {
-                return 2;
+                return false;
             }
 
             //any targetable block
-            return 1;
+            return true;
         }
 
         void BreakBlock()
@@ -346,8 +338,8 @@ namespace Client
                 int y = (int) selectionPosition.y;
                 int z = (int) selectionPosition.z;
 
-                ulong breakSpotTag = currentWorld[x, y, z];
-
+                //    ulong breakSpotTag = currentWorld[x, y, z];
+                byte breakSpotTag = currentWorld[selectionPosition.x, selectionPosition.y, selectionPosition.z];
                 if (breakSpotTag == 0)
                 {
                     return;
@@ -365,7 +357,7 @@ namespace Client
                 blockBreakParticleSystem.Play();
                 //
                 //
-                 OnBreakBlock((ushort) x, (ushort) y, (ushort) z);
+                OnBreakBlock(selectionX, selectionY, selectionZ);
 
 
                 return;
@@ -376,38 +368,17 @@ namespace Client
 
         void PlaceBlock()
         {
-            if (selectionNormal == halfBlockNormal)
+            if (selectionNormal != Vector3.zero)
             {
-                int x = (int) (selectionPosition.x);
-                int y = (int) (selectionPosition.y);
-                int z = (int) (selectionPosition.z);
+                ushort x = (ushort) (selectionX + selectionNormal.x);
+                ushort y = (ushort) (selectionY + selectionNormal.y);
+                ushort z = (ushort) (selectionZ + selectionNormal.z);
 
-                if (placeBlockTag == 44)
-                {
-                    OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, 43);
-                }
-                else
-                {
-                    y++;
-                    ulong placeSpotTag = currentWorld[x, y, z];
-
-                    if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
-                    {
-                        OnPlaceBlock((ushort) x, (ushort) y, (ushort) z, placeBlockTag);
-                    }
-                }
-            }
-            else if (selectionNormal != Vector3.zero)
-            {
-                int x = (int) (selectionPosition.x + selectionNormal.x);
-                int y = (int) (selectionPosition.y + selectionNormal.y);
-                int z = (int) (selectionPosition.z + selectionNormal.z);
-
-                ulong placeSpotTag = currentWorld[x, y, z];
+                byte placeSpotTag = currentWorld[x, y, z];
 
                 if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
                 {
-                    OnPlaceBlock((ushort) x, (ushort) y, (ushort) z,  placeBlockTag);
+                    OnPlaceBlock(x, y, z, placeBlockTag);
                 }
             }
         }
@@ -424,7 +395,7 @@ namespace Client
 
                 if (x < vEngine.Length && y < vEngine.Height && z < vEngine.Width)
                 {
-                    byte selectTag = currentWorld[x, y, z];
+                    byte selectTag = currentWorld[selectionPosition.x, selectionPosition.y, selectionPosition.z];
 
                     if (selectTag != 7 && selectTag != 0 && selectTag != 9 && selectTag != 11)
                     {

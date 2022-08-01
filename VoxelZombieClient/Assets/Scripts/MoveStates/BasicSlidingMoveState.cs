@@ -11,14 +11,14 @@ public class BasicSlidingMoveState : CrouchingMoveState
         Vector3 velocity = (playerRb.position - lastPosition) / Time.fixedDeltaTime;
         velocity -= velocity.normalized * PlayerStats.slideFriction;
 
-        return velocity;
+        return new Vector3(velocity.x, 0, velocity.z);
     }
 
 
     public override MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs,
         List<ContactPoint> contactPoints, IWorld world, Vector3 lastVelocity)
     {
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
 
             if (playerInputs.Jump)

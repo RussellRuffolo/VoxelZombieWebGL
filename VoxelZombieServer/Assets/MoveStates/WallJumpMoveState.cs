@@ -5,7 +5,7 @@ using UnityEngine;
 public class WallJumpMoveState : IMoveState
 {
     
-    
+    public Animator PlayerAnimator { get; set; }
 
     private bool Jumped;
     private Vector3 normal = Vector3.zero;
@@ -26,10 +26,12 @@ public class WallJumpMoveState : IMoveState
         Jumped = true;
 
 
-        Vector3 horizontalVelocity = -currentInputs.PlayerForward.normalized * PlayerStats.playerSpeed;
+        float directionMod = Mathf.Clamp(Vector3.Dot(-currentInputs.PlayerForward.normalized, currentInputs.MoveVector.normalized), .3f, 1);
+        
+        Vector3 horizontalVelocity = -currentInputs.PlayerForward.normalized * PlayerStats.playerSpeed * directionMod;
 
 
-        return horizontalVelocity + PlayerStats.jumpSpeed * Vector3.up;
+        return horizontalVelocity + PlayerStats.jumpSpeed * 1.5f * Vector3.up * directionMod;
     }
 
     public void Enter()
@@ -47,7 +49,7 @@ public class WallJumpMoveState : IMoveState
     {
         if (Jumped)
         {
-            if (PlayerUtils.CheckGrounded(contactPoints))
+            if (PlayerUtils.CheckGrounded(playerRb))
             {
                 return MoveState.basicGrounded;
             }

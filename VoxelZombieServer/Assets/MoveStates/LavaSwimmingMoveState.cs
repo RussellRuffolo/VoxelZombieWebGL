@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LavaSwimmingMoveState : IMoveState
 {
-    
+    public Animator PlayerAnimator { get; set; }
 
     public Vector3 GetVelocity(Rigidbody player, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
@@ -14,10 +14,12 @@ public class LavaSwimmingMoveState : IMoveState
 
     public void Enter()
     {
+
     }
 
     public void Exit()
     {
+
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,

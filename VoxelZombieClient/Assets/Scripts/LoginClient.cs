@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Security.Cryptography;
 using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,13 +21,28 @@ namespace Client
         public Canvas chatCanvas;
         public Canvas targeterCanvas;
 
+        public GameObject nameEntry;
+        public GameObject loginButton;
+
         private ClientChatManager cManager;
 
         [DllImport("__Internal")]
-        private static extern void Connect(string baseUrl);
+        private static extern string Connect(string baseUrl);
+
+        [DllImport("__Internal")]
+        private static extern void GetToken();
+
+
+        [DllImport("__Internal")]
+        private static extern void Foo();
+
+        [DllImport("__Internal")]
+        private static extern void Boo();
 
 
         private const string baseUrl = "https://rtc.crashblox.net";
+
+        public string username;
 
         // Start is called before the first frame update
         void Start()
@@ -42,10 +58,101 @@ namespace Client
             editor = true;
 #endif
 
-            if (!editor)
+
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
-                Debug.LogError("Connecting");
                 Connect(baseUrl + "/get-offer/");
+
+                //get token
+
+
+                //send token to game server
+
+                //
+            }
+            else if (Application.platform == RuntimePlatform.Android)
+            {
+            }
+        }
+
+
+        public void ReceiveToken(string token)
+        {
+            m_token = token;
+            Debug.LogError("Received Token: " + token);
+            RtcMessage tokenMessage = new RtcMessage(Tags.TOKEN_TAG);
+
+            tokenMessage.WriteStr(token);
+
+            VoxelClient.SendReliableMessage(tokenMessage);
+        }
+
+        private string m_token;
+
+
+        public void ReliableChannelOpen()
+        {
+            Debug.LogError("Reliable Channel Open");
+            GetToken();
+        }
+
+        public void HandleUsername(string username)
+        {
+            if (String.IsNullOrEmpty(username))
+            {
+                ReceiveNoUsername();
+            }
+            else
+            {
+                ReceiveUsername(username);
+            }
+        }
+
+        public void ReceiveNoUsername()
+        {
+            nameEntry.SetActive(true);
+        }
+
+        public void ReceiveUsername(string returnName)
+        {
+            if (string.IsNullOrEmpty(returnName))
+            {
+                //show the input field and a submit button. on successful patch show play button
+                nameEntry.SetActive(true);
+            }
+            else
+            {
+                username = returnName;
+                //display play button
+                loginButton.SetActive(true);
+                nameEntry.SetActive(false);
+            }
+
+            Debug.LogError("username is: " + returnName);
+            Debug.LogError(returnName);
+        }
+
+        public void OnSubmitUsername()
+        {
+            if (nameText.text != "")
+            {
+                Debug.LogError("NameText is: " + nameText.text);
+                RtcMessage patchUsernameMessage = new RtcMessage(Tags.PATCH_USERNAME_TAG);
+                patchUsernameMessage.WriteStr(nameText.text);
+                patchUsernameMessage.WriteStr(m_token);
+                VoxelClient.SendReliableMessage(patchUsernameMessage);
+                // Debug.LogError(returnName);
+                //
+                // if (string.IsNullOrEmpty(returnName))
+                // {
+                //     Debug.LogError("Error: Improper Name or Server Down");
+                // }
+                // else
+                // {
+                //     nameEntry.SetActive(false);
+                //     username = returnName;
+                //     loginButton.SetActive(true);
+                // }
             }
         }
 
@@ -78,16 +185,16 @@ namespace Client
             targeterCanvas.enabled = true;
 
             Destroy(loginCanvas
-                .gameObject); 
+                .gameObject);
         }
 
 
         public void OnLogin()
         {
-            if (nameText.text != "")
+            if (username != "")
             {
                 RtcMessage loginMessage = new RtcMessage(Tags.LOGIN_ATTEMPT_TAG);
-                loginMessage.WriteStr(nameText.text);
+                loginMessage.WriteStr(username);
                 VoxelClient.SendReliableMessage(loginMessage);
             }
             else

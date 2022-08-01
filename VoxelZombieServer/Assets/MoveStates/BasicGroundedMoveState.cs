@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BasicGroundedMoveState : IMoveState
 {
-    
+    public Animator PlayerAnimator { get; set; }
 
     public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
         Vector3 lastVelocity, Vector3 lastPosition)
@@ -17,6 +17,7 @@ public class BasicGroundedMoveState : IMoveState
 
     public void Enter()
     {
+
     }
 
     public void Exit()
@@ -36,7 +37,7 @@ public class BasicGroundedMoveState : IMoveState
             return MoveState.waterFalling;
         }
 
-        if (PlayerUtils.CheckGrounded(contactPoints))
+        if (PlayerUtils.CheckGrounded(playerRb))
         {
             if (playerInputs.Jump)
             {

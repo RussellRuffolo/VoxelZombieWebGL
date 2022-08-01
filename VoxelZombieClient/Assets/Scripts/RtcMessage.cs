@@ -34,6 +34,12 @@ public class RtcMessage
 
     public void WriteStr(string str)
     {
+        if (String.IsNullOrEmpty(str))
+        {
+            WriteInt(0);
+            return;
+        }
+
         int length = str.Length;
         WriteInt(length);
         messageString += str;

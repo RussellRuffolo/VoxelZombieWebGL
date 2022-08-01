@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 
 public class VoxelServer : MonoBehaviour
@@ -25,6 +26,9 @@ public class VoxelServer : MonoBehaviour
     public const char CHAT_TAG = 'l';
     public const char CLIENT_POSITION_TAG = 'm';
     public const char CREATE_ACCOUNT_TAG = 'n';
+    public const char TOKEN_TAG = 'o';
+    public const char USERNAME_TAG = 'p';
+    public const char PATCH_USERNAME_TAG = 'q';
 
     VoxelEngine vEngine;
     ServerPlayerManager PlayerManager;
@@ -35,14 +39,6 @@ public class VoxelServer : MonoBehaviour
 
     //players who have loaded the current map
     List<RtcClient> loadedPlayers = new List<RtcClient>();
-
-    private string addAccountURL = "http://localhost/VoxelZombies/addAccount.php?";
-
-    private string loginAttemptURL = "http://localhost/VoxelZombies/loginAttempt.php?";
-
-    private string saltURL = "http://localhost/VoxelZombies/getSalt.php?";
-
-    private string playerStatsURL = "http://localhost/VoxelZombies/playerStats.php?";
 
 
     public Dictionary<ushort, string> playerNames = new Dictionary<ushort, string>();
@@ -134,9 +130,13 @@ public class VoxelServer : MonoBehaviour
         {
             HandlePlayerChat(client, reader);
         }
-        else if (messageTag == CREATE_ACCOUNT_TAG)
+        else if (messageTag == TOKEN_TAG)
         {
-            //  TryCreateAccount(e);
+            HandleToken(clientId, client, reader.ReadString());
+        }
+        else if (messageTag == PATCH_USERNAME_TAG)
+        {
+            HandlePatchUsername(clientId, client, reader.ReadString(), reader.ReadString());
         }
     }
 
@@ -251,7 +251,7 @@ public class VoxelServer : MonoBehaviour
                         }
                         else
                         {
-                            StartCoroutine(PrintPlayerStats(playerName, client.ID));
+                            //  StartCoroutine(PrintPlayerStats(playerName, client.ID));
                         }
                     }
                     else
@@ -280,36 +280,36 @@ public class VoxelServer : MonoBehaviour
         }
     }
 
-    IEnumerator PrintPlayerStats(string name, ushort recipientID)
-    {
-        WWWForm form = new WWWForm();
-
-        form.AddField("name", name);
-
-        UnityWebRequest stats_post = UnityWebRequest.Post(playerStatsURL, form);
-
-        yield return stats_post.SendWebRequest();
-
-        string returnText = stats_post.downloadHandler.text;
-
-        string[] stats = returnText.Split();
-
-        if (stats.Length == 4)
-        {
-            int kills = int.Parse(stats[0]);
-            int deaths = int.Parse(stats[1]);
-            int roundsWon = int.Parse(stats[2]);
-            int timeOnline = int.Parse(stats[3]);
-
-            SendPrivateChat(
-                name + "'s stats: \nKills: " + kills + "\nDeaths: " + deaths + "\nRounds Won: " + roundsWon +
-                "\nTime Online: " + timeOnline, 2, recipientID);
-        }
-        else
-        {
-            SendPrivateChat("Player: " + name + " not found.", 2, recipientID);
-        }
-    }
+    // IEnumerator PrintPlayerStats(string name, ushort recipientID)
+    // {
+    //     WWWForm form = new WWWForm();
+    //
+    //     form.AddField("name", name);
+    //
+    //     UnityWebRequest stats_post = UnityWebRequest.Post(playerStatsURL, form);
+    //
+    //     yield return stats_post.SendWebRequest();
+    //
+    //     string returnText = stats_post.downloadHandler.text;
+    //
+    //     string[] stats = returnText.Split();
+    //
+    //     if (stats.Length == 4)
+    //     {
+    //         int kills = int.Parse(stats[0]);
+    //         int deaths = int.Parse(stats[1]);
+    //         int roundsWon = int.Parse(stats[2]);
+    //         int timeOnline = int.Parse(stats[3]);
+    //
+    //         SendPrivateChat(
+    //             name + "'s stats: \nKills: " + kills + "\nDeaths: " + deaths + "\nRounds Won: " + roundsWon +
+    //             "\nTime Online: " + timeOnline, 2, recipientID);
+    //     }
+    //     else
+    //     {
+    //         SendPrivateChat("Player: " + name + " not found.", 2, recipientID);
+    //     }
+    // }
 
     public ushort GetIDFromName(string playerName)
     {
@@ -445,45 +445,19 @@ public class VoxelServer : MonoBehaviour
     }
 
 
-    void PostLoginAttempt(ushort clientId, RtcClient client, string name, string password)
+    void HandleLoginAttempt(ushort clientId, RtcClient client, string name)
     {
-        string returnText = "";
-
-
-        if (!playerNames.ContainsValue(name))
-        {
-            returnText = "Login Successful";
-        }
-        else
-        {
-            returnText = "No Username";
-        }
-        
         ushort succesfulLogin;
 
-        if (returnText == "Login Successful")
-        {
-            playerNames.Add(clientId, name);
 
-            InitializePlayer(clientId, client, name);
+        playerNames.Add(clientId, name);
 
-            SendPublicChat(playerNames[clientId] + " has joined the fray.", 2);
+        InitializePlayer(clientId, client, name);
 
-            succesfulLogin = 0;
-        }
-        else if (returnText == "No Username")
-        {
-            succesfulLogin = 1;
-        }
-        else if (returnText == "Password Mismatch")
-        {
-            succesfulLogin = 2;
-        }
-        else
-        {
-            succesfulLogin = 3;
-            Debug.LogError(returnText);
-        }
+        SendPublicChat(playerNames[clientId] + " has joined the fray.", 2);
+
+        succesfulLogin = 0;
+
 
         RtcMessage loginMessage = new RtcMessage(LOGIN_ATTEMPT_TAG);
         loginMessage.WriteInt(succesfulLogin);
@@ -495,7 +469,58 @@ public class VoxelServer : MonoBehaviour
     //otherwise tell client unsuccessful so they can attempt again
     private void HandleLogin(ushort clientId, RtcClient client, string name)
     {
-        PostLoginAttempt(clientId, client, name, "");
+        HandleLoginAttempt(clientId, client, name);
+    }
+
+    private async void HandleToken(ushort clientId, RtcClient client, string token)
+    {
+        string response = await HttpAsyncClient.Instance.MakeTokenRequest("https://id.crashblox.net/users/me", token);
+
+        JObject responseObject = JObject.Parse(response);
+
+        string username = null;
+        try
+        {
+            username = (string) responseObject["username"];
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Caught exception parsing token response: " + e.Message);
+        }
+
+        RtcMessage usernameMessage = new RtcMessage(USERNAME_TAG);
+
+        usernameMessage.WriteStr(username);
+
+        client.SendReliableMessage(usernameMessage);
+
+        Debug.Log(response);
+    }
+
+    private async void HandlePatchUsername(ushort clientId, RtcClient client, string username, string token)
+    {
+        string response =
+            await HttpAsyncClient.Instance.MakeUsernamePatchRequest("https://id.crashblox.net/users/me", username,
+                token);
+        
+        JObject responseObject = JObject.Parse(response);
+
+        string returnName = null;
+        try
+        {
+            returnName = (string) responseObject["username"];
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Caught exception parsing patch response: " + e.Message);
+        }
+        
+        RtcMessage usernameMessage = new RtcMessage(USERNAME_TAG);
+
+        usernameMessage.WriteStr(returnName);
+
+        client.SendReliableMessage(usernameMessage);
+
     }
 
     //On successful login player is initialized.
@@ -573,12 +598,12 @@ public class VoxelServer : MonoBehaviour
 
         RtcMessage blockEditMessage = new RtcMessage(BLOCK_EDIT_TAG);
 
-        foreach (BlockEdit bEdit in bEditor.EditedBlocks)
+        foreach (BlockLocation bLoc in bEditor.BlockEdits.Keys)
         {
-            blockEditMessage.WriteUShort(bEdit.x);
-            blockEditMessage.WriteUShort(bEdit.y);
-            blockEditMessage.WriteUShort(bEdit.z);
-            blockEditMessage.WriteUShort(bEdit.blockTag);
+            blockEditMessage.WriteUShort(bLoc.x);
+            blockEditMessage.WriteUShort(bLoc.y);
+            blockEditMessage.WriteUShort(bLoc.z);
+            blockEditMessage.WriteUShort(bEditor.BlockEdits[bLoc]);
         }
 
         client.SendReliableMessage(blockEditMessage);
@@ -598,12 +623,12 @@ public class VoxelServer : MonoBehaviour
 
             RtcMessage message = new RtcMessage(BLOCK_EDIT_TAG);
 
-            foreach (BlockEdit bEdit in bEditor.EditedBlocks)
+            foreach (BlockLocation bLoc in bEditor.BlockEdits.Keys)
             {
-                message.WriteUShort(bEdit.x);
-                message.WriteUShort(bEdit.y);
-                message.WriteUShort(bEdit.z);
-                message.WriteUShort(bEdit.blockTag);
+                message.WriteUShort(bLoc.x);
+                message.WriteUShort(bLoc.y);
+                message.WriteUShort(bLoc.z);
+                message.WriteUShort(bEditor.BlockEdits[bLoc]);
             }
 
             client.SendReliableMessage(message);
@@ -653,7 +678,7 @@ public class VoxelServer : MonoBehaviour
         ushort z = reader.ReadUShort();
 
         //the new blockTag the client requested
-        ushort blockTag = reader.ReadUShort();
+        byte blockTag = (byte) reader.ReadUShort();
 
         if (bEditor.TryApplyEdit(x, y, z, blockTag))
         {
@@ -747,7 +772,7 @@ public class VoxelServer : MonoBehaviour
 
     public void StartRound()
     {
-        bEditor.EditedBlocks.Clear();
+        bEditor.BlockEdits.Clear();
 
         foreach (ushort ID in PlayerManager.PlayerDictionary.Keys)
         {

@@ -34,6 +34,11 @@ public class RtcMessage
 
     public void WriteStr(string str)
     {
+        if (String.IsNullOrEmpty(str))
+        {
+            WriteInt(0);
+            return;
+        }
         int length = str.Length;
         WriteInt(length);
         messageString += str;
@@ -79,6 +84,14 @@ public class RtcMessage
         string ushortString = Convert.ToBase64String(buffer);
 
         messageString += ushortString;
+    }
+    
+    public void WriteByte(byte b)
+    {
+        byte[] buffer = new byte[1];
+        buffer[0] = b;
+        string byteString = Convert.ToBase64String(buffer);
+        messageString += byteString;
     }
 
 
