@@ -14,7 +14,7 @@ public class SinglePlayerMenuController : MonoBehaviour
     [SerializeField] private SinglePlayerVoxelEngine vEngine;
     public ParticleSystem BreakBlockParticleSystem;
 
-    
+
     public Text InputText;
     public Image LogPanel;
     public Image InputPanel;
@@ -27,7 +27,7 @@ public class SinglePlayerMenuController : MonoBehaviour
 
     private SinglePlayerPlayerController singlePlayerPlayerController;
 
-   // public Canvas ChatCanvas;
+    // public Canvas ChatCanvas;
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +55,6 @@ public class SinglePlayerMenuController : MonoBehaviour
 
     public void OnLoadMap()
     {
-        Debug.Log("On Load Map");
         string mapName = MapSelectionDropdown.options[MapSelectionDropdown.value].text;
 
 
@@ -75,24 +74,24 @@ public class SinglePlayerMenuController : MonoBehaviour
         GameObject LocalPlayerSim = Instantiate(SinglerPlayerSimulator,
             position, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-      
+
         LocalPlayer.GetComponent<ClientCameraController>().LocalPlayerSim =
             LocalPlayerSim.transform;
         singlePlayerPlayerController = LocalPlayerSim.GetComponent<SinglePlayerPlayerController>();
         singlePlayerPlayerController.camController =
             LocalPlayer.GetComponent<ClientCameraController>();
-        
+
         singlePlayerPlayerController.PlayerAnimator = LocalPlayer.GetComponentInChildren<Animator>();
         singlePlayerPlayerController.PlayerAnimator.SetBool("IsHuman", true);
 
         LocalPlayer.GetComponent<SinglePlayerBlockEditor>().blockBreakParticleSystem =
             Instantiate(BreakBlockParticleSystem, null);
-        
-        
+        LocalPlayerSim.GetComponent<SinglePlayerPlayerController>().bEditor =
+            LocalPlayer.GetComponent<SinglePlayerBlockEditor>();
+
         singlePlayerPlayerController.InputText = InputText;
         singlePlayerPlayerController.LogPanel = LogPanel;
         singlePlayerPlayerController.InputPanel = InputPanel;
         singlePlayerPlayerController.DisplayedLogs = DisplayedLogs;
-
     }
 }

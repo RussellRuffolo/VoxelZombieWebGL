@@ -9,7 +9,6 @@ public class SlideLandMoveState : CrouchingMoveState
         Vector3 lastVelocity, Vector3 lastPosition)
     {
         Vector3 direction = new Vector3(lastVelocity.x, 0, lastVelocity.z).normalized;
-        Debug.Log("Slide Land");
         return direction * (Mathf.Clamp(Mathf.Abs(lastVelocity.y) * .8f, 1, 20) * PlayerStats.slideBoost);
     }
 

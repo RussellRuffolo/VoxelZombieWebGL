@@ -23,8 +23,10 @@ namespace Client
         public const char TOKEN_TAG = 'o';
         public const char USERNAME_TAG = 'p';
         public const char PATCH_USERNAME_TAG = 'q';
+        public const char ACTION_TAG = 'r';
+        public const char GRENADE_CREATION_TAG = 's';
+        public const char GRENADE_POSITION_TAG = 't';
 
+        public const char GRENADE_DESTRUCTION_TAG = 'u';
     }
 }
-
-

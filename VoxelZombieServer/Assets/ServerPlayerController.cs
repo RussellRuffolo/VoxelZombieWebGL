@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class ServerPlayerController : MonoBehaviour
@@ -15,7 +16,8 @@ public class ServerPlayerController : MonoBehaviour
 
     private IMoveState CurrentMoveState;
     private IWorld world;
-
+    private VoxelServer vServer;
+    private ServerBlockEditor bEditor;
     public MoveState MoveState;
 
 
@@ -46,8 +48,23 @@ public class ServerPlayerController : MonoBehaviour
 
     private void Awake()
     {
-        world = GameObject.FindGameObjectWithTag("Network").GetComponent<VoxelEngine>().world;
+        GameObject network = GameObject.FindGameObjectWithTag("Network");
+        world = network.GetComponent<VoxelEngine>().world;
+        vServer = network.GetComponent<VoxelServer>();
+        bEditor = network.GetComponent<ServerBlockEditor>();
 
+        GrenadeActionState grenadeState = (GrenadeActionState) ActionStates[ActionState.Grenade];
+        grenadeState.world = world;
+        grenadeState.vServer = vServer;
+        grenadeState.bEditor = bEditor;
+
+        BlockEditActionState bEditState = (BlockEditActionState) ActionStates[ActionState.BlockEdit];
+        bEditState.world = world;
+        bEditState.bEditor = bEditor;
+        bEditState.vServer = vServer;
+
+        ActionState = ActionState.BlockEdit;
+        CurrentActionState = ActionStates[ActionState];
 
         MoveState = MoveState.basicAir;
         CurrentMoveState = MoveStates[MoveState];
@@ -62,10 +79,39 @@ public class ServerPlayerController : MonoBehaviour
         }
     }
 
-  //  public Vector3 lastVelocity = Vector3.zero;
+    //  public Vector3 lastVelocity = Vector3.zero;
     public Vector3 currentVelocity = Vector3.zero;
 
     public Vector3 lastPosition = Vector3.zero;
+
+    private ActionState ActionState;
+
+    protected Dictionary<ActionState, IActionState> ActionStates = new Dictionary<ActionState, IActionState>()
+    {
+        {
+            ActionState.Grenade, new GrenadeActionState()
+        },
+        {
+            ActionState.BlockEdit, new BlockEditActionState()
+        }
+    };
+
+    private IActionState CurrentActionState;
+
+    public void ApplyActions(ActionInputs inputs, Rigidbody playerRb)
+    {
+        ActionState newState = ActionStates[ActionState].CheckActionState(inputs);
+
+        if (newState != ActionState)
+        {
+            ActionState = newState;
+            CurrentActionState.Exit();
+            CurrentActionState = ActionStates[newState];
+            CurrentActionState.Enter();
+        }
+
+        CurrentActionState.ApplyInputs(inputs, playerRb);
+    }
 
     public Vector3 ApplyInputs(Rigidbody playerRB, ClientInputs currentInputs, Vector3 lastVelocity)
     {
@@ -81,12 +127,12 @@ public class ServerPlayerController : MonoBehaviour
 
         currentVelocity = CurrentMoveState.GetVelocity(playerRB, currentInputs, allCPs, lastVelocity, lastPosition);
         allCPs.Clear();
-        
+
         lastPosition = playerRB.transform.position;
         playerRb.MovePosition(playerRb.transform.position +
                               (currentVelocity) * Time.fixedDeltaTime);
 
-       return currentVelocity;
+        return currentVelocity;
     }
 
     private void OnCollisionEnter(Collision collision)

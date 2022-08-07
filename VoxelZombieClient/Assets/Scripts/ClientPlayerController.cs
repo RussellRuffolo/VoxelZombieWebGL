@@ -134,7 +134,7 @@ namespace Client
                     inputMessage.WriteUShort(LoggedInputs[i % 1024].Jump ? (ushort) 1 : (ushort) 0);
 
                     inputMessage.WriteUShort(LoggedInputs[i % 1024].Slide ? (ushort) 1 : (ushort) 0);
-
+                    
                     inputMessage.WriteInt(LoggedInputs[i % 1024].TickNumber);
                 }
 

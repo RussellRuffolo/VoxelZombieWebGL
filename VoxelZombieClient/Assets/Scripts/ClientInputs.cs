@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Client
 {
-    public class ClientInputs
+    public struct ClientInputs
     {
         public Vector3 MoveVector;
         public Vector3 PlayerForward;
@@ -10,19 +10,17 @@ namespace Client
         public bool Slide;
         public bool Menu;
         public bool Chat;
+
         public int TickNumber;
 
-        public ClientInputs()
-        {
-            MoveVector = Vector3.zero;
-            PlayerForward = Vector3.zero;
-            Jump = false;
-            Slide = false;
-            TickNumber = 0;
-        }
+        public static ClientInputs Default = new ClientInputs(
+            Vector3.zero,
+            Vector3.zero);
 
-        public ClientInputs(Vector3 moveVector, Vector3 playerForward, bool jump, bool slide, bool menu, bool chat,
-            int tickNumber)
+
+        public ClientInputs(Vector3 moveVector, Vector3 playerForward, bool jump = false, bool slide = false,
+            bool menu = false, bool chat = false,
+            int tickNumber = 0)
         {
             MoveVector = moveVector;
             PlayerForward = playerForward;

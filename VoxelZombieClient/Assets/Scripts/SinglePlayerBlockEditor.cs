@@ -17,6 +17,26 @@ namespace Client
         {
             vEngine = GameObject.FindGameObjectWithTag("Network").GetComponent<IVoxelEngine>();
             world = vEngine.World;
+            
+            ActionStates.Add(ActionState.Grenade, new SinglePlayerGrenadeActionState());
+            ActionStates.Add(ActionState.BlockEdit, new SinglePlayerBlockEditActionState());
+
+            
+            SinglePlayerGrenadeActionState grenadeState = (SinglePlayerGrenadeActionState) ActionStates[ActionState.Grenade];
+
+            grenadeState.GrenadeModel = GrenadeModel;
+
+            grenadeState.cameraDirection = playerCam.transform;
+
+            grenadeState.world = currentWorld;
+            
+            SinglePlayerBlockEditActionState bEditState =
+                (SinglePlayerBlockEditActionState) ActionStates[ActionState.BlockEdit];
+
+            bEditState.bEditor = this;
+            
+            CurrentActionState = ActionStates[ActionState];
+
         }
 
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)

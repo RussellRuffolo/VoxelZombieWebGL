@@ -85,19 +85,19 @@ mergeInto(LibraryManager.library, {
 
 
 SendReliableMessage: function(message){
-  peerConnection.reliableChannel.send(Pointer_stringify(message))
+  peerConnection.reliableChannel.send(UTF8ToString(message))
 },
 
 
 SendUnreliableMessage: function(message){
-  peerConnection.unreliableChannel.send(Pointer_stringify(message))
+  peerConnection.unreliableChannel.send(UTF8ToString(message))
 },
 
 
 Connect__deps: ['SendAnswer', 'AddIceCandidate'],
 Connect: function (baseUrl) {
 
-  var url = Pointer_stringify(baseUrl)
+  var url = UTF8ToString(baseUrl)
 
   try{
     fetch(url)
@@ -126,10 +126,14 @@ GetToken: function()
   var code = urlParams.get('code')
   console.log(state);
   console.log(code)
-  
-  
-  var callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
-  
+
+let callbackUrl;
+if(state == null){
+callbackUrl = new URL('https://id.crashblox.net/auth/discord/callback');
+}
+else{
+callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
+  }
   var callbackParamData = {
     code : code,
     state : state
@@ -147,10 +151,14 @@ GetToken: function()
     window.unityInstance.SendMessage('Network', 'ReceiveToken', data.access_token)   
 
     })
+
+  
+  
+  
 },
 
 PatchUsername: function(username){
-  var newName = Pointer_stringify(username)
+  var newName = UTF8ToString(username)
   console.log(newName);
   var userBody = {
     "username": newName

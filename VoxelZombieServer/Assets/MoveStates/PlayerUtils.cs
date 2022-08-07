@@ -200,4 +200,9 @@ public static class PlayerUtils
     {
         return blockTag != 0 && blockTag != 9 && blockTag != 11;
     }
+    
+    public static bool IsBreakableBlock(byte blockTag)
+    {
+        return blockTag != 0 && blockTag != 7 && blockTag != 9 && blockTag != 11;
+    }
 }

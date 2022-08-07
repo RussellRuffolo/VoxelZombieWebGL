@@ -73,7 +73,6 @@ public class PostWallJumpSlideAirMoveState : CrouchingMoveState
             {
                 if (lastVelocity.magnitude > PlayerStats.crawlSpeed)
                 {
-                    Debug.Log("return slide land");
                     return MoveState.slideLand;
                 }
 

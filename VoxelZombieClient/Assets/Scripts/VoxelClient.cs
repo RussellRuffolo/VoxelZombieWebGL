@@ -145,6 +145,9 @@ namespace Client
                     LocalPlayer.GetComponent<ClientBlockEditor>().blockBreakParticleSystem =
                         Instantiate(BreakBlockParticleSystem);
 
+                    LocalPlayerSim.GetComponent<ClientPlayerController>().bEditor =
+                        LocalPlayer.GetComponent<ClientBlockEditor>();
+                    
                     ClientPlayerController = LocalPlayerSim.GetComponent<ClientPlayerController>();
 
                     ClientPlayerController.PlayerAnimator = LocalPlayer.GetComponentInChildren<Animator>();

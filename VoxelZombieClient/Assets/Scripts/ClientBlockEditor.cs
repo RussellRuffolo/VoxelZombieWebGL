@@ -12,6 +12,24 @@ namespace Client
         protected override void OnStart()
         {
             vClient = GameObject.FindGameObjectWithTag("Network").GetComponent<VoxelClient>();
+            ActionStates.Add(ActionState.Grenade, new ClientGrenadeActionState());
+
+            ActionStates.Add(ActionState.BlockEdit, new ClientBlockEditActionState());
+
+            ClientGrenadeActionState grenadeState = (ClientGrenadeActionState) ActionStates[ActionState.Grenade];
+
+            grenadeState.GrenadeModel = GrenadeModel;
+
+            grenadeState.cameraDirection = playerCam.transform;
+
+            grenadeState.world = currentWorld;
+
+            ClientBlockEditActionState bEditState =
+                (ClientBlockEditActionState) ActionStates[ActionState.BlockEdit];
+
+            bEditState.bEditor = this;
+
+            CurrentActionState = ActionStates[ActionState];
         }
 
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)

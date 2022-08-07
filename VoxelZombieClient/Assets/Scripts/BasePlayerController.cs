@@ -74,9 +74,12 @@ namespace Client
 
         private ClientInputs EmptyInputs = new ClientInputs();
 
+        public BaseBlockEditor bEditor;
 
+        private Transform camTransform;
         private void Awake()
         {
+            camTransform = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Transform>();
             playerRB = GetComponent<Rigidbody>();
             chatClient = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientChatManager>();
             playerRB = GetComponent<Rigidbody>();
@@ -105,6 +108,7 @@ namespace Client
         {
             BaseChatInputState chatInputState = (BaseChatInputState) InputStates[InputState.Chat];
 
+            
             chatInputState.inputPanel = InputPanel;
             chatInputState.inputText = InputText;
             chatInputState.logPanel = LogPanel;
@@ -127,21 +131,17 @@ namespace Client
         {
             GetMouseRotation();
 
+       
             //current inputs are the player inputs for this frame
             ClientInputs clientInputs = GetInputs();
+            
 
+            bEditor.ProcessActionInputs(playerRB);
+            
+            
             InputState newState = InputStates[InputState].CheckInputState(clientInputs);
 
-
-            // if (CurrentMoveState != MoveStates[state])
-            // {
-            //     CurrentMoveState.Exit();
-            //     CurrentMoveState = MoveStates[state];
-            //     CurrentMoveState.Enter();
-            // }
-            //
-            // currentVelocity = CurrentMoveState.GetVelocity(playerRB, currentInputs, allCPs, lastVelocity, lastPosition);
-
+            
             if (newState != InputState)
             {
                 InputState = newState;
@@ -240,6 +240,7 @@ namespace Client
 
             bool menu = Input.GetKeyDown(KeyCode.M);
 
+          
             //can't move or jump if chatting
             if (chatClient.chatEnabled)
             {

@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Client
 {
     public abstract class BaseBlockEditor : MonoBehaviour
     {
-        private Camera playerCam;
+        protected Camera playerCam;
         public float editDistance;
         public float stepDistance;
-        private IWorld currentWorld;
+        protected IWorld currentWorld;
         private IVoxelEngine vEngine;
 
         private byte placeBlockTag = 1;
@@ -16,6 +17,9 @@ namespace Client
         public LineRenderer blockOutline;
 
         public ParticleSystem blockBreakParticleSystem;
+
+        public GameObject GrenadeModel;
+
 
         private Vector3[] _frontVertices = new[]
         {
@@ -81,11 +85,21 @@ namespace Client
             new Vector3(0, -.05f, 0)
         };
 
+        protected Dictionary<ActionState, IActionState> ActionStates = new Dictionary<ActionState, IActionState>()
+        {
+        };
+
+        protected ActionState ActionState;
+
+        protected IActionState CurrentActionState;
+
         private Vector3 selectionPosition;
 
         private ushort selectionX, selectionY, selectionZ;
 
         private Vector3 selectionNormal;
+
+        public VoxelClient vClient;
 
         private Vector3 halfBlockNormal = new Vector3(0, .1f, 0);
 
@@ -96,6 +110,11 @@ namespace Client
             vEngine = GameObject.FindGameObjectWithTag("Network").GetComponent<IVoxelEngine>();
             currentWorld = vEngine.World;
 
+
+            GrenadeModel.SetActive(false);
+
+            ActionState = ActionState.BlockEdit;
+
             blockOutline.positionCount = 0;
 
             OnStart();
@@ -103,25 +122,89 @@ namespace Client
 
         protected abstract void OnStart();
 
-        // Update is called once per frame
-        void Update()
+        public ActionInputs GetActionInputs(Rigidbody playerRb)
+        {
+            Vector3 playerPosition = playerRb.transform.position;
+            Vector3 camForward = playerCam.transform.forward;
+            return new ActionInputs(Input.GetKeyDown(KeyCode.Alpha1), Input.GetKeyDown(KeyCode.Alpha2),
+                Input.GetKeyDown(KeyCode.Alpha3), Input.GetMouseButtonDown(0), Input.GetMouseButtonDown(1),
+                Input.GetMouseButtonDown(2), playerPosition.x, playerPosition.y,
+                playerPosition.z, camForward.x, camForward.y,
+                camForward.z
+            );
+        }
+
+        public void ProcessActionInputs(Rigidbody playerRb)
+        {
+            ActionInputs inputs = GetActionInputs(playerRb);
+
+            ActionState newState = ActionStates[ActionState].CheckActionState(inputs);
+
+            if (newState != ActionState)
+            {
+                ActionState = newState;
+                CurrentActionState.Exit();
+                CurrentActionState = ActionStates[newState];
+                CurrentActionState.Enter();
+            }
+
+            CurrentActionState.ApplyInputs(inputs, playerRb);
+
+            if (inputs.One || inputs.Two || inputs.Three || inputs.MouseZero || inputs.MouseOne || inputs.MouseTwo)
+            {
+                RtcMessage actionMessage = new RtcMessage(Tags.ACTION_TAG);
+                actionMessage.WriteUShort(inputs.One ? (ushort) 1 : (ushort) 0);
+
+                actionMessage.WriteUShort(inputs.Two ? (ushort) 1 : (ushort) 0);
+
+                actionMessage.WriteUShort(inputs.Three ? (ushort) 1 : (ushort) 0);
+
+                actionMessage.WriteUShort(inputs.MouseZero ? (ushort) 1 : (ushort) 0);
+                actionMessage.WriteUShort(inputs.MouseOne ? (ushort) 1 : (ushort) 0);
+                actionMessage.WriteUShort(inputs.MouseTwo ? (ushort) 1 : (ushort) 0);
+                Vector3 rbPosition = playerRb.transform.position;
+                actionMessage.WriteFloat(rbPosition.x);
+                actionMessage.WriteFloat(rbPosition.y);
+                actionMessage.WriteFloat(rbPosition.z);
+                Vector3 camForward = playerCam.transform.forward;
+                actionMessage.WriteFloat(camForward.x);
+                actionMessage.WriteFloat(camForward.y);
+                actionMessage.WriteFloat(camForward.z);
+
+                vClient.SendReliableMessage(actionMessage);
+            }
+        }
+
+
+        public void ApplyInputsSinglePlayer(ActionInputs inputs)
         {
             ShowSelection();
 
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (inputs.MouseZero)
             {
                 BreakBlock();
             }
 
-            if (Input.GetKeyDown(KeyCode.Mouse1))
+            if (inputs.MouseOne)
             {
                 PlaceBlock();
             }
 
-            if (Input.GetKeyDown(KeyCode.Mouse2))
+            if (inputs.MouseTwo)
             {
                 SelectBlock();
             }
+        }
+
+        public void ApplyInputsClient()
+        {
+            ShowSelection();
+        }
+
+
+        public void OnExit()
+        {
+            blockOutline.positionCount = 0;
         }
 
         void ShowSelection()

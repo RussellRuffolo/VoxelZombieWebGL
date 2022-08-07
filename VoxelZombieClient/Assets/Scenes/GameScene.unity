@@ -489,6 +489,8 @@ GameObject:
   - component: {fileID: 250310969}
   - component: {fileID: 250310965}
   - component: {fileID: 250310963}
+  - component: {fileID: 250310970}
+  - component: {fileID: 250310971}
   m_Layer: 0
   m_Name: Network
   m_TagString: Network
@@ -732,6 +734,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87926efff716e594e8634995e4acab4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &250310970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250310962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b64ea2d4aa303f46b2188320d92ebed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PrefabsToPool:
+  - {fileID: 4531851367595005074, guid: c1cecf94f3f480340928e3d89a559b48, type: 3}
+  initialPoolSize: 3
+--- !u!114 &250310971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250310962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd845d70073049ac9a34dcff02bc0856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &260528420

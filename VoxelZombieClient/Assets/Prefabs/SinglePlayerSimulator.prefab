@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5458588273040198146}
   - component: {fileID: 9190745105340696670}
   - component: {fileID: 5128777441807606117}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SinglePlayerSimulator
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -30,6 +30,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 666542586884493796}
   m_Father: {fileID: 0}
@@ -88,6 +89,7 @@ MonoBehaviour:
   InputState: 0
   camController: {fileID: 0}
   playerRB: {fileID: 6825067443827716579}
+  bEditor: {fileID: 0}
   lastVelocity: {x: 0, y: 0, z: 0}
   playerRb: {fileID: 6825067443827716579}
   currentVelocity: {x: 0, y: 0, z: 0}
@@ -114,7 +116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 666542586884493796}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RotationTracker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,6 +133,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6641259070714691551}
   m_RootOrder: 0

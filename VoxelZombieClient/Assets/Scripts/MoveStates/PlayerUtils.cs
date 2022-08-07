@@ -129,11 +129,10 @@ public static class PlayerUtils
     {
         foreach (ContactPoint contactPoint in contactPoints)
         {
-            if (contactPoint.normal.y == 0)
+            if (contactPoint.otherCollider.CompareTag("Ground") && contactPoint.normal.y == 0)
             {
                 if (Vector3.Dot(playerInputs.MoveVector, -contactPoint.normal) > 0)
                 {
-                    Debug.Log("HIT WALL");
                     // Vector3 testPosition = playerRb.transform.position + Vector3.up * .51f +
                     //                        playerInputs.MoveVector.normalized * .01f;
                     Vector3 testPosition = playerRb.transform.position + Vector3.up * .51f +
@@ -199,5 +198,10 @@ public static class PlayerUtils
     public static bool IsSolidBlock(ulong blockTag)
     {
         return blockTag != 0 && blockTag != 9 && blockTag != 11;
+    }
+
+    public static bool IsBreakableBlock(byte blockTag)
+    {
+        return blockTag != 0 && blockTag != 7 && blockTag != 9 && blockTag != 11;
     }
 }

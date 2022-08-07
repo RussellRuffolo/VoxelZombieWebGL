@@ -32,7 +32,7 @@ public class ServerBlockEditor : MonoBehaviour
             if (blockTag != 0)
             {
                 Collider[] thingsHit = Physics.OverlapBox(new Vector3(x / 2f + .5f, y / 2f + .5f, z / 2f + .5f),
-                    new Vector3(.25f, .25f, .25f));
+                    new Vector3(.125f, .125f, .125f));
 
                 foreach (Collider col in thingsHit)
                 {
@@ -51,7 +51,7 @@ public class ServerBlockEditor : MonoBehaviour
             BlockEdits.Add(new BlockLocation(x, y, z), blockTag);
             //vEngine.mapBytes[z + x * vEngine.currentMap.Length + y * vEngine.currentMap.Length * vEngine.currentMap.Width] = (byte)blockTag;
 
-            CheckChunks((int) x, (int) y, (int) z);
+            CheckChunks( x,  y,  z);
 
             return true;
         }
@@ -59,7 +59,7 @@ public class ServerBlockEditor : MonoBehaviour
         return false;
     }
 
-    void CheckChunks(int x, int y, int z)
+     void CheckChunks(int x, int y, int z)
     {
         dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, z / 2));
 

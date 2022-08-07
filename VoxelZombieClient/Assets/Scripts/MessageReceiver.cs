@@ -8,6 +8,8 @@ public class MessageReceiver : MonoBehaviour
 
     private LoginClient LoginClient;
 
+    private GrenadeManager GrenadeManager;
+
     public ushort ClientId;
 
     private void Awake()
@@ -20,6 +22,8 @@ public class MessageReceiver : MonoBehaviour
 
         VoxelClient = GetComponent<VoxelClient>();
         LoginClient = GetComponent<LoginClient>();
+
+        GrenadeManager = GetComponent<GrenadeManager>();
     }
 
     public void SetClientId(int clientId)
@@ -82,6 +86,21 @@ public class MessageReceiver : MonoBehaviour
                 break;
             case Tags.USERNAME_TAG:
                 LoginClient.HandleUsername(reader.ReadString());
+                break;
+            case Tags.GRENADE_CREATION_TAG:
+                GrenadeManager.CreateGrenade(reader.ReadInt(),
+                    new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat()));
+                break;
+            case Tags.GRENADE_POSITION_TAG:
+                int numGrenades = reader.ReadInt();
+                for (int i = 0; i < numGrenades; i++)
+                {
+                    GrenadeManager.MoveGrenade(reader.ReadInt(),
+                        new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat()));
+                }
+                break;
+            case Tags.GRENADE_DESTRUCTION_TAG:
+                GrenadeManager.DestroyGrenade(reader.ReadInt());
                 break;
             default:
                 Debug.LogError("Default Case");

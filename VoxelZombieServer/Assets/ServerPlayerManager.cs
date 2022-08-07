@@ -33,8 +33,7 @@ public class ServerPlayerManager : MonoBehaviour
     VoxelServer vServer;
     VoxelEngine vEngine;
 
-
-
+    private ServerActionManager ActionManager;
 
     private void Awake()
     {
@@ -57,13 +56,11 @@ public class ServerPlayerManager : MonoBehaviour
 
         // StartCoroutine(GetPlayerStats(name, PlayerID));
 
-        InputDictionary.Add(PlayerID, new ClientInputs(Vector3.zero, Vector3.zero, false, false));
+        InputDictionary.Add(PlayerID,
+            new ClientInputs(Vector3.zero, Vector3.zero, false, false));
         TickDic.Add(PlayerID, -1);
         PlayerVelocities.Add(PlayerID, Vector3.zero);
     }
-
-
-
 
 
     public void RemovePlayer(ushort PlayerID)
@@ -82,6 +79,21 @@ public class ServerPlayerManager : MonoBehaviour
         Destroy(toDestroy);
     }
 
+
+    public void ReceiveActions(ushort clientId, RtcMessageReader reader)
+    {
+        Transform targetPlayer = PlayerDictionary[clientId].transform;
+        Rigidbody playerRB = targetPlayer.GetComponent<Rigidbody>();
+        ActionInputs inputs = new ActionInputs(reader.ReadUShort() == 1, reader.ReadUShort() == 1,
+            reader.ReadUShort() == 1, reader.ReadUShort() == 1, reader.ReadUShort() == 1, reader.ReadUShort() == 1,
+            reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat(),
+            reader.ReadFloat());
+        
+        ApplyActions(clientId, inputs, playerRB);
+        
+        
+
+    }
     public void ReceiveInputs(ushort clientId, RtcClient client, RtcMessageReader reader)
     {
         Transform targetPlayer = PlayerDictionary[clientId].transform;
@@ -120,10 +132,15 @@ public class ServerPlayerManager : MonoBehaviour
                 appliedInput = true;
 
 
-                //apply the clients inputs to change the player velocity
+                ClientInputs inputs = new ClientInputs(moveVector, lookDirection, Jump, Slide);
 
-                PlayerVelocities[clientId] = ApplyInputs(clientId,
-                    new ClientInputs(moveVector, lookDirection, Jump, Slide), PlayerVelocities[clientId]);
+
+                //apply the actions to edit blocks and spawn grenades etc
+            
+
+
+                //apply the clients inputs to change the player velocity
+                PlayerVelocities[clientId] = ApplyInputs(clientId, inputs, PlayerVelocities[clientId]);
                 //simulate one tick
                 if (!vEngine.loadingMap)
                 {
@@ -143,7 +160,8 @@ public class ServerPlayerManager : MonoBehaviour
         if (appliedInput)
         {
             //send the client a state update with the corresponding tick
-            vServer.SendPositionUpdate(clientId, client, targetPlayer.position, TickDic[clientId], PlayerVelocities[clientId]);
+            vServer.SendPositionUpdate(clientId, client, targetPlayer.position, TickDic[clientId],
+                PlayerVelocities[clientId]);
         }
 
         //store the players velocity and remove it from simulation
@@ -151,70 +169,16 @@ public class ServerPlayerManager : MonoBehaviour
         playerRB.isKinematic = true;
     }
 
+    private void ApplyActions(ushort id, ActionInputs inputs, Rigidbody playerRb)
+    {
+        ServerPlayerController playerController = PlayerDictionary[id].PlayerController;
+        playerController.ApplyActions(inputs, playerRb);
+    }
+
     private Vector3 ApplyInputs(ushort id, ClientInputs inputs, Vector3 lastVelocity)
     {
         ServerPlayerController playerController = PlayerDictionary[id].PlayerController;
 
         return playerController.ApplyInputs(PlayerDictionary[id].playerRb, inputs, lastVelocity);
-        
-    }
-}
-
-public class ClientInputs
-{
-    public Vector3 MoveVector;
-    public Vector3 PlayerForward;
-    public bool Slide;
-    public bool Jump;
-    public int ClientTickNumber;
-    public int ServerTickNumber;
-
-    //0 is normal, 1 is water, 2 is lava
-    public ushort moveState;
-
-    public ClientInputs(Vector3 moveVec, Vector3 playerForward, bool jump, bool slide)
-    {
-        MoveVector = moveVec;
-        PlayerForward = playerForward;
-        Jump = jump;
-        Slide = slide;
-        moveState = 0;
-        ClientTickNumber = 0;
-        ServerTickNumber = 0;
-    }
-}
-
-public class PlayerInformation
-{
-    public Transform transform;
-    public Rigidbody playerRb;
-    public ServerPlayerController PlayerController;
-    public float yRotation = 0;
-    public string name;
-    public ushort stateTag;
-
-    //stats, read these from the DB at player initialization
-    public int kills = 0;
-    public int deaths = 0;
-    public int roundsWon = 0;
-
-    //time online in seconds
-    public int timeOnline = 0;
-
-    //Time.time at time of initialization
-    public float timeJoined = 0;
-
-    public bool inWater = false;
-
-    public bool moving = false;
-
-    public PlayerInformation(Transform t, ServerPlayerController playerController, Rigidbody rb, string playerName,
-        ushort tag)
-    {
-        PlayerController = playerController;
-        playerRb = rb;
-        transform = t;
-        name = playerName;
-        stateTag = tag;
     }
 }
