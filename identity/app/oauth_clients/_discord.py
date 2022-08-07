@@ -1,11 +1,14 @@
-from typing import TypedDict, Optional, List
+from typing import TypedDict, Optional, List, Tuple
 
+import httpx
 from httpx_oauth.oauth2 import BaseOAuth2
+from httpx_oauth.errors import GetIdEmailError
+from typing import cast, Dict, Any
 
 AUTHORIZE_ENDPOINT = "https://discord.com/api/oauth2/authorize"
 ACCESS_TOKEN_ENDPOINT = "https://discord.com/api/oauth2/token"
 REVOKE_TOKEN_ENDPOINT = "https://discord.com/api/oauth2/token/revoke"
-BASE_SCOPES = ["identify"]
+BASE_SCOPES = ["email"]
 PROFILE_ENDPOINT = "https://discord.com/api/v10/oauth2/@me"
 
 
@@ -31,3 +34,18 @@ class DiscordOAuth2(BaseOAuth2[DiscordOAuth2AuthorizeParams]):
             name=name,
             base_scopes=scope,
         )
+
+    async def get_id_email(self, token: str) -> Tuple[str, str]:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                PROFILE_ENDPOINT,
+                headers={**self.request_headers, "Authorization": f"Bearer {token}"},
+            )
+
+            if response.status_code >= 400:
+                raise GetIdEmailError(response.json())
+
+            data = cast(Dict[str, Any], response.json())
+            user_id = data["id"]
+            email = data["email"]
+            return str(user_id), email
