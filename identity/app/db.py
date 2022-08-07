@@ -22,7 +22,6 @@ class UserTable(Base, SQLAlchemyBaseUserTable):
     oauth_accounts = relationship("OAuthAccountTable")
 
 
-
 class OAuthAccountTable(SQLAlchemyBaseOAuthAccountTable, Base):
     pass
 
