@@ -1,13 +1,11 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using UnityEngine;
-using UnityEngine.Networking;
-using System.Security.Cryptography;
+using System.Reflection;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
+using Random = UnityEngine.Random;
+
 
 public class VoxelServer : MonoBehaviour
 {
@@ -132,7 +130,7 @@ public class VoxelServer : MonoBehaviour
 
         if (chatMessage[0] == '/')
         {
-            string[] commands = chatMessage.Split(chatParams, System.StringSplitOptions.RemoveEmptyEntries);
+            string[] commands = chatMessage.Split(chatParams, StringSplitOptions.RemoveEmptyEntries);
 
             switch (commands[0])
             {
@@ -791,7 +789,7 @@ public class VoxelServer : MonoBehaviour
     public ushort GetRandomPlayer()
     {
         int numClients = loadedPlayers.Count;
-        int playerIndex = UnityEngine.Random.Range(0, numClients);
+        int playerIndex = Random.Range(0, numClients);
         if (numClients != 0)
         {
             return loadedPlayers[playerIndex].ID;

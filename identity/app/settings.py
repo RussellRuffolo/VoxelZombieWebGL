@@ -18,8 +18,13 @@ class _Settings(BaseSettings):
             return v
         raise ValueError(v)
 
+    ### Client IDs and secrets
+    DISCORD_OAUTH_CLIENT_ID: str
+    DISCORD_OAUTH_CLIENT_SECRET: str
+    #
     GOOGLE_OAUTH_CLIENT_ID: str
     GOOGLE_OAUTH_CLIENT_SECRET: str
+
     REDIRECT_URL: AnyHttpUrl
 
     DB_URI: str = "sqlite+aiosqlite:///./test.db"
