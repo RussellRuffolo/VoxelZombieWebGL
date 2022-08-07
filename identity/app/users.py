@@ -1,5 +1,3 @@
-import os
-import json
 from typing import Optional
 
 from fastapi import Depends, Request
@@ -10,16 +8,11 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
-from httpx_oauth.clients.google import GoogleOAuth2
 
 from app.db import get_user_db
 from app.models import User, UserCreate, UserDB, UserUpdate
+from app.oauth_clients import DiscordOAuth2, GoogleOAuth2
 from app.settings import settings
-
-
-google_oauth_client = GoogleOAuth2(
-    settings.GOOGLE_OAUTH_CLIENT_ID, settings.GOOGLE_OAUTH_CLIENT_SECRET
-)
 
 
 class UserManager(BaseUserManager[UserCreate, UserDB]):
@@ -67,3 +60,11 @@ fastapi_users = FastAPIUsers(
 )
 
 current_active_user = fastapi_users.current_user(active=True)
+
+
+google_oauth_client = GoogleOAuth2(
+    settings.GOOGLE_OAUTH_CLIENT_ID, settings.GOOGLE_OAUTH_CLIENT_SECRET
+)
+discord_oauth_client = DiscordOAuth2(
+    settings.DISCORD_OAUTH_CLIENT_ID, settings.DISCORD_OAUTH_CLIENT_SECRET
+)

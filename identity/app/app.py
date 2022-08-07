@@ -3,13 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import create_db_and_tables
 from app.models import UserDB
+from app.settings import settings
 from app.users import (
     auth_backend,
     current_active_user,
-    fastapi_users,
-    google_oauth_client,
+    fastapi_users, google_oauth_client, discord_oauth_client
 )
-from app.settings import settings
 
 app = FastAPI()
 
@@ -39,6 +38,16 @@ app.include_router(
 app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["users"])
 app.include_router(
     fastapi_users.get_oauth_router(
+        discord_oauth_client,
+        auth_backend,
+        settings.DISCORD_OAUTH_CLIENT_SECRET,
+        redirect_url=settings.REDIRECT_URL
+    ),
+    prefix="/auth/discord",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_oauth_router(
         google_oauth_client,
         auth_backend,
         settings.GOOGLE_OAUTH_CLIENT_SECRET,
@@ -47,6 +56,7 @@ app.include_router(
     prefix="/auth/google",
     tags=["auth"],
 )
+
 
 
 @app.get("/")
