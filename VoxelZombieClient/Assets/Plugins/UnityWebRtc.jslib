@@ -116,6 +116,7 @@ Connect: function (baseUrl) {
 GetToken: function() 
 { 
   var queryString = window.location.search;
+  console.log(document.referrer);
   console.log(queryString);
   
   var urlParams = new URLSearchParams(queryString);
@@ -128,13 +129,34 @@ GetToken: function()
   console.log(code)
 
 let callbackUrl;
-if(state == null){
+if(document.referrer == "https://discord.com/"){
 callbackUrl = new URL('https://id.crashblox.net/auth/discord/callback');
-}
-else{
-callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
+
+ var callbackParamData = {
+    code : code,
+    state: state
+  };
+  for(var k in callbackParamData){
+    callbackUrl.searchParams.append(k, callbackParamData[k]);
   }
-  var callbackParamData = {
+  
+  fetch(callbackUrl)
+    .then(function(response)
+    {return response.json()} )
+    .then(function(data) { console.log(data);
+       
+
+    window.unityInstance.SendMessage('Network', 'ReceiveDiscordToken', data.access_token)   
+
+  
+ 
+    })
+
+}
+else if(document.referrer == "https://accounts.google.com/"){
+callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
+
+ var callbackParamData = {
     code : code,
     state : state
   };
@@ -150,10 +172,15 @@ callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
 
     window.unityInstance.SendMessage('Network', 'ReceiveToken', data.access_token)   
 
+  
+ 
     })
 
   
-  
+  }
+else{
+console.log("Referrer Unknown")
+}
   
 },
 

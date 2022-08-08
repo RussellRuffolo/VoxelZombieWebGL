@@ -87,6 +87,11 @@ namespace Client
             VoxelClient.SendReliableMessage(tokenMessage);
         }
 
+        public void ReceiveDiscordToken(string token)
+        {
+            Debug.LogError("Received Discord Token: " + token);
+        }
+
         private string m_token;
 
 

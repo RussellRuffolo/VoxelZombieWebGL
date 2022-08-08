@@ -24,4 +24,5 @@ public class Tags : MonoBehaviour
     public const char GRENADE_POSITION_TAG = 't';
 
     public const char GRENADE_DESTRUCTION_TAG = 'u';
+    public const char CHUNK_DATA_TAG = 'v';
 }

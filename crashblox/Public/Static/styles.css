@@ -73,6 +73,10 @@ width:80%;
 height:100%;
 
 }
+
+.row{
+  flex-direction: row;
+}
   .bg-container1 {
         background-image: url('images/asylum.png');
         background-repeat: no-repeat;

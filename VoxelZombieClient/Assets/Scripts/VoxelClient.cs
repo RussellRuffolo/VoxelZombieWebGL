@@ -83,6 +83,20 @@ namespace Client
             LoginClient = GetComponent<LoginClient>();
         }
 
+        public void ProcessChunkChange(RtcMessageReader reader)
+        {
+            int x = reader.ReadInt();
+            int y = reader.ReadInt();
+            int z = reader.ReadInt();
+
+            ChunkID id = new ChunkID(x, y, z);
+
+           ClientChunk chunk = (ClientChunk) world.Chunks[id];
+           chunk.ProcessChunkChange(reader);
+
+       
+
+        }
 
         public void PerformClientPrediction(RtcMessageReader reader)
         {
