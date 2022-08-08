@@ -1,7 +1,16 @@
 const google_sign_in_button = document.querySelector("#google")
 google_sign_in_button.addEventListener("click", function () {
-    console.log("Hello")
     fetch("https://id.crashblox.net/auth/google/authorize")
+        .then(response => {console.log(response);
+            return response.json()})
+        .then(data => data.authorization_url)
+        // Todo: figure out target
+        .then(oAuthUrl => window.open(oAuthUrl,null, 'width='+screen.width+',height='+screen.height+',modal=yes,alwaysRaised=yes'));
+})
+
+const discord_sign_in_button = document.querySelector("#discord")
+discord_sign_in_button.addEventListener("click", function () {
+    fetch("https://id.crashblox.net/auth/discord/authorize")
         .then(response => {console.log(response);
             return response.json()})
         .then(data => data.authorization_url)
