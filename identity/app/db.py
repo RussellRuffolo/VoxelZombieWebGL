@@ -18,12 +18,13 @@ Base: DeclarativeMeta = declarative_base()
 
 
 class UserTable(Base, SQLAlchemyBaseUserTable):
+    email = Column(String(length=320), unique=True, index=True, nullable=True)
     username = Column(String(length=24), unique=True, nullable=True)
     oauth_accounts = relationship("OAuthAccountTable")
 
 
 class OAuthAccountTable(SQLAlchemyBaseOAuthAccountTable, Base):
-    pass
+    account_email = Column(String(length=320), nullable=True)
 
 
 engine = create_async_engine(settings.DB_URI)
