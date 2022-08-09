@@ -128,12 +128,17 @@ GetToken: function()
   console.log(code)
 
 let callbackUrl;
-if(state == null){
-callbackUrl = new URL('https://id.crashblox.net/auth/discord/callback');
+if(document.referrer == "https://discord.com/"){
+    callbackUrl = new URL('https://id.crashblox.net/auth/discord/callback');
+}
+else if(document.referrer == "https://accounts.google.com/"){
+    callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
 }
 else{
-callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
-  }
+console.log("Unknown referrer");
+}
+
+
   var callbackParamData = {
     code : code,
     state : state

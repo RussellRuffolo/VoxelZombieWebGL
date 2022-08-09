@@ -8,7 +8,7 @@ from typing import cast, Dict, Any
 AUTHORIZE_ENDPOINT = "https://discord.com/api/oauth2/authorize"
 ACCESS_TOKEN_ENDPOINT = "https://discord.com/api/oauth2/token"
 REVOKE_TOKEN_ENDPOINT = "https://discord.com/api/oauth2/token/revoke"
-BASE_SCOPES = ["email"]
+BASE_SCOPES = ["identify", "email"]
 PROFILE_ENDPOINT = "https://discord.com/api/v10/oauth2/@me"
 
 
@@ -47,5 +47,6 @@ class DiscordOAuth2(BaseOAuth2[DiscordOAuth2AuthorizeParams]):
 
             data = cast(Dict[str, Any], response.json())
             user_id = data["user"]["id"]
-            email = data["user"]["email"]
+            breakpoint()
+            email = "email@test.com"
             return str(user_id), email
