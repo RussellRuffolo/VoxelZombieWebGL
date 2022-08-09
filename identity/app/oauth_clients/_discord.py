@@ -8,7 +8,7 @@ from typing import cast, Dict, Any
 AUTHORIZE_ENDPOINT = "https://discord.com/api/oauth2/authorize"
 ACCESS_TOKEN_ENDPOINT = "https://discord.com/api/oauth2/token"
 REVOKE_TOKEN_ENDPOINT = "https://discord.com/api/oauth2/token/revoke"
-BASE_SCOPES = ["identify", "email"]
+BASE_SCOPES = ["identify"]
 PROFILE_ENDPOINT = "https://discord.com/api/v10/oauth2/@me"
 
 
@@ -47,6 +47,6 @@ class DiscordOAuth2(BaseOAuth2[DiscordOAuth2AuthorizeParams]):
 
             data = cast(Dict[str, Any], response.json())
             user_id = data["user"]["id"]
-            breakpoint()
-            email = "email@test.com"
+            #FASTAPI_USERS uses email as an identification key. We don't track email so we make our own using their id. No monkeypatch required.
+            email = str(user_id) + "@test.com"
             return str(user_id), email
