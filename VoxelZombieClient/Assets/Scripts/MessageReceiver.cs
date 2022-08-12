@@ -102,6 +102,9 @@ public class MessageReceiver : MonoBehaviour
             case Tags.GRENADE_DESTRUCTION_TAG:
                 GrenadeManager.DestroyGrenade(reader.ReadInt());
                 break;
+            case Tags.CHUNK_DATA_TAG:
+              VoxelClient.HandleChunkChange(reader);
+                break;
             default:
                 Debug.LogError("Default Case");
                 Debug.Log(message);

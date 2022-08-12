@@ -89,7 +89,7 @@ public class BlockEditActionState : IActionState
             {
                 if (bEditor.TryApplyEdit(x, y, z, blockTag))
                 {
-                    vServer.SendBlockEdit(x, y, z, blockTag);
+                 //   vServer.SendBlockEdit(x, y, z, blockTag);
                 }
             }
         }
@@ -118,7 +118,7 @@ public class BlockEditActionState : IActionState
 
                 if (bEditor.TryApplyEdit(selectionInfo.X, selectionInfo.Y, selectionInfo.Z, 0))
                 {
-                    vServer.SendBlockEdit(selectionInfo.X, selectionInfo.Y, selectionInfo.Z, 0);
+                  //  vServer.SendBlockEdit(selectionInfo.X, selectionInfo.Y, selectionInfo.Z, 0);
                 }
 
                 return;

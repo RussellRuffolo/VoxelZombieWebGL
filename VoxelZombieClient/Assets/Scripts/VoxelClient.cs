@@ -21,7 +21,7 @@ namespace Client
         [SerializeField] public Canvas ZombieCanvas;
 
         [SerializeField] public SinglePlayerMenuController SinglePlayerMenuController;
-        SinglePlayerVoxelEngine vEngine;
+        ClientVoxelEngine vEngine;
         private IWorld world;
 
         public GameObject NetworkPlayerPrefab;
@@ -69,12 +69,17 @@ namespace Client
             SendUnreliableMessage(message.GetMessage());
         }
 
+        public void HandleChunkChange(RtcMessageReader reader)
+        {
+            ((ClientChunk) vEngine.World.Chunks[new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt())])
+                .ProcessChunkChange(reader);
+        }
 
         private LoginClient LoginClient;
 
         private void Awake()
         {
-            vEngine = GetComponent<SinglePlayerVoxelEngine>();
+            vEngine = GetComponent<ClientVoxelEngine>();
             world = vEngine.World;
 
 
@@ -147,7 +152,7 @@ namespace Client
 
                     LocalPlayerSim.GetComponent<ClientPlayerController>().bEditor =
                         LocalPlayer.GetComponent<ClientBlockEditor>();
-                    
+
                     ClientPlayerController = LocalPlayerSim.GetComponent<ClientPlayerController>();
 
                     ClientPlayerController.PlayerAnimator = LocalPlayer.GetComponentInChildren<Animator>();
@@ -304,7 +309,7 @@ namespace Client
                 ushort y = reader.ReadUShort();
                 ushort z = reader.ReadUShort();
 
-                byte blockTag =  (byte)reader.ReadUShort();
+                byte blockTag = (byte) reader.ReadUShort();
                 world[x, y, z] = blockTag;
 
                 dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, z / 2));
@@ -350,7 +355,7 @@ namespace Client
                 else if (z % 16 == 15)
                 {
                     if ((z + 1) / 2 != vEngine.Width)
-                       {
+                    {
                         dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z + 1) / 2));
                     }
                 }

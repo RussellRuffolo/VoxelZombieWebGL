@@ -576,17 +576,15 @@ public class VoxelServer : MonoBehaviour
             }
         }
 
-        RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
 
-        foreach (BlockLocation bLoc in bEditor.BlockEdits.Keys)
+        foreach (GreedyChunk chunk in vEngine.world.Chunks.Values)
         {
-            blockEditMessage.WriteUShort(bLoc.x);
-            blockEditMessage.WriteUShort(bLoc.y);
-            blockEditMessage.WriteUShort(bLoc.z);
-            blockEditMessage.WriteUShort(bEditor.BlockEdits[bLoc]);
+            if (chunk.CurrentChunkData != null)
+            {
+                client.SendReliableMessage(chunk.CurrentChunkData);
+            }
         }
 
-        client.SendReliableMessage(blockEditMessage);
     }
 
     private void ReInitializePlayer(ushort clientId, RtcClient client, RtcMessageReader reader)
@@ -601,17 +599,13 @@ public class VoxelServer : MonoBehaviour
                 loadedPlayers.Add(client);
             }
 
-            RtcMessage message = new RtcMessage(Tags.BLOCK_EDIT_TAG);
-
-            foreach (BlockLocation bLoc in bEditor.BlockEdits.Keys)
+            foreach (GreedyChunk chunk in vEngine.world.Chunks.Values)
             {
-                message.WriteUShort(bLoc.x);
-                message.WriteUShort(bLoc.y);
-                message.WriteUShort(bLoc.z);
-                message.WriteUShort(bEditor.BlockEdits[bLoc]);
+                if (chunk.CurrentChunkData != null)
+                {
+                    client.SendReliableMessage(chunk.CurrentChunkData);
+                }
             }
-
-            client.SendReliableMessage(message);
         }
         else
         {
@@ -623,19 +617,19 @@ public class VoxelServer : MonoBehaviour
         }
     }
 
-    public void SendBlockEdit(ushort x, ushort y, ushort z, byte blockTag)
-    {
-        RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
-        blockEditMessage.WriteUShort(x);
-        blockEditMessage.WriteUShort(y);
-        blockEditMessage.WriteUShort(z);
-        blockEditMessage.WriteUShort(blockTag);
-
-        foreach (RtcClient c in ConnectionManager.GetAllClients())
-        {
-            c.SendReliableMessage(blockEditMessage);
-        }
-    }
+    // public void SendBlockEdit(ushort x, ushort y, ushort z, byte blockTag)
+    // {
+    //     RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
+    //     blockEditMessage.WriteUShort(x);
+    //     blockEditMessage.WriteUShort(y);
+    //     blockEditMessage.WriteUShort(z);
+    //     blockEditMessage.WriteUShort(blockTag);
+    //
+    //     foreach (RtcClient c in ConnectionManager.GetAllClients())
+    //     {
+    //         c.SendReliableMessage(blockEditMessage);
+    //     }
+    // }
 
     public void SendPositionUpdate(ushort id, Vector3 newPosition, float yRot)
     {

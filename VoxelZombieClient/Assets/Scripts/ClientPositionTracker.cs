@@ -37,7 +37,7 @@ namespace Client
 
         void Awake()
         {
-            world = GameObject.FindGameObjectWithTag("Network").GetComponent<SinglePlayerVoxelEngine>().World;
+            world = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>().World;
          //   pController = GetComponent<ClientPlayerController>();
 
             colliderHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);

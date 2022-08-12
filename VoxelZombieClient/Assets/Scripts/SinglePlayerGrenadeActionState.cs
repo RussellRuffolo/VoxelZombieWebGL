@@ -32,7 +32,7 @@ public class SinglePlayerGrenadeActionState : IActionState
 
     public void ApplyInputs(ActionInputs inputs, Rigidbody playerRb)
     {
-        if (inputs.One)
+        if (inputs.MouseZero)
         {
             GameObject grenade = ObjectPooler.Instance.GetPooledObject("Grenade");
             grenade.transform.position = playerRb.transform.position;

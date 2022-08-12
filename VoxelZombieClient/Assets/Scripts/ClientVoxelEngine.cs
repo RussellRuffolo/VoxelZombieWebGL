@@ -10,25 +10,14 @@ using UnityEditor;
 using UnityEngine.Networking;
 
 
-public interface IVoxelEngine
-{
-    IWorld World { get; }
-    int Length { get; set; }
-    
-    int Width { get; set; }
-    
-    int Height { get; set; }
-    List<Material> materialList { get; }
-}
-
-
 public delegate void MapLoadedDelegate(Vector3 spawnPosition);
 
 public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 {
     public IWorld World { get; } = new World();
     
-    public List<Material> materialList { get; }
+    [SerializeField] private List<Material> Materials;
+    public List<Material> materialList => Materials;
 
     public BoundaryController bController;
 
@@ -80,7 +69,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
                     newChunkObj.transform.position = new Vector3(x * 16, y * 16, z * 16);
 
 
-                    var chunk = newChunkObj.AddComponent<GreedyChunk>();
+                    var chunk = newChunkObj.AddComponent<ClientChunk>();
                  
                     chunk.world = World;
                     chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
@@ -88,7 +77,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
                     World.Chunks.Add(newID, chunk);
                     chunk.ID = newID;
 
-                    chunk.GetComponent<GreedyChunk>().init();
+                    chunk.GetComponent<ClientChunk>().init();
                 }
             }
         }
@@ -130,7 +119,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 
     public void UnloadMap()
     {
-        foreach (GreedyChunk toDestroy in World.Chunks.Values)
+        foreach (ClientChunk toDestroy in World.Chunks.Values)
         {
             Destroy(toDestroy.gameObject);
         }

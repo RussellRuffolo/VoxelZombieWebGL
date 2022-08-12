@@ -30,6 +30,11 @@ public class GreedyChunk : MonoBehaviour, IChunk
         get { return voxels[x * 16 * 16 + y * 16 + z]; }
         set { voxels[x * 16 * 16 + y * 16 + z] = value; }
     }
+    
+    public RtcMessage CurrentChunkData { get; set; }
+
+    private VoxelServer vServer;
+
 
     public void init()
     {
@@ -44,6 +49,8 @@ public class GreedyChunk : MonoBehaviour, IChunk
         {
             TriangleLists[i] = new List<int>();
         }
+
+        vServer = GameObject.FindGameObjectWithTag("Network").GetComponent<VoxelServer>();
 
         chunkPosX = ID.X * 16;
         chunkPosY = ID.Y * 16;
@@ -84,6 +91,35 @@ public class GreedyChunk : MonoBehaviour, IChunk
         mesh.SetUVs(0, UvCalculator.CalculateUVs(vertices.ToArray(),1).ToList());
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
+        
+        RtcMessage chunkDataMessage = new RtcMessage(Tags.CHUNK_DATA_TAG);
+        chunkDataMessage.WriteInt(ID.X);
+        chunkDataMessage.WriteInt(ID.Y);
+        chunkDataMessage.WriteInt(ID.Z);
+
+        chunkDataMessage.WriteInt(vertices.Count);
+
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            chunkDataMessage.WriteFloat(vertices[i].x);
+            chunkDataMessage.WriteFloat(vertices[i].y);
+            chunkDataMessage.WriteFloat(vertices[i].z);
+        }
+
+        for (int i = 0; i < 55; i++)
+        {
+            chunkDataMessage.WriteInt(TriangleLists[i].Count);
+
+            for (int j = 0; j < TriangleLists[i].Count; j++)
+            {
+                chunkDataMessage.WriteInt(TriangleLists[i][j]);
+            }
+        }
+
+        Debug.Log("Sending Chunk data message");
+        vServer.BroadcastReliable(chunkDataMessage);
+
+        CurrentChunkData = chunkDataMessage;
 
         dirty = false;
     }

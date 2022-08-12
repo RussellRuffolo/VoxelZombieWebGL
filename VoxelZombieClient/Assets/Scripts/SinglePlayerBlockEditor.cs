@@ -39,6 +39,11 @@ namespace Client
 
         }
 
+        protected override void SendActionInputs(ActionInputs inputs)
+        {
+            
+        }
+
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)
         {
             world[x, y, z] = 0;

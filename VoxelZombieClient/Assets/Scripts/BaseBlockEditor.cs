@@ -25,7 +25,7 @@ namespace Client
         {
             new Vector3(0, 0, -.05f),
             new Vector3(.5f, 0, -.05f),
-            new Vector3(.5f, .5f - .05f),
+            new Vector3(.5f, .5f, - .05f),
             new Vector3(0, .5f, -.05f),
             new Vector3(0, 0, -.05f)
         };
@@ -149,31 +149,13 @@ namespace Client
             }
 
             CurrentActionState.ApplyInputs(inputs, playerRb);
+            
+            SendActionInputs(inputs);
 
-            if (inputs.One || inputs.Two || inputs.Three || inputs.MouseZero || inputs.MouseOne || inputs.MouseTwo)
-            {
-                RtcMessage actionMessage = new RtcMessage(Tags.ACTION_TAG);
-                actionMessage.WriteUShort(inputs.One ? (ushort) 1 : (ushort) 0);
-
-                actionMessage.WriteUShort(inputs.Two ? (ushort) 1 : (ushort) 0);
-
-                actionMessage.WriteUShort(inputs.Three ? (ushort) 1 : (ushort) 0);
-
-                actionMessage.WriteUShort(inputs.MouseZero ? (ushort) 1 : (ushort) 0);
-                actionMessage.WriteUShort(inputs.MouseOne ? (ushort) 1 : (ushort) 0);
-                actionMessage.WriteUShort(inputs.MouseTwo ? (ushort) 1 : (ushort) 0);
-                Vector3 rbPosition = playerRb.transform.position;
-                actionMessage.WriteFloat(rbPosition.x);
-                actionMessage.WriteFloat(rbPosition.y);
-                actionMessage.WriteFloat(rbPosition.z);
-                Vector3 camForward = playerCam.transform.forward;
-                actionMessage.WriteFloat(camForward.x);
-                actionMessage.WriteFloat(camForward.y);
-                actionMessage.WriteFloat(camForward.z);
-
-                vClient.SendReliableMessage(actionMessage);
-            }
+       
         }
+
+        protected abstract void SendActionInputs(ActionInputs inputs);
 
 
         public void ApplyInputsSinglePlayer(ActionInputs inputs)
