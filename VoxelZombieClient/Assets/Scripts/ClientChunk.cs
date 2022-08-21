@@ -1,36 +1,53 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Client;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
-public class ClientChunk : MonoBehaviour, IChunk
+public class ClientChunk : Chunk
 {
-    public IWorld world;
-    private UInt64[] voxels = new UInt64[16 * 16 * 16];
-
     public ChunkID ID;
 
-    private MeshFilter meshFilter;
-    private MeshCollider meshCollider;
-    private Mesh mesh;
 
     private List<int>[] TriangleLists = new List<int>[55];
 
+    public VoxelClient VoxelClient { get; set; }
 
-    List<Vector3> vertices = new List<Vector3>();
-    List<Vector3> normals = new List<Vector3>();
-    List<Vector3> uvList = new List<Vector3>();
 
     public bool dirty { get; set; } = true;
 
-    public UInt64 this[int x, int y, int z]
+
+    public override void SetActiveRendering()
     {
-        get { return voxels[x * 16 * 16 + y * 16 + z]; }
-        set { voxels[x * 16 * 16 + y * 16 + z] = value; }
+        if (!ActiveRendering)
+        {
+            ActiveRendering = true;
+
+            RtcMessage chunkActiveMessage = new RtcMessage(Tags.CHUNK_ACTIVE_TAG);
+
+            chunkActiveMessage.WriteInt(ID.X);
+            chunkActiveMessage.WriteInt(ID.Y);
+            chunkActiveMessage.WriteInt(ID.Z);
+
+            VoxelClient.SendReliableMessage(chunkActiveMessage);
+        }
     }
+
+    public override void SetInactiveRendering()
+    {
+        RtcMessage chunkInactiveMessage = new RtcMessage(Tags.CHUNK_INACTIVE_TAG);
+
+        chunkInactiveMessage.WriteInt(ID.X);
+        chunkInactiveMessage.WriteInt(ID.Y);
+        chunkInactiveMessage.WriteInt(ID.Z);
+
+        VoxelClient.SendReliableMessage(chunkInactiveMessage);
+    }
+
+    private bool ActiveRendering { get; set; }
 
     public void init()
     {
@@ -45,7 +62,29 @@ public class ClientChunk : MonoBehaviour, IChunk
         {
             TriangleLists[i] = new List<int>();
         }
+
+
+        centerPosition = new Vector3(4 + ID.X * 8, 4 + ID.Y * 8, 4 + ID.Z * 8);
     }
+
+    private void Update()
+    {
+        //get into update as dirty:
+
+        // quick mesh in one frame and apply that mesh
+
+        //kick off greedy meshing
+
+        //when greedy meshing returns, apply that mesh
+
+        //concerns: edits made after greedy  meshing has been kicked off. Cancel/ignore the returned greedy mesh?
+
+        //thoughts: start timer after quick meshing and if no edits are made only then kick off greedy mesh
+
+        if (dirty && ActiveRendering)
+            RenderToMesh();
+    }
+
 
     public void ProcessChunkChange(RtcMessageReader reader)
     {
@@ -62,42 +101,49 @@ public class ClientChunk : MonoBehaviour, IChunk
         mesh.Clear();
         mesh.subMeshCount = 55;
 
-        int vertexCount = reader.ReadInt();
-
-        for (int i = 0; i < vertexCount; i++)
+        for (int i = 0; i < voxels.Length; i++)
         {
-            vertices.Add(new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat()));
+            voxels[i] = reader.ReadByte();
         }
 
-        for (int i = 0; i < 55; i++)
-        {
-            int triangleCount = reader.ReadInt();
-
-            for (int j = 0; j < triangleCount; j++)
-            {
-                TriangleLists[i].Add(reader.ReadInt());
-            }
-        }
-
-        mesh.SetVertices(vertices);
-
-        for (int i = 0; i < 55; i++)
-        {
-            mesh.SetTriangles(TriangleLists[i].ToArray(), i);
-        }
-
-        for (int i = 0; i < vertexCount; i++)
-        {
-            normals.Add(Vector3.up);
-        }
-
-
-        mesh.SetNormals(normals);
-        mesh.SetUVs(0, GreedyChunk.UvCalculator.CalculateUVs(vertices.ToArray(), 1).ToList());
-
-
-        meshFilter.mesh = mesh;
-        meshCollider.sharedMesh = mesh;
-
+        Debug.Log("PROCESSED CHUNK CHANGE");
+        dirty = true;
+        //
+        // int vertexCount = reader.ReadInt();
+        //
+        // for (int i = 0; i < vertexCount; i++)
+        // {
+        //     vertices.Add(new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat()));
+        // }
+        //
+        // for (int i = 0; i < 55; i++)
+        // {
+        //     int triangleCount = reader.ReadInt();
+        //
+        //     for (int j = 0; j < triangleCount; j++)
+        //     {
+        //         TriangleLists[i].Add(reader.ReadInt());
+        //     }
+        // }
+        //
+        // mesh.SetVertices(vertices);
+        //
+        // for (int i = 0; i < 55; i++)
+        // {
+        //     mesh.SetTriangles(TriangleLists[i].ToArray(), i);
+        // }
+        //
+        // for (int i = 0; i < vertexCount; i++)
+        // {
+        //     normals.Add(Vector3.up);
+        // }
+        //
+        //
+        // mesh.SetNormals(normals);
+        // mesh.SetUVs(0, GreedyChunk.UvCalculator.CalculateUVs(vertices.ToArray(), 1).ToList());
+        //
+        //
+        // meshFilter.mesh = mesh;
+        // meshCollider.sharedMesh = mesh;
     }
-} 
+}

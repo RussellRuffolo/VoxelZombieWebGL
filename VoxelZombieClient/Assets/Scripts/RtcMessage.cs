@@ -44,6 +44,29 @@ public class RtcMessage
         WriteInt(length);
         messageString += str;
     }
+    private byte[] oneByteBuffer = new byte[1];
+
+    public void WriteByte(byte b)
+    {
+        oneByteBuffer[0] = b;
+        string byteString = Convert.ToBase64String(oneByteBuffer);
+        messageString += byteString;
+    }
+    public void WriteUlong(ulong u)
+    {
+        byte[] buffer = new byte[8];
+        buffer[0] = (byte) (u >> 56);
+        buffer[1] = (byte) (u >> 48);
+        buffer[2] = (byte) (u >> 40);
+        buffer[3] = (byte) (u >> 32);
+        buffer[4] = (byte) (u >> 24);
+        buffer[5] = (byte) (u >> 16);
+        buffer[6] = (byte) (u >> 8);
+        buffer[7] = (byte) u;
+
+        string ulongString = Convert.ToBase64String(buffer);
+        messageString += ulongString;
+    }
 
     public unsafe void WriteFloat(float f)
     {

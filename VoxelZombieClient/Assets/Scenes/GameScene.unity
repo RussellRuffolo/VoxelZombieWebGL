@@ -705,6 +705,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 6871fb2d2b6d8fe429b7c266b1e0dfbd, type: 2}
   - {fileID: 2100000, guid: e2a65d46c4191e44c880e8caeda4c701, type: 2}
   bController: {fileID: 239188429}
+  VoxelClient: {fileID: 250310964}
 --- !u!1 &260528420
 GameObject:
   m_ObjectHideFlags: 0

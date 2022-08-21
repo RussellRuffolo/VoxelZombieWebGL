@@ -13,7 +13,7 @@ public class ClientBlockEditActionState : IActionState
     }
 
     public BaseBlockEditor bEditor;
-    
+
 
     public ActionState CheckActionState(ActionInputs inputs)
     {
@@ -27,6 +27,6 @@ public class ClientBlockEditActionState : IActionState
 
     public void ApplyInputs(ActionInputs inputs, Rigidbody playerRb)
     {
-        bEditor.ApplyInputsClient();
+        bEditor.ApplyInputsClient(inputs);
     }
 }

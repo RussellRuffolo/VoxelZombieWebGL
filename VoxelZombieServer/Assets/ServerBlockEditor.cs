@@ -8,7 +8,7 @@ public class ServerBlockEditor : MonoBehaviour
     private VoxelEngine vEngine;
 
     //Cleared at the beginning of start round
-   // public List<BlockEdit> EditedBlocks = new List<BlockEdit>();
+    // public List<BlockEdit> EditedBlocks = new List<BlockEdit>();
 
     public Dictionary<BlockLocation, byte> BlockEdits = new Dictionary<BlockLocation, byte>();
 
@@ -43,6 +43,13 @@ public class ServerBlockEditor : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                if (world[x, y, z] == 7)
+                {
+                    return false;
+                }
+            }
 
 
             world[x, y, z] = blockTag;
@@ -51,7 +58,7 @@ public class ServerBlockEditor : MonoBehaviour
             BlockEdits.Add(new BlockLocation(x, y, z), blockTag);
             //vEngine.mapBytes[z + x * vEngine.currentMap.Length + y * vEngine.currentMap.Length * vEngine.currentMap.Width] = (byte)blockTag;
 
-            CheckChunks( x,  y,  z);
+            CheckChunks(x, y, z);
 
             return true;
         }
@@ -59,22 +66,22 @@ public class ServerBlockEditor : MonoBehaviour
         return false;
     }
 
-     void CheckChunks(int x, int y, int z)
+    void CheckChunks(int x, int y, int z)
     {
-        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, z / 2));
+        dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, z));
 
         if (x % 16 == 0)
         {
             if (x != 0)
             {
-                dirtiedChunks.Add(ChunkID.FromWorldPos((x - 1) / 2, y / 2, z / 2));
+                dirtiedChunks.Add(ChunkID.FromWorldPos((x - 1), y, z));
             }
         }
         else if (x % 16 == 15)
         {
             if ((x + 1) / 2 != vEngine.currentMap.Length)
             {
-                dirtiedChunks.Add(ChunkID.FromWorldPos((x + 1) / 2, y / 2, z / 2));
+                dirtiedChunks.Add(ChunkID.FromWorldPos((x + 1), y, z));
             }
         }
 
@@ -82,14 +89,14 @@ public class ServerBlockEditor : MonoBehaviour
         {
             if (y != 0)
             {
-                dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y - 1) / 2, z / 2));
+                dirtiedChunks.Add(ChunkID.FromWorldPos(x, (y - 1), z));
             }
         }
         else if (y % 16 == 15)
         {
             if ((y + 1) / 2 != vEngine.currentMap.Height)
             {
-                dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y + 1) / 2, z / 2));
+                dirtiedChunks.Add(ChunkID.FromWorldPos(x, (y + 1), z));
             }
         }
 
@@ -97,14 +104,14 @@ public class ServerBlockEditor : MonoBehaviour
         {
             if (z != 0)
             {
-                dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z - 1) / 2));
+                dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, (z - 1)));
             }
         }
         else if (z % 16 == 15)
         {
             if ((z + 1) / 2 != vEngine.currentMap.Width)
             {
-                dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z + 1) / 2));
+                dirtiedChunks.Add(ChunkID.FromWorldPos(x, y, (z + 1)));
             }
         }
 

@@ -47,6 +47,7 @@ public class RtcClient
         //FOR DEBUG, not necessary
         if (ReliableDataChannel.ReadyState == RTCDataChannelState.Open)
         {
+            
             ReliableDataChannel.Send(message.GetMessage());
             return true;
         }

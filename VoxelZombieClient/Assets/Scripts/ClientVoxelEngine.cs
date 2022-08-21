@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using fNbt;
 using System.IO;
 using System.Linq;
+using Client;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
@@ -15,19 +16,19 @@ public delegate void MapLoadedDelegate(Vector3 spawnPosition);
 public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 {
     public IWorld World { get; } = new World();
-    
+
     [SerializeField] private List<Material> Materials;
     public List<Material> materialList => Materials;
 
     public BoundaryController bController;
 
     public int Length { get; set; }
-    public int Width{ get; set; } 
+    public int Width { get; set; }
     public int Height { get; set; }
 
     public MapLoadedDelegate MapLoadedDelegate;
 
- 
+    public VoxelClient VoxelClient;
 
     private void Awake()
     {
@@ -35,6 +36,8 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
         {
             mat.SetFloat("_Glossiness", 0);
         }
+
+        VoxelClient = GetComponent<VoxelClient>();
     }
 
     public void LoadMap(string mapName)
@@ -51,6 +54,66 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
         StartCoroutine(GetMapData(url));
     }
 
+    public void CreateChunk(ChunkID id)
+    {
+        var newChunkObj =
+            new GameObject(namePrefix + id.X.ToString() + "," + id.Y.ToString() + "," + id.Z.ToString());
+        newChunkObj.transform.position = new Vector3(id.X * 8, id.Y * 8, id.Z * 8);
+
+
+        var chunk = newChunkObj.AddComponent<ClientChunk>();
+
+        chunk.world = World;
+        chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
+        World.Chunks.Add(id, chunk);
+        chunk.ID = id;
+        chunk.VoxelClient = VoxelClient;
+
+        chunk.GetComponent<ClientChunk>().init();
+    }
+
+    string namePrefix = "Chunk ";
+
+    public void CreateChunks(int l, int w, int h, float spawnX, float spawnY, float spawnZ)
+    {
+        if (World.Chunks.Count != 0)
+        {
+            UnloadMap();
+        }
+
+        Length = l;
+        Width = w;
+        Height = h;
+
+        bController.SetMapBoundaries(Length, Width, Height);
+
+
+        // for (int z = 0; z < Width / 8; z++)
+        // {
+        //     for (int x = 0; x < Length / 8; x++)
+        //     {
+        //         for (int y = 0; y < Height / 8; y++)
+        //         {
+        //             var newChunkObj =
+        //                 new GameObject(namePrefix + x.ToString() + "," + y.ToString() + "," + z.ToString());
+        //             newChunkObj.transform.position = new Vector3(x * 8, y * 8, z * 8);
+        //
+        //
+        //             var chunk = newChunkObj.AddComponent<ClientChunk>();
+        //
+        //             chunk.world = World;
+        //             chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
+        //             ChunkID newID = new ChunkID(x, y, z);
+        //             World.Chunks.Add(newID, chunk);
+        //             chunk.ID = newID;
+        //             chunk.VoxelClient = VoxelClient;
+        //
+        //             chunk.GetComponent<ClientChunk>().init();
+        //         }
+        //     }
+        // }
+    }
+
     private void ApplyMapData(byte[] mapBytes)
     {
         bController.SetMapBoundaries(Length, Width, Height);
@@ -58,19 +121,19 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 
         string namePrefix = "Chunk ";
 
-        for (int z = 0; z < Width / 16; z++)
+        for (int z = 0; z < Width / 8; z++)
         {
-            for (int x = 0; x < Length / 16; x++)
+            for (int x = 0; x < Length / 8; x++)
             {
-                for (int y = 0; y < Height / 16; y++)
+                for (int y = 0; y < Height / 8; y++)
                 {
                     var newChunkObj =
                         new GameObject(namePrefix + x.ToString() + "," + y.ToString() + "," + z.ToString());
-                    newChunkObj.transform.position = new Vector3(x * 16, y * 16, z * 16);
+                    newChunkObj.transform.position = new Vector3(x * 8, y * 8, z * 8);
 
 
                     var chunk = newChunkObj.AddComponent<ClientChunk>();
-                 
+
                     chunk.world = World;
                     chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
                     ChunkID newID = new ChunkID(x, y, z);
@@ -84,13 +147,34 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 
 
         int blockCount = 0;
-        for (int y = 0; y < Height; y++)
+        for (ushort y = 0; y < Height; y++)
         {
-            for (int x = 0; x < Length; x++)
+            for (ushort x = 0; x < Length; x++)
             {
-                for (int z = 0; z < Width; z++)
+                for (ushort z = 0; z < Width; z++)
                 {
-                    World[x, y, z] = mapBytes[blockCount];
+                    byte blockId = mapBytes[blockCount];
+
+
+                    //halfblock nonsense
+                    if (blockId != 44)
+                    {
+                        World[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
+                        World[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
+                        World[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
+                        World[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
+                    }
+
+                    World[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+
+                    World[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+
+
+                    World[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+
+                    World[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+
+
                     blockCount++;
                 }
             }

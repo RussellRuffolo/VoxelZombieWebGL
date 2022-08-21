@@ -14,11 +14,11 @@ public class MessageReceiver : MonoBehaviour
 
     private void Awake()
     {
-        UInt64 test = 0;
-        test.Pack(1, 2, 3, 4, 5, 6, 7, 8);
-
-        Debug.Log("Unpacked test: " + test._000() + " " + test._001() + " " + test._101() + " " + test._100() + " " +
-                  test._010() + " " + test._011() + " " + test._111() + " " + test._110() + " ");
+        // UInt64 test = 0;
+        // test.Pack(1, 2, 3, 4, 5, 6, 7, 8);
+        //
+        // Debug.Log("Unpacked test: " + test._000() + " " + test._001() + " " + test._101() + " " + test._100() + " " +
+        //           test._010() + " " + test._011() + " " + test._111() + " " + test._110() + " ");
 
         VoxelClient = GetComponent<VoxelClient>();
         LoginClient = GetComponent<LoginClient>();
@@ -50,7 +50,15 @@ public class MessageReceiver : MonoBehaviour
         {
             case Tags.MAP_TAG:
                 string mapName = reader.ReadString();
-                VoxelClient.LoadMap(mapName);
+                int length = reader.ReadInt();
+                int width = reader.ReadInt();
+                int height = reader.ReadInt();
+                float spawnX = reader.ReadFloat();
+                float spawnY = reader.ReadFloat();
+
+                float spawnZ = reader.ReadFloat();
+
+                VoxelClient.LoadMap(mapName, length, width, height, spawnX, spawnY, spawnZ);
                 break;
             case Tags.LOGIN_ATTEMPT_TAG:
                 int response = reader.ReadInt();
@@ -98,12 +106,13 @@ public class MessageReceiver : MonoBehaviour
                     GrenadeManager.MoveGrenade(reader.ReadInt(),
                         new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat()));
                 }
+
                 break;
             case Tags.GRENADE_DESTRUCTION_TAG:
                 GrenadeManager.DestroyGrenade(reader.ReadInt());
                 break;
             case Tags.CHUNK_DATA_TAG:
-              VoxelClient.HandleChunkChange(reader);
+                VoxelClient.HandleChunkChange(reader);
                 break;
             default:
                 Debug.LogError("Default Case");

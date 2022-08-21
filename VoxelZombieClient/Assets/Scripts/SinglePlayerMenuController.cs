@@ -32,7 +32,6 @@ public class SinglePlayerMenuController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MapSelectionDropdown.options.Add(new Dropdown.OptionData("one_chunk"));
         MapSelectionDropdown.options.Add(new Dropdown.OptionData("a_reverie"));
         MapSelectionDropdown.options.Add(new Dropdown.OptionData("asylum"));
         MapSelectionDropdown.options.Add(new Dropdown.OptionData("carson"));

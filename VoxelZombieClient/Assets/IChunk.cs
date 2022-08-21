@@ -1,8 +1,17 @@
 using System;
+using UnityEngine;
 
 public interface IChunk
 {
-    UInt64 this[int x, int y, int z] { get; set; }
+    byte this[int x, int y, int z] { get; set; }
 
     bool dirty { get; set; }
+
+    Vector3 centerPosition { get; set; }
+    
+    void SetActiveRendering();
+    
+    void SetInactiveRendering();
+    
+    IWorld world { get; set; }
 }

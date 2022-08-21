@@ -77,14 +77,18 @@ namespace Client
         public BaseBlockEditor bEditor;
 
         private Transform camTransform;
+
+        private IWorld World;
+
+
         private void Awake()
         {
+            World = GameObject.FindGameObjectWithTag("Network").GetComponent<IVoxelEngine>().World;
             camTransform = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Transform>();
             playerRB = GetComponent<Rigidbody>();
             chatClient = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientChatManager>();
             playerRB = GetComponent<Rigidbody>();
 
-     
 
             for (int i = 0; i < 1024; i++)
             {
@@ -101,6 +105,8 @@ namespace Client
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
+            renderDistance = (int)rDistance / 8;
+
             OnAwake();
         }
 
@@ -108,14 +114,14 @@ namespace Client
         {
             BaseChatInputState chatInputState = (BaseChatInputState) InputStates[InputState.Chat];
 
-            
+
             chatInputState.inputPanel = InputPanel;
             chatInputState.inputText = InputText;
             chatInputState.logPanel = LogPanel;
             chatInputState.DisplayedLogs = DisplayedLogs;
 
             chatInputState.vClient = GameObject.FindGameObjectWithTag("Network").GetComponent<VoxelClient>();
-            
+
             foreach (IMoveState moveState in MoveStates.Values)
             {
                 moveState.PlayerAnimator = PlayerAnimator;
@@ -126,22 +132,74 @@ namespace Client
 
         private int currentBufferIndex;
 
+        private List<ChunkID> ActiveIds = new List<ChunkID>();
+        private List<ChunkID> lastIds = new List<ChunkID>();
+
+        public int renderDistance;
+
+
+        public float rDistance;
+        
+        void CheckChunkRendering()
+        {
+            Vector3 position = transform.position;
+            ChunkID currentId = ChunkID.FromWorldPos(position.x, position.y, position.z);
+
+            ActiveIds.Clear();
+            
+            
+
+            for (int i = 0 - renderDistance; i < 1 + renderDistance; i++)
+            {
+                for (int j = 0 - renderDistance; j < 1 + renderDistance; j++)
+                {
+                    for (int k = 0 - renderDistance; k < 1 + renderDistance; k++)
+                    {
+                        ChunkID activeId = new ChunkID(currentId.X + i, currentId.Y + j, currentId.Z + k);
+                
+                        if (World.Chunks.ContainsKey(activeId))
+                        {
+                            if (Vector3.Distance(World.Chunks[activeId].centerPosition, transform.position) < rDistance)
+                            {
+                                World.Chunks[activeId].SetActiveRendering();
+                                ActiveIds.Add(activeId);
+                            }
+                          
+                        }
+                    }
+                }
+            }
+
+            foreach (ChunkID id in lastIds)
+            {
+                if (!ActiveIds.Contains(id))
+                {
+                    World.Chunks[id].SetInactiveRendering();
+                }
+            }
+
+            lastIds.Clear();
+            lastIds.AddRange(ActiveIds);
+        }
+
         // Update is called once per frame
         void Update()
         {
+            CheckChunkRendering();
+
             GetMouseRotation();
 
-       
+
             //current inputs are the player inputs for this frame
             ClientInputs clientInputs = GetInputs();
-            
+
 
             bEditor.ProcessActionInputs(playerRB);
-            
-            
+
+
             InputState newState = InputStates[InputState].CheckInputState(clientInputs);
 
-            
+
             if (newState != InputState)
             {
                 InputState = newState;
@@ -240,7 +298,7 @@ namespace Client
 
             bool menu = Input.GetKeyDown(KeyCode.M);
 
-          
+
             //can't move or jump if chatting
             if (chatClient.chatEnabled)
             {

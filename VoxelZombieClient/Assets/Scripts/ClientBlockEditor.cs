@@ -61,11 +61,18 @@ namespace Client
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)
         {
             vClient.SendBlockEdit(x, y, z, 0);
+
+            currentWorld[x, y, z] = 0;
+            CheckChunks(x , y , z);
         }
 
         protected override void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag)
         {
             vClient.SendBlockEdit(x, y, z, blockTag);
+            
+            currentWorld[x, y, z] = blockTag;
+            CheckChunks(x , y , z);
+
         }
     }
 }

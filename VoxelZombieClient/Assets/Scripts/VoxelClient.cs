@@ -71,7 +71,13 @@ namespace Client
 
         public void HandleChunkChange(RtcMessageReader reader)
         {
-            ((ClientChunk) vEngine.World.Chunks[new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt())])
+            var id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
+            if (!vEngine.World.Chunks.ContainsKey(id))
+            {
+                vEngine.CreateChunk(id);
+            }
+
+            ((ClientChunk) vEngine.World.Chunks[id])
                 .ProcessChunkChange(reader);
         }
 
@@ -103,9 +109,9 @@ namespace Client
         }
 
 
-        public void LoadMap(string mapName)
+        public void LoadMap(string mapName, int l, int w, int h, float x, float y, float z)
         {
-            vEngine.LoadMap(mapName);
+            vEngine.CreateChunks(l, w, h, x, y, z);
 
             RtcMessage message = new RtcMessage(Tags.MAP_RELOADED_TAG);
             message.WriteStr(mapName);
@@ -312,21 +318,21 @@ namespace Client
                 byte blockTag = (byte) reader.ReadUShort();
                 world[x, y, z] = blockTag;
 
-                dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, z / 2));
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, z));
 
                 //These checks determine if the edited block was on the edge of a chunk, and dirties the neighboring chunk if so. 
                 if (x % 16 == 0)
                 {
                     if (x != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos((x - 1) / 2, y / 2, z / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x - 1), y, z));
                     }
                 }
                 else if (x % 16 == 15)
                 {
                     if ((x + 1) / 2 != vEngine.Length)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos((x + 1) / 2, y / 2, z / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x + 1), y, z));
                     }
                 }
 
@@ -334,14 +340,14 @@ namespace Client
                 {
                     if (y != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y - 1) / 2, z / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y - 1), z));
                     }
                 }
                 else if (y % 16 == 15)
                 {
                     if ((y + 1) / 2 != vEngine.Height)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y + 1) / 2, z / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y + 1), z));
                     }
                 }
 
@@ -349,14 +355,14 @@ namespace Client
                 {
                     if (z != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z - 1) / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z - 1)));
                     }
                 }
                 else if (z % 16 == 15)
                 {
                     if ((z + 1) / 2 != vEngine.Width)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z + 1) / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z + 1)));
                     }
                 }
 
