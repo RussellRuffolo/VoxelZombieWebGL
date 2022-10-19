@@ -1,0 +1,61 @@
+2022/10/17 23:10:47 [emerg] 10464#3068: "server" directive is not allowed here in C:\Crashblox\VoxelZombieWebGL\nginx-1.22.0\nginx-1.22.0/conf/nginx.conf:1
+2022/10/17 23:13:47 [emerg] 11916#11920: "server" directive is not allowed here in C:\Crashblox\VoxelZombieWebGL\nginx-1.22.0\nginx-1.22.0/conf/nginx.conf:1
+2022/10/17 23:15:02 [emerg] 4124#9164: cannot load certificate "C:/etc/letsencrypt/live/crashblox.net/fullchain.pem": BIO_new_file() failed (SSL: error:02001003:system library:fopen:No such process:fopen('C:/etc/letsencrypt/live/crashblox.net/fullchain.pem','r') error:2006D080:BIO routines:BIO_new_file:no such file)
+2022/10/17 23:15:27 [emerg] 11348#12048: cannot load certificate "C:\Crashblox\VoxelZombieWebGL\nginx-1.22.0\nginx-1.22.0/conf/fullchain.pem": BIO_new_file() failed (SSL: error:02001003:system library:fopen:No such process:fopen('C:\Crashblox\VoxelZombieWebGL\nginx-1.22.0\nginx-1.22.0/conf/fullchain.pem','r') error:2006D080:BIO routines:BIO_new_file:no such file)
+2022/10/17 23:16:52 [emerg] 7796#7576: cannot load certificate "C:\Certbot\live\crashblox.net\fullchain.pem": BIO_new_file() failed (SSL: error:02001002:system library:fopen:No such file or directory:fopen('C:\Certbot\live\crashblox.net\fullchain.pem','r') error:2006D080:BIO routines:BIO_new_file:no such file)
+2022/10/17 23:19:27 [emerg] 13980#13984: cannot load certificate "C:/Certbot/live/crashblox.net/fullchain.pem": BIO_new_file() failed (SSL: error:02001002:system library:fopen:No such file or directory:fopen('C:/Certbot/live/crashblox.net/fullchain.pem','r') error:2006D080:BIO routines:BIO_new_file:no such file)
+2022/10/17 23:21:22 [emerg] 14080#13248: no "events" section in configuration
+2022/10/17 23:22:18 [emerg] 5480#10744: no "events" section in configuration
+2022/10/17 23:22:36 [emerg] 10552#13848: no "events" section in configuration
+2022/10/17 23:23:25 [notice] 13296#12424: signal process started
+2022/10/17 23:23:25 [error] 13296#12424: CreateFile() "C:\Crashblox\VoxelZombieWebGL\nginx-1.22.0\nginx-1.22.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2022/10/17 23:24:01 [notice] 6188#1568: signal process started
+2022/10/17 23:24:01 [error] 6188#1568: invalid PID number "" in "C:\Crashblox\VoxelZombieWebGL\nginx-1.22.0\nginx-1.22.0/logs/nginx.pid"
+2022/10/17 23:26:54 [notice] 13580#9496: signal process started
+2022/10/17 23:26:54 [error] 13580#9496: CreateFile() "C:\Crashblox\VoxelZombieWebGL\nginx-1.22.0\nginx-1.22.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2022/10/17 23:27:21 [emerg] 5856#1612: bind() to 192.168.0.137:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2022/10/17 23:27:31 [notice] 4488#12596: signal process started
+2022/10/17 23:27:31 [error] 4488#12596: CreateFile() "C:\Crashblox\VoxelZombieWebGL\nginx-1.22.0\nginx-1.22.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2022/10/17 23:27:37 [emerg] 5124#11344: bind() to 192.168.0.137:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2022/10/17 23:28:49 [alert] 7788#7984: 1024 worker_connections are not enough
+2022/10/17 23:28:49 [error] 7788#7984: *1021 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET / HTTP/1.0", upstream: "http://192.168.0.137:80/", host: "192.168.0.137"
+2022/10/17 23:28:49 [alert] 7788#7984: 1024 worker_connections are not enough
+2022/10/17 23:28:49 [error] 7788#7984: *2042 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET /favicon.ico HTTP/1.0", upstream: "http://192.168.0.137:80/favicon.ico", host: "192.168.0.137", referrer: "https://crashblox.net/"
+2022/10/17 23:28:58 [notice] 14308#14332: signal process started
+2022/10/17 23:29:03 [notice] 10136#12292: signal process started
+2022/10/17 23:29:12 [notice] 10416#2308: signal process started
+2022/10/17 23:29:12 [error] 10416#2308: CreateFile() "C:\Crashblox\VoxelZombieWebGL\nginx-1.22.0\nginx-1.22.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2022/10/17 23:30:47 [notice] 8636#8304: signal process started
+2022/10/17 23:30:47 [error] 8636#8304: OpenEvent("Global\ngx_reload_14244") failed (2: The system cannot find the file specified)
+2022/10/17 23:31:03 [alert] 13308#6172: 1024 worker_connections are not enough
+2022/10/17 23:31:03 [error] 13308#6172: *1021 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET / HTTP/1.0", upstream: "http://192.168.0.137:80/", host: "192.168.0.137"
+2022/10/17 23:31:04 [alert] 13308#6172: 1024 worker_connections are not enough
+2022/10/17 23:31:04 [error] 13308#6172: *2042 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET /favicon.ico HTTP/1.0", upstream: "http://192.168.0.137:80/favicon.ico", host: "192.168.0.137", referrer: "https://crashblox.net/"
+2022/10/17 23:31:17 [alert] 13308#6172: 1024 worker_connections are not enough
+2022/10/17 23:31:17 [error] 13308#6172: *3063 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET / HTTP/1.0", upstream: "http://192.168.0.137:80/", host: "192.168.0.137"
+2022/10/17 23:31:18 [alert] 13308#6172: 1024 worker_connections are not enough
+2022/10/17 23:31:18 [error] 13308#6172: *4084 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET /favicon.ico HTTP/1.0", upstream: "http://192.168.0.137:80/favicon.ico", host: "192.168.0.137", referrer: "https://crashblox.net/"
+2022/10/17 23:31:19 [alert] 13308#6172: 1024 worker_connections are not enough
+2022/10/17 23:31:19 [error] 13308#6172: *5105 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET / HTTP/1.0", upstream: "http://192.168.0.137:80/", host: "192.168.0.137"
+2022/10/17 23:31:20 [alert] 13308#6172: 1024 worker_connections are not enough
+2022/10/17 23:31:20 [error] 13308#6172: *6126 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET /favicon.ico HTTP/1.0", upstream: "http://192.168.0.137:80/favicon.ico", host: "192.168.0.137", referrer: "https://crashblox.net/"
+2022/10/17 23:31:22 [alert] 13308#6172: 1024 worker_connections are not enough
+2022/10/17 23:31:22 [error] 13308#6172: *7147 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET / HTTP/1.0", upstream: "http://192.168.0.137:80/", host: "192.168.0.137"
+2022/10/17 23:31:22 [alert] 13308#6172: 1024 worker_connections are not enough
+2022/10/17 23:31:22 [error] 13308#6172: *8168 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET /favicon.ico HTTP/1.0", upstream: "http://192.168.0.137:80/favicon.ico", host: "192.168.0.137", referrer: "https://crashblox.net/"
+2022/10/17 23:31:26 [alert] 13308#6172: 1024 worker_connections are not enough
+2022/10/17 23:31:26 [error] 13308#6172: *9190 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET / HTTP/1.0", upstream: "http://192.168.0.137:80/", host: "192.168.0.137"
+2022/10/17 23:32:20 [notice] 6736#1900: signal process started
+2022/10/17 23:32:24 [alert] 6212#5160: 1024 worker_connections are not enough
+2022/10/17 23:32:24 [error] 6212#5160: *10212 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET / HTTP/1.0", upstream: "http://192.168.0.137:80/", host: "192.168.0.137"
+2022/10/17 23:32:25 [alert] 6212#5160: 1024 worker_connections are not enough
+2022/10/17 23:32:25 [error] 6212#5160: *11233 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET / HTTP/1.0", upstream: "http://192.168.0.137:80/", host: "192.168.0.137"
+2022/10/17 23:32:29 [alert] 6212#5160: 1024 worker_connections are not enough
+2022/10/17 23:32:29 [error] 6212#5160: *12255 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET / HTTP/1.0", upstream: "http://192.168.0.137:80/", host: "192.168.0.137"
+2022/10/17 23:32:29 [alert] 6212#5160: 1024 worker_connections are not enough
+2022/10/17 23:32:29 [error] 6212#5160: *13276 WSARecv() failed (10053: An established connection was aborted by the software in your host machine) while reading response header from upstream, client: 192.168.0.137, server: crashblox.net, request: "GET /favicon.ico HTTP/1.0", upstream: "http://192.168.0.137:80/favicon.ico", host: "192.168.0.137", referrer: "https://crashblox.net/"
+2022/10/17 23:34:13 [notice] 13688#10968: signal process started
+2022/10/17 23:38:16 [notice] 9852#1172: signal process started
+2022/10/17 23:38:31 [error] 5504#7952: *13316 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 98.50.67.155, server: rtc.crashblox.net, request: "GET /get-offer/ HTTP/1.1", upstream: "http://192.168.0.137:25565/get-offer", host: "rtc.crashblox.net", referrer: "https://crashblox.net/"
+2022/10/18 08:29:35 [emerg] 1044#9956: cannot load certificate "C:\Certbot\live\crashblox.net\fullchain.pem": BIO_new_file() failed (SSL: error:02001005:system library:fopen:Input/output error:fopen('C:\Certbot\live\crashblox.net\fullchain.pem','r') error:2006D002:BIO routines:BIO_new_file:system lib)
+2022/10/18 08:29:41 [emerg] 4468#10084: cannot load certificate "C:\Certbot\live\crashblox.net\fullchain.pem": BIO_new_file() failed (SSL: error:02001005:system library:fopen:Input/output error:fopen('C:\Certbot\live\crashblox.net\fullchain.pem','r') error:2006D002:BIO routines:BIO_new_file:system lib)
