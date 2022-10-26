@@ -32,6 +32,33 @@ namespace Client
             CurrentActionState = ActionStates[ActionState];
         }
 
+        protected override void OnSendInputs(ActionInputs inputs, Rigidbody playerRb)
+        {
+            if (inputs.One || inputs.Two || inputs.Three || inputs.MouseZero || inputs.MouseOne || inputs.MouseTwo)
+            {
+                RtcMessage actionMessage = new RtcMessage(Tags.ACTION_TAG);
+                actionMessage.WriteUShort(inputs.One ? (ushort) 1 : (ushort) 0);
+
+                actionMessage.WriteUShort(inputs.Two ? (ushort) 1 : (ushort) 0);
+
+                actionMessage.WriteUShort(inputs.Three ? (ushort) 1 : (ushort) 0);
+
+                actionMessage.WriteUShort(inputs.MouseZero ? (ushort) 1 : (ushort) 0);
+                actionMessage.WriteUShort(inputs.MouseOne ? (ushort) 1 : (ushort) 0);
+                actionMessage.WriteUShort(inputs.MouseTwo ? (ushort) 1 : (ushort) 0);
+                Vector3 rbPosition = playerRb.transform.position;
+                actionMessage.WriteFloat(rbPosition.x);
+                actionMessage.WriteFloat(rbPosition.y);
+                actionMessage.WriteFloat(rbPosition.z);
+                Vector3 camForward = playerCam.transform.forward;
+                actionMessage.WriteFloat(camForward.x);
+                actionMessage.WriteFloat(camForward.y);
+                actionMessage.WriteFloat(camForward.z);
+
+                vClient.SendReliableMessage(actionMessage);
+            }
+        }
+
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)
         {
             vClient.SendBlockEdit(x, y, z, 0);

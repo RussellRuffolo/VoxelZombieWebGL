@@ -39,6 +39,11 @@ namespace Client
 
         }
 
+        protected override void OnSendInputs(ActionInputs inputs, Rigidbody playerRb)
+        {
+            
+        }
+
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)
         {
             world[x, y, z] = 0;

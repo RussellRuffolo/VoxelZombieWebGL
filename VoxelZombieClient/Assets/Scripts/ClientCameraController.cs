@@ -51,7 +51,7 @@ namespace Client
                 PlayerController.MoveState == MoveState.basicCrawling ||
                 PlayerController.MoveState == MoveState.slideAir)
             {
-                targetPosition = LocalPlayerSim.position - Vector3.up;
+                targetPosition -= Vector3.up;
             }
 
             // float clientError = Vector3.Distance(transform.position, LocalPlayerSim.position);
@@ -62,6 +62,7 @@ namespace Client
             // else
             //{
             transform.position = Vector3.Lerp(transform.position, targetPosition, .5f);
+            playerCam.transform.position = Vector3.Lerp(  playerCam.transform.position, targetPosition - playerCam.transform.forward + Vector3.up, .5f);
             //  }
         }
 

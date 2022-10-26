@@ -647,7 +647,7 @@ MonoBehaviour:
     type: 3}
   LocalPlayerSimulator: {fileID: 3612919840746706134, guid: 3b2967383cc8c1b409593a2e2baaa9f0,
     type: 3}
-  SingePlayerPrefab: {fileID: 7401463790989363328, guid: e51d19dc5312dd549bf7e273bc2cc19d,
+  SingePlayerPrefab: {fileID: 6149185883509355517, guid: 82045a5e620119e408ff8812d850a5de,
     type: 3}
   SinglerPlayerSimulator: {fileID: 2883746582918297131, guid: 829617cec4a0a9d44b8c611caf276a58,
     type: 3}
