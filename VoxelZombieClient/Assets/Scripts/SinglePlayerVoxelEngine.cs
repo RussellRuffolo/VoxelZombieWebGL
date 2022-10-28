@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Client;
 using UnityEngine;
 using UnityEngine.Networking;
 using Random = UnityEngine.Random;
@@ -26,6 +27,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
     private void Awake()
     {
+
         //CreateTextureArray();
     }
 
@@ -34,32 +36,6 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
         if (World.Chunks.Count != 0)
         {
             UnloadMap();
-        }
-
-        if (mapName == "one_chunk")
-        {
-            byte[] mapData = new byte[16 * 16 * 16];
-            Length = 16;
-            Height = 16;
-            Width = 16;
-
-            for (int i = 0; i < 16 * 16 * 16; i++)
-            {
-                // bool placeBlock = i % 2 == 0;
-                // if (placeBlock)
-                // {
-                //     mapData[i] = (byte) Random.Range(1, 55);
-                // }
-                // else
-                // {
-                //     mapData[i] = 0;
-                // }
-                //mapData[i] = (byte) Random.Range(1, 55);
-                mapData[i] = 1;
-            }
-
-            ApplyMapData(mapData);
-            return;
         }
 
 
@@ -121,15 +97,15 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
         string namePrefix = "Chunk ";
 
-        for (int z = 0; z < Width / 16; z++)
+        for (int z = 0; z < Width / 8; z++)
         {
-            for (int x = 0; x < Length / 16; x++)
+            for (int x = 0; x < Length / 8; x++)
             {
-                for (int y = 0; y < Height / 16; y++)
+                for (int y = 0; y < Height / 8; y++)
                 {
                     var newChunkObj =
-                        new GameObject(namePrefix + x.ToString() + "," + y.ToString() + "," + z.ToString());
-                    newChunkObj.transform.position = new Vector3(x * 16, y * 16, z * 16);
+                        new GameObject(namePrefix + x + "," + y + "," + z);
+                    newChunkObj.transform.position = new Vector3(x * 8, y * 8, z * 8);
 
 
                     GreedyChunk chunk = newChunkObj.AddComponent<GreedyChunk>();
@@ -138,7 +114,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
                     chunk.ID = newID;
                     chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
                     chunk.world = World;
-             //       chunk.WaterMat = WaterMaterial;
+                    //       chunk.WaterMat = WaterMaterial;
                     chunk.init();
                 }
             }
@@ -146,57 +122,40 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
 
         int blockCount = 6;
-        for (int y = 0; y < Height; y++)
+
+
+        for (ushort y = 0; y < Height; y++)
         {
-            for (int x = 0; x < Length; x++)
+            for (ushort x = 0; x < Length; x++)
             {
-                for (int z = 0; z < Width; z++)
+                for (ushort z = 0; z < Width; z++)
                 {
-                    //  UInt16 blockId = mapBytes[blockCount];
-                    //    UInt32 combinedId = (UInt32) ((blockId << 16) + blockId);
-                    try
-                    {
-                        byte blockId = mapBytes[blockCount];
-                        ulong combinedId = 0;
-                        if (blockId == 44)
-                        {
-                            combinedId.Pack(44, 44, 44, 44, 0, 0, 0, 0);
-                        }
-                        else
-                        {
-                            combinedId.Pack(blockId, blockId, blockId, blockId, blockId, blockId, blockId, blockId);
-                        }
+                    byte blockId = mapBytes[blockCount];
 
-                        World[x, y, z] = combinedId;
-                        //           World[x, y + .5F, z] = mapBytes[blockCount];
-                        blockCount++;
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.Log("X: " + x + " Y: " + y + " Z: " + z);
 
-                        Debug.Log(e.Message);
+                    //halfblock nonsense
+                    if (blockId != 44)
+                    {
+                        World[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
+                        World[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
+                        World[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
+                        World[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
                     }
+
+                    World[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+
+                    World[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+
+
+                    World[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+
+                    World[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+
+
+                    blockCount++;
                 }
             }
         }
-
-
-        // int blockCount = 0;
-        // for (int y = 0; y < Height / 2; y += 2)
-        // {
-        //     for (int x = 0; x < Length; x++)
-        //     {
-        //         for (int z = 0; z < Width; z++)
-        //         {
-        //             //  UInt16 blockId = mapBytes[blockCount];
-        //             //    UInt32 combinedId = (UInt32) ((blockId << 16) + blockId);
-        //             World[x, y, z] = mapBytes[blockCount];
-        //             World[x, y + 1, z] = mapBytes[blockCount];
-        //             blockCount++;
-        //         }
-        //     }
-        // }
     }
 
     public void UnloadMap()
@@ -209,4 +168,3 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
         World.Chunks.Clear();
     }
 }
-

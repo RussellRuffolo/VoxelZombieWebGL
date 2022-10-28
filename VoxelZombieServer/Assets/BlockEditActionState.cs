@@ -33,26 +33,26 @@ public class BlockEditActionState : IActionState
 
     public void ApplyInputs(ActionInputs inputs, Rigidbody playerRb)
     {
-        if (inputs.MouseZero)
-        {
-            BlockSelectionInfo selectionInfo = FindBlock(playerRb.transform.position + camOffest,
-                new Vector3(inputs.ForwardX, inputs.ForwardY, inputs.ForwardZ));
-            BreakBlock(selectionInfo);
-        }
-        
-        if (inputs.MouseOne)
-        {
-            BlockSelectionInfo selectionInfo = FindBlock(playerRb.transform.position + camOffest,
-                new Vector3(inputs.ForwardX, inputs.ForwardY, inputs.ForwardZ));
-            PlaceBlock(selectionInfo);
-        }
-        
-        if (inputs.MouseTwo)
-        {
-            BlockSelectionInfo selectionInfo = FindBlock(playerRb.transform.position + camOffest,
-                new Vector3(inputs.ForwardX, inputs.ForwardY, inputs.ForwardZ));
-            SelectBlock(selectionInfo);
-        }
+        // if (inputs.MouseZero)
+        // {
+        //     BlockSelectionInfo selectionInfo = FindBlock(playerRb.transform.position + camOffest,
+        //         new Vector3(inputs.ForwardX, inputs.ForwardY, inputs.ForwardZ));
+        //     BreakBlock(selectionInfo);
+        // }
+        //
+        // if (inputs.MouseOne)
+        // {
+        //     BlockSelectionInfo selectionInfo = FindBlock(playerRb.transform.position + camOffest,
+        //         new Vector3(inputs.ForwardX, inputs.ForwardY, inputs.ForwardZ));
+        //     PlaceBlock(selectionInfo);
+        // }
+        //
+        // if (inputs.MouseTwo)
+        // {
+        //     BlockSelectionInfo selectionInfo = FindBlock(playerRb.transform.position + camOffest,
+        //         new Vector3(inputs.ForwardX, inputs.ForwardY, inputs.ForwardZ));
+        //     SelectBlock(selectionInfo);
+        // }
     }
 
     void SelectBlock(BlockSelectionInfo selectionInfo)
@@ -85,11 +85,15 @@ public class BlockEditActionState : IActionState
 
             byte placeSpotTag = world[x, y, z];
 
+            //can only place on air water and lava
             if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
             {
                 if (bEditor.TryApplyEdit(x, y, z, blockTag))
                 {
-                    vServer.SendBlockEdit(x, y, z, blockTag);
+                    IChunk chunk =
+                        world.Chunks[ChunkID.FromWorldPos(selectionInfo.X, selectionInfo.Y, selectionInfo.Z)];
+
+                    vServer.SendBlockEdit(chunk.ActiveIds, selectionInfo.X, selectionInfo.Y, selectionInfo.Z, blockTag);
                 }
             }
         }
@@ -118,7 +122,10 @@ public class BlockEditActionState : IActionState
 
                 if (bEditor.TryApplyEdit(selectionInfo.X, selectionInfo.Y, selectionInfo.Z, 0))
                 {
-                    vServer.SendBlockEdit(selectionInfo.X, selectionInfo.Y, selectionInfo.Z, 0);
+                    IChunk chunk =
+                        world.Chunks[ChunkID.FromWorldPos(selectionInfo.X, selectionInfo.Y, selectionInfo.Z)];
+
+                    vServer.SendBlockEdit(chunk.ActiveIds, selectionInfo.X, selectionInfo.Y, selectionInfo.Z, 0);
                 }
 
                 return;
@@ -154,27 +161,5 @@ public class BlockEditActionState : IActionState
 
 
         return BlockSelectionInfo.NoBlock;
-    }
-}
-
-public struct BlockSelectionInfo
-{
-    public bool FoundBlock;
-
-    public ushort X, Y, Z;
-
-    public Vector3 SelectionPosition, SelectionNormal;
-
-    public static BlockSelectionInfo NoBlock => new BlockSelectionInfo(false, 0, 0, 0, Vector3.zero, Vector3.zero);
-
-    public BlockSelectionInfo(bool foundBlock, ushort x, ushort y, ushort z, Vector3 selectionPosition,
-        Vector3 selectionNormal)
-    {
-        FoundBlock = foundBlock;
-        X = x;
-        Y = y;
-        Z = z;
-        SelectionPosition = selectionPosition;
-        SelectionNormal = selectionNormal;
     }
 }

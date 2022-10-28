@@ -46,6 +46,18 @@ public class VoxelServer : MonoBehaviour
 
         message.WriteStr(vEngine.currentMap.Name);
 
+        message.WriteInt(vEngine.currentMap.Length);
+
+        message.WriteInt(vEngine.currentMap.Width);
+
+        message.WriteInt(vEngine.currentMap.Height);
+
+        message.WriteFloat(vEngine.currentMap.SpawnX);
+
+        message.WriteFloat(vEngine.currentMap.SpawnY);
+
+        message.WriteFloat(vEngine.currentMap.SpawnZ);
+
         client.SendReliableMessage(message);
     }
 
@@ -84,6 +96,8 @@ public class VoxelServer : MonoBehaviour
 
     void ClientMessageReceived(ushort clientId, RtcClient client, byte[] message)
     {
+        Debug.Log("Message Received with clientID: " + clientId);
+
         //ClientId must already be verified.
         // char messageTag = Encoding.ASCII.GetChars(message, 0, 1)[0];
         string messageStr = new string(Encoding.ASCII.GetChars(message));
@@ -101,7 +115,7 @@ public class VoxelServer : MonoBehaviour
         }
         else if (messageTag == Tags.LOGIN_ATTEMPT_TAG)
         {
-            HandleLogin(clientId, client, reader.ReadString());
+            HandleLoginAttempt(clientId, client, reader.ReadString());
         }
         else if (messageTag == Tags.CHAT_TAG)
         {
@@ -118,6 +132,23 @@ public class VoxelServer : MonoBehaviour
         else if (messageTag == Tags.ACTION_TAG)
         {
             PlayerManager.ReceiveActions(clientId, reader);
+        }
+        else if (messageTag == Tags.CHUNK_ACTIVE_TAG)
+        {
+            ChunkID id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
+            vEngine.world.Chunks[id].AddActivePlayer(clientId);
+
+
+            client.SendReliableMessage(vEngine.world.Chunks[id].CurrentChunkData);
+        }
+        else if (messageTag == Tags.BLOCK_EDIT_TAG)
+        {
+            ApplyBlockEdit(reader);
+        }
+        else if (messageTag == Tags.CHUNK_INACTIVE_TAG)
+        {
+            ChunkID id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
+            vEngine.world.Chunks[id].RemoveActivePlayer(clientId);
         }
     }
 
@@ -430,28 +461,67 @@ public class VoxelServer : MonoBehaviour
     {
         ushort succesfulLogin;
 
+        try
+        {
+            playerNames.Add(clientId, name);
 
-        playerNames.Add(clientId, name);
+            InitializePlayer(clientId, client, name);
 
-        InitializePlayer(clientId, client, name);
+            SendPublicChat(playerNames[clientId] + " has joined the fray.", 2);
 
-        SendPublicChat(playerNames[clientId] + " has joined the fray.", 2);
-
-        succesfulLogin = 0;
+            succesfulLogin = 0;
 
 
-        RtcMessage loginMessage = new RtcMessage(Tags.LOGIN_ATTEMPT_TAG);
-        loginMessage.WriteInt(succesfulLogin);
+            RtcMessage loginMessage = new RtcMessage(Tags.LOGIN_ATTEMPT_TAG);
+            loginMessage.WriteInt(succesfulLogin);
 
-        client.SendReliableMessage(loginMessage);
+            client.SendReliableMessage(loginMessage);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("For id: " + clientId + " ERROR: " + e.Message);
+            //TODO SNAPPER
+        }
     }
 
-    //If login is successful then initialize player
-    //otherwise tell client unsuccessful so they can attempt again
-    private void HandleLogin(ushort clientId, RtcClient client, string name)
+    void ApplyBlockEdit(RtcMessageReader reader)
     {
-        HandleLoginAttempt(clientId, client, name);
+        //world position of the block to be edited
+        ushort x = reader.ReadUShort();
+        ushort y = reader.ReadUShort();
+        ushort z = reader.ReadUShort();
+
+        //the new blockTag the client requested
+        byte blockTag = (byte) reader.ReadUShort();
+
+        if (bEditor.TryApplyEdit(x, y, z, blockTag))
+        {
+            RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
+            blockEditMessage.WriteUShort(x);
+            blockEditMessage.WriteUShort(y);
+            blockEditMessage.WriteUShort(z);
+            blockEditMessage.WriteUShort(blockTag);
+
+            foreach (RtcClient c in ConnectionManager.GetAllClients())
+            {
+                c.SendReliableMessage(blockEditMessage);
+            }
+        }
+        else
+        {
+            RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
+            blockEditMessage.WriteUShort(x);
+            blockEditMessage.WriteUShort(y);
+            blockEditMessage.WriteUShort(z);
+            blockEditMessage.WriteUShort(vEngine.world[x, y, z]);
+
+            foreach (RtcClient c in ConnectionManager.GetAllClients())
+            {
+                c.SendReliableMessage(blockEditMessage);
+            }
+        }
     }
+
 
     private async void HandleToken(ushort clientId, RtcClient client, string token)
     {
@@ -546,6 +616,10 @@ public class VoxelServer : MonoBehaviour
         }
 
         client.SendReliableMessage(playerMessage);
+        foreach (ChunkID id in vEngine.SpawnChunks)
+        {
+            client.SendReliableMessage(vEngine.world.Chunks[id].CurrentChunkData);
+        }
 
 
         RtcMessage newPlayerMessage = new RtcMessage(Tags.ADD_PLAYER_TAG);
@@ -576,17 +650,21 @@ public class VoxelServer : MonoBehaviour
             }
         }
 
-        RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
 
-        foreach (BlockLocation bLoc in bEditor.BlockEdits.Keys)
-        {
-            blockEditMessage.WriteUShort(bLoc.x);
-            blockEditMessage.WriteUShort(bLoc.y);
-            blockEditMessage.WriteUShort(bLoc.z);
-            blockEditMessage.WriteUShort(bEditor.BlockEdits[bLoc]);
-        }
-
-        client.SendReliableMessage(blockEditMessage);
+        // ChunkID id = ChunkID.FromWorldPos((int) vEngine.currentMap.SpawnX, (int) vEngine.currentMap.SpawnY,
+        //     (int) vEngine.currentMap.SpawnZ);
+        //
+        // if (vEngine.world.Chunks[id].CurrentChunkData != null)
+        // {
+        //     client.SendReliableMessage(vEngine.world.Chunks[id].CurrentChunkData);
+        // }
+        //
+        // ChunkID id2 = new ChunkID(id.X, id.Y - 1, id.Z);
+        //
+        // if (vEngine.world.Chunks.ContainsKey(id2) && vEngine.world.Chunks[id2].CurrentChunkData != null)
+        // {
+        //     client.SendReliableMessage(vEngine.world.Chunks[id2].CurrentChunkData);
+        // }
     }
 
     private void ReInitializePlayer(ushort clientId, RtcClient client, RtcMessageReader reader)
@@ -601,17 +679,28 @@ public class VoxelServer : MonoBehaviour
                 loadedPlayers.Add(client);
             }
 
-            RtcMessage message = new RtcMessage(Tags.BLOCK_EDIT_TAG);
+            // ChunkID id = ChunkID.FromWorldPos((int) vEngine.currentMap.SpawnX, (int) vEngine.currentMap.SpawnY,
+            //     (int) vEngine.currentMap.SpawnZ);
+            //
+            // if (vEngine.world.Chunks[id].CurrentChunkData != null)
+            // {
+            //     client.SendReliableMessage(vEngine.world.Chunks[id].CurrentChunkData);
+            // }
+            //
+            // ChunkID id2 = new ChunkID(id.X, id.Y - 1, id.Z);
+            //
+            // if (vEngine.world.Chunks.ContainsKey(id2) && vEngine.world.Chunks[id2].CurrentChunkData != null)
+            // {
+            //     client.SendReliableMessage(vEngine.world.Chunks[id2].CurrentChunkData);
+            // }
 
-            foreach (BlockLocation bLoc in bEditor.BlockEdits.Keys)
-            {
-                message.WriteUShort(bLoc.x);
-                message.WriteUShort(bLoc.y);
-                message.WriteUShort(bLoc.z);
-                message.WriteUShort(bEditor.BlockEdits[bLoc]);
-            }
-
-            client.SendReliableMessage(message);
+            // foreach (GreedyChunk chunk in vEngine.world.Chunks.Values)
+            // {
+            //     if (chunk.CurrentChunkData != null)
+            //     {
+            //         client.SendReliableMessage(chunk.CurrentChunkData);
+            //     }
+            // }
         }
         else
         {
@@ -619,11 +708,23 @@ public class VoxelServer : MonoBehaviour
 
             message.WriteStr(vEngine.currentMap.Name);
 
+            message.WriteInt(vEngine.currentMap.Length);
+
+            message.WriteInt(vEngine.currentMap.Width);
+
+            message.WriteInt(vEngine.currentMap.Height);
+
+            message.WriteFloat(vEngine.currentMap.SpawnX);
+
+            message.WriteFloat(vEngine.currentMap.SpawnY);
+
+            message.WriteFloat(vEngine.currentMap.SpawnZ);
+
             client.SendReliableMessage(message);
         }
     }
 
-    public void SendBlockEdit(ushort x, ushort y, ushort z, byte blockTag)
+    public void SendBlockEdit(List<ushort> ids, ushort x, ushort y, ushort z, byte blockTag)
     {
         RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
         blockEditMessage.WriteUShort(x);
@@ -631,9 +732,9 @@ public class VoxelServer : MonoBehaviour
         blockEditMessage.WriteUShort(z);
         blockEditMessage.WriteUShort(blockTag);
 
-        foreach (RtcClient c in ConnectionManager.GetAllClients())
+        foreach (ushort id in ids)
         {
-            c.SendReliableMessage(blockEditMessage);
+            ConnectionManager.clients[id].SendReliableMessage(blockEditMessage);
         }
     }
 
@@ -772,6 +873,18 @@ public class VoxelServer : MonoBehaviour
 
         RtcMessage mapMessage = new RtcMessage(Tags.MAP_TAG);
         mapMessage.WriteStr(vEngine.currentMap.Name);
+        mapMessage.WriteInt(vEngine.currentMap.Length);
+
+        mapMessage.WriteInt(vEngine.currentMap.Width);
+
+        mapMessage.WriteInt(vEngine.currentMap.Height);
+
+        mapMessage.WriteFloat(vEngine.currentMap.SpawnX);
+
+        mapMessage.WriteFloat(vEngine.currentMap.SpawnY);
+
+        mapMessage.WriteFloat(vEngine.currentMap.SpawnZ);
+
         foreach (RtcClient c in ConnectionManager.GetAllClients())
         {
             c.SendReliableMessage(mapMessage);

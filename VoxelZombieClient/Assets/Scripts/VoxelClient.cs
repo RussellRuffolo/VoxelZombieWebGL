@@ -21,7 +21,7 @@ namespace Client
         [SerializeField] public Canvas ZombieCanvas;
 
         [SerializeField] public SinglePlayerMenuController SinglePlayerMenuController;
-        SinglePlayerVoxelEngine vEngine;
+        ClientVoxelEngine vEngine;
         private IWorld world;
 
         public GameObject NetworkPlayerPrefab;
@@ -69,12 +69,23 @@ namespace Client
             SendUnreliableMessage(message.GetMessage());
         }
 
+        public void HandleChunkChange(RtcMessageReader reader)
+        {
+            var id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
+            if (!vEngine.World.Chunks.ContainsKey(id))
+            {
+                vEngine.CreateChunk(id);
+            }
+
+            ((ClientChunk) vEngine.World.Chunks[id])
+                .ProcessChunkChange(reader);
+        }
 
         private LoginClient LoginClient;
 
         private void Awake()
         {
-            vEngine = GetComponent<SinglePlayerVoxelEngine>();
+            vEngine = GetComponent<ClientVoxelEngine>();
             world = vEngine.World;
 
 
@@ -98,9 +109,9 @@ namespace Client
         }
 
 
-        public void LoadMap(string mapName)
+        public void LoadMap(string mapName, int l, int w, int h, float x, float y, float z)
         {
-            vEngine.LoadMap(mapName);
+            vEngine.CreateChunks(l, w, h, x, y, z);
 
             RtcMessage message = new RtcMessage(Tags.MAP_RELOADED_TAG);
             message.WriteStr(mapName);
@@ -147,7 +158,7 @@ namespace Client
 
                     LocalPlayerSim.GetComponent<ClientPlayerController>().bEditor =
                         LocalPlayer.GetComponent<ClientBlockEditor>();
-                    
+
                     ClientPlayerController = LocalPlayerSim.GetComponent<ClientPlayerController>();
 
                     ClientPlayerController.PlayerAnimator = LocalPlayer.GetComponentInChildren<Animator>();
@@ -304,24 +315,24 @@ namespace Client
                 ushort y = reader.ReadUShort();
                 ushort z = reader.ReadUShort();
 
-                byte blockTag =  (byte)reader.ReadUShort();
+                byte blockTag = (byte) reader.ReadUShort();
                 world[x, y, z] = blockTag;
 
-                dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, z / 2));
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, z));
 
                 //These checks determine if the edited block was on the edge of a chunk, and dirties the neighboring chunk if so. 
                 if (x % 16 == 0)
                 {
                     if (x != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos((x - 1) / 2, y / 2, z / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x - 1), y, z));
                     }
                 }
                 else if (x % 16 == 15)
                 {
                     if ((x + 1) / 2 != vEngine.Length)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos((x + 1) / 2, y / 2, z / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x + 1), y, z));
                     }
                 }
 
@@ -329,14 +340,14 @@ namespace Client
                 {
                     if (y != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y - 1) / 2, z / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y - 1), z));
                     }
                 }
                 else if (y % 16 == 15)
                 {
                     if ((y + 1) / 2 != vEngine.Height)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, (y + 1) / 2, z / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y + 1), z));
                     }
                 }
 
@@ -344,14 +355,14 @@ namespace Client
                 {
                     if (z != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z - 1) / 2));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z - 1)));
                     }
                 }
                 else if (z % 16 == 15)
                 {
                     if ((z + 1) / 2 != vEngine.Width)
-                       {
-                        dirtiedChunks.Add(ChunkID.FromWorldPos(x / 2, y / 2, (z + 1) / 2));
+                    {
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z + 1)));
                     }
                 }
 

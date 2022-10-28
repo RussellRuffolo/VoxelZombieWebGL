@@ -27,7 +27,7 @@ public delegate void MessageReceivedDelegate(ushort clientId, RtcClient client, 
 
 public class ClientConnectionManager : MonoBehaviour
 {
-    private Dictionary<ClientId, RtcClient> clients = new Dictionary<ClientId, RtcClient>();
+    public Dictionary<ClientId, RtcClient> clients = new Dictionary<ClientId, RtcClient>();
     private ClientId nextClientId = 0;
 
     private TcpListener Listener { get; set; }
@@ -85,6 +85,8 @@ public class ClientConnectionManager : MonoBehaviour
     private IEnumerator HandleGetOffer(HttpListenerRequest req, HttpListenerResponse resp)
     {
         ushort clientId = nextClientId;
+        
+        Debug.Log("Added player with clientID: " + clientId);
         nextClientId++;
 
         RTCPeerConnection peerConnection = new RTCPeerConnection();

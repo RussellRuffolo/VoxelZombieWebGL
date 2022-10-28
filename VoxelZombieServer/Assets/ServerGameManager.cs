@@ -16,7 +16,7 @@ public class ServerGameManager : MonoBehaviour
     public bool inVoteTime = false;
 
     MapData map1, map2, map3;
-    
+
     public int map1Votes, map2Votes, map3Votes;
 
 
@@ -29,7 +29,7 @@ public class ServerGameManager : MonoBehaviour
 
     private void Start()
     {
-        StartRound(vEngine.GetRandomMap());
+        StartRound(vEngine.GetNextMaps()[0]);
     }
 
     private void StartRound(MapData nextMap)
@@ -48,26 +48,16 @@ public class ServerGameManager : MonoBehaviour
         map2Votes = 0;
         map3Votes = 0;
 
-        map1 = vEngine.GetRandomMap();
+        MapData[] maps = vEngine.GetNextMaps();
+        map1 = maps[0];
+        map2 = maps[1];
+        map3 = maps[2];
 
+
+        vServer.SendPublicChat("Vote for the next map:", 2);
+        vServer.SendPublicChat("1: " + map1.Name + " 2: " + map2.Name + " 3: " + map3.Name, 2);
+        inVoteTime = true;
         StartCoroutine(VoteDelay());
-
-        // map2 = vEngine.GetRandomMap();
-        //
-        // while(map2 == map1)
-        // {
-        //     map2 = vEngine.GetRandomMap();
-        // }
-        // map3 = vEngine.GetRandomMap();
-        // while(map3 == map2 || map3 == map1)
-        // {
-        //     map3 = vEngine.GetRandomMap();
-        // }
-        //
-        // vServer.SendPublicChat("Vote for the next map:", 2);
-        // vServer.SendPublicChat("1: " + map1.Name + " 2: " + map2.Name + " 3: " + map3.Name, 2);
-        // inVoteTime = true;
-        // StartCoroutine(VoteDelay());
     }
 
     private void Update()
@@ -201,30 +191,31 @@ public class ServerGameManager : MonoBehaviour
         inVoteTime = false;
 
         MapData nextMap;
-        nextMap = map1;
-        // if (map1Votes >= map2Votes)
-        // {
-        //     if (map1Votes >= map3Votes)
-        //     {
-        //         nextMap = map1;
-        //     }
-        //     else
-        //     {
-        //         nextMap = map3;
-        //     }
-        // }
-        // else
-        // {
-        //     if(map3Votes >= map2Votes)
-        //     {
-        //         nextMap = map3;
-        //     }
-        //     else
-        //     {
-        //         nextMap = map2;
-        //     }
-        // }
 
+        if (map1Votes >= map2Votes)
+        {
+            if (map1Votes >= map3Votes)
+            {
+                nextMap = map1;
+            }
+            else
+            {
+                nextMap = map3;
+            }
+        }
+        else
+        {
+            if (map3Votes >= map2Votes)
+            {
+                nextMap = map3;
+            }
+            else
+            {
+                nextMap = map2;
+            }
+        }
+
+        vServer.SendPublicChat("The next map is " + nextMap.Name, 2);
         StartRound(nextMap);
     }
 }

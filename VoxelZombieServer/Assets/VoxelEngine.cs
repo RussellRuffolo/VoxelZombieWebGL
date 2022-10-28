@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using fNbt;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
@@ -27,11 +28,11 @@ public class VoxelEngine : MonoBehaviour
 
     private void Awake()
     {
-        //   MapData gurka = new MapData("gurka", 55, 42.5f, 28);
-        //   mapList.Add(gurka);
+        MapData gurka = new MapData("gurka", 55, 42.5f, 28);
+        mapList.Add(gurka);
 
-        // MapData prison = new MapData("prison", 62, 1.5f, 62);
-        // mapList.Add(prison);
+        MapData prison = new MapData("prison", 62, 1.5f, 62);
+        mapList.Add(prison);
 
         // MapData stadium = new MapData("stadium", 112, 65.5f, 65);
         //  mapList.Add(stadium);
@@ -58,29 +59,29 @@ public class VoxelEngine : MonoBehaviour
         // MapData asylum2 = new MapData("asylum", 25, 129.5f, 30);
         // mapList.Add(asylum2);
         //
-        // MapData domti = new MapData("domti", 126, 35, 64);
-        //   mapList.Add(domti);
+        MapData domti = new MapData("domti", 126, 35, 64);
+        mapList.Add(domti);
 
-        //  MapData excavation = new MapData("excavation", 25, 129.5f, 30);
-        // mapList.Add(excavation);
+        MapData excavation = new MapData("excavation", 25, 129.5f, 30);
+        mapList.Add(excavation);
 
-        //  MapData fortress = new MapData("fortress", 60, 132, 32);
-        //  mapList.Add(fortress);
+        MapData fortress = new MapData("fortress", 60, 132, 32);
+        mapList.Add(fortress);
 
-        //        MapData a_reverie = new MapData("a_reverie", 123, 3, 125);
-        //      mapList.Add(a_reverie);
+        MapData a_reverie = new MapData("a_reverie", 123, 3, 125);
+        mapList.Add(a_reverie);
 
-        //  MapData pandoras_box = new MapData("pandoras_box", 25, 129.5f, 30);
-        // mapList.Add(pandoras_box);
+        MapData pandoras_box = new MapData("pandoras_box", 25, 129.5f, 30);
+        mapList.Add(pandoras_box);
 
         // MapData tsunami = new MapData("tsunami", 25, 129.5f, 30);
         //   mapList.Add(tsunami);
 
-        // MapData Carson = new MapData("carson", 10, 35.5f, 120);
-        // mapList.Add(Carson);
+        MapData Carson = new MapData("carson", 10, 35.5f, 120);
+        mapList.Add(Carson);
 
-        // MapData Sunspots = new MapData("Sunspots",  60, 112.5f, 108);
-        //mapList.Add(Sunspots);
+        MapData Sunspots = new MapData("Sunspots", 60, 112.5f, 108);
+        mapList.Add(Sunspots);
 
         // MapData hawaii = new MapData("hawaiiMod", 1, 67.5f, 43);
         // mapList.Add(hawaii);
@@ -88,19 +89,22 @@ public class VoxelEngine : MonoBehaviour
         //  MapData clockwork = new MapData("clockwork", 20, 238, 3);
         //  mapList.Add(clockwork);
 
-        //   MapData colony = new MapData("colony", 56, 67.5f, 8);
-        //  mapList.Add(colony);
+        //  MapData colony = new MapData("colony", 56, 67.5f, 8);
+        // mapList.Add(colony);
 
-        //  MapData italy = new MapData("italy",  53, 89.5f, 63);
-        //   mapList.Add(italy);
-        // MapData swiss = new MapData("swiss",  29, 50.5f, 12);
-        // mapList.Add(swiss);
+        // MapData italy = new MapData("italy",  53, 89.5f, 63);
+        //  mapList.Add(italy);
+        MapData swiss = new MapData("swiss", 29, 50.5f, 12);
+        mapList.Add(swiss);
 
         // MapData swordbase = new MapData("swordbase", 56, 20, 4);
         // mapList.Add(swordbase);
 
         // mapList.Add(hawaii);
     }
+
+
+    public List<ChunkID> SpawnChunks = new List<ChunkID>();
 
     public void LoadMap(MapData map)
     {
@@ -129,15 +133,15 @@ public class VoxelEngine : MonoBehaviour
 
         string namePrefix = "Chunk ";
 
-        for (int z = 0; z < width / 16; z++)
+        for (int z = 0; z < width / 8; z++)
         {
-            for (int x = 0; x < length / 16; x++)
+            for (int x = 0; x < length / 8; x++)
             {
-                for (int y = 0; y < height / 16; y++)
+                for (int y = 0; y < height / 8; y++)
                 {
                     var newChunkObj =
-                        new GameObject(namePrefix + x.ToString() + "," + y.ToString() + "," + z.ToString());
-                    newChunkObj.transform.position = new Vector3(x * 16, y * 16, z * 16);
+                        new GameObject(namePrefix + x + "," + y + "," + z);
+                    newChunkObj.transform.position = new Vector3(x * 8, y * 8, z * 8);
 
 
                     var chunk = newChunkObj.AddComponent<GreedyChunk>();
@@ -153,6 +157,9 @@ public class VoxelEngine : MonoBehaviour
             }
         }
 
+        SpawnChunks.Add(ChunkID.FromWorldPos(map.SpawnX, map.SpawnY, map.SpawnZ));
+        SpawnChunks.Add(ChunkID.FromWorldPos(map.SpawnX, map.SpawnY - 8, map.SpawnZ));
+
 
         int blockCount = 0;
         for (int y = 0; y < height; y++)
@@ -161,31 +168,29 @@ public class VoxelEngine : MonoBehaviour
             {
                 for (int z = 0; z < width; z++)
                 {
-                    //  UInt16 blockId = mapBytes[blockCount];
-                    //    UInt32 combinedId = (UInt32) ((blockId << 16) + blockId);
-                    try
-                    {
-                        byte blockId = mapBytes[blockCount];
-                        ulong combinedId = 0;
-                        if (blockId == 44)
-                        {
-                            combinedId.Pack(44, 44, 44, 44, 0, 0, 0, 0);
-                        }
-                        else
-                        {
-                            combinedId.Pack(blockId, blockId, blockId, blockId, blockId, blockId, blockId, blockId);
-                        }
+                    byte blockId = mapBytes[blockCount];
 
-                        world[x, y, z] = combinedId;
-                        //           World[x, y + .5F, z] = mapBytes[blockCount];
-                        blockCount++;
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.Log("X: " + x + " Y: " + y + " Z: " + z);
 
-                        Debug.Log(e.Message);
+                    //halfblock nonsense
+                    if (blockId != 44)
+                    {
+                        world[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
+                        world[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
+                        world[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
+                        world[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
                     }
+
+                    world[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+
+                    world[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+
+
+                    world[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+
+                    world[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+
+
+                    blockCount++;
                 }
             }
         }
@@ -202,26 +207,57 @@ public class VoxelEngine : MonoBehaviour
         }
 
         world.Chunks.Clear();
+        SpawnChunks.Clear();
     }
 
     //returns a map other than current map
-    public MapData GetRandomMap()
+    // public MapData GetRandomMap()
+    // {
+    //     
+    //     int mapIndex = Random.Range(0, mapList.Count);
+    //     if (currentMap != mapList[mapIndex])
+    //     {
+    //         return mapList[mapIndex];
+    //     }
+    //     else
+    //     {
+    //         return GetRandomMap();
+    //     }
+    // }
+
+    int GetRandomIndex()
     {
-        return mapList[0];
         int mapIndex = Random.Range(0, mapList.Count);
         if (currentMap != mapList[mapIndex])
         {
-            return mapList[mapIndex];
+            return mapIndex;
         }
-        else
+
+        return (mapIndex + 1) % mapList.Count;
+    }
+
+    private MapData[] maps = new MapData[3];
+
+    public MapData[] GetNextMaps()
+    {
+        int index = GetRandomIndex();
+
+        for (int i = 0; i < 3; i++)
         {
-            return GetRandomMap();
+            maps[i] = mapList[index];
+            index = (index + 1) % mapList.Count;
+            if (mapList[index] == currentMap)
+            {
+                index = (index + 1) % mapList.Count;
+            }
         }
+
+        return maps;
     }
 }
 
 
-public class MapData
+public struct MapData : IEquatable<MapData>
 {
     public string Name;
 
@@ -242,6 +278,26 @@ public class MapData
         SpawnX = spawnX;
         SpawnY = spawnY;
         SpawnZ = spawnZ;
+
+        Length = 0;
+        Width = 0;
+        Height = 0;
+    }
+
+    public bool Equals(MapData other)
+    {
+        return other.Name == Name;
+    }
+
+    public static bool operator ==(MapData lhs, MapData rhs)
+    {
+        // Equals handles case of null on right side.
+        return lhs.Equals(rhs);
+    }
+
+    public static bool operator !=(MapData lhs, MapData rhs)
+    {
+        return !(lhs == rhs);
     }
 }
 

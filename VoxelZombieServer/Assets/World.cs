@@ -9,54 +9,55 @@ public class World : IWorld
 
     public byte this[float x, float y, float z]
     {
-        get
-        {
-            UInt64 test = this[(int) x, (int) y, (int) z];
-            return test.GetByte(x, y, z);
-        }
-        set
-        {
-            UInt64 test = this[(int) x, (int) y, (int) z];
-            test.SetByte(x, y, z, value);
-            this[(int) x, (int) y, (int) z] = test;
-        }
+        get => this[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)];
+        set => this[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)] = value;
     }
 
     public byte this[ushort x, ushort y, ushort z]
     {
         get
         {
-            UInt64 test = this[x / 2, y /2, z / 2];
-            return test.GetByte(x, y, z);
-        }
-        set
-        {
-            UInt64 test = this[x / 2, y /2, z / 2];
-            test.SetByte(x, y, z, value);
-            this[x / 2, y /2, z / 2] = test;
-        }
-    }
+            ChunkID ID = ChunkID.FromBlockPos(x, y, z);
 
-    public UInt64 this[int x, int y, int z]
-    {
-        get
-        {
-            ChunkID ID = ChunkID.FromWorldPos(x, y, z);
-            IChunk chunk;
-            if (Chunks.TryGetValue(ID, out chunk))
+            if (Chunks.TryGetValue(ID, out var chunk))
             {
                 return chunk[x & 0xF, y & 0xF, z & 0xF];
             }
-            else
-            {
-                //100 is no value
-                return 0;
-            }
+
+            return 0;
         }
         set
         {
-            var chunk = Chunks[ChunkID.FromWorldPos(x, y, z)];
-            chunk[x & 0xF, y & 0xF, z & 0xF] = value;
+            ChunkID ID = ChunkID.FromBlockPos(x, y, z);
+
+            if (Chunks.TryGetValue(ID, out var chunk))
+            {
+                chunk[x & 0xF, y & 0xF, z & 0xF] = value;
+                chunk.dirty = true;
+            }
         }
     }
+
+    // public UInt64 this[int x, int y, int z]
+    // {
+    //     get
+    //     {
+    //         ChunkID ID = ChunkID.FromWorldPos(x, y, z);
+    //         IChunk chunk;
+    //         if (Chunks.TryGetValue(ID, out chunk))
+    //         {
+    //             return chunk[x & 0xF, y & 0xF, z & 0xF];
+    //         }
+    //         else
+    //         {
+    //             //100 is no value
+    //             return 0;
+    //         }
+    //     }
+    //     set
+    //     {
+    //         var chunk = Chunks[ChunkID.FromWorldPos(x, y, z)];
+    //         chunk[x & 0xF, y & 0xF, z & 0xF] = value;
+    //     }
+    // }
 }

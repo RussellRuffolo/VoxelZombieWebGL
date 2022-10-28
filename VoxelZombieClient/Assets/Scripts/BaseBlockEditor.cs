@@ -21,11 +21,13 @@ namespace Client
         public GameObject GrenadeModel;
 
 
+        List<ChunkID> dirtiedChunks = new List<ChunkID>();
+
         private Vector3[] _frontVertices = new[]
         {
             new Vector3(0, 0, -.05f),
             new Vector3(.5f, 0, -.05f),
-            new Vector3(.5f, .5f - .05f),
+            new Vector3(.5f, .5f, -.05f),
             new Vector3(0, .5f, -.05f),
             new Vector3(0, 0, -.05f)
         };
@@ -122,8 +124,6 @@ namespace Client
 
         protected abstract void OnStart();
 
-        protected abstract void OnSendInputs(ActionInputs inputs, Rigidbody playerRb);
-
         public ActionInputs GetActionInputs(Rigidbody playerRb)
         {
             Vector3 playerPosition = playerRb.transform.position;
@@ -134,6 +134,64 @@ namespace Client
                 playerPosition.z, camForward.x, camForward.y,
                 camForward.z
             );
+        }
+
+        protected void CheckChunks(ushort x, ushort y, ushort z)
+        {
+            dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, z));
+
+            if (x % 16 == 0)
+            {
+                if (x != 0)
+                {
+                    dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x - 1), y, z));
+                }
+            }
+            else if (x % 16 == 15)
+            {
+                if ((x + 1) / 2 != vEngine.Length)
+                {
+                    dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x + 1), y, z));
+                }
+            }
+
+            if (y % 16 == 0)
+            {
+                if (y != 0)
+                {
+                    dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y - 1), z));
+                }
+            }
+            else if (y % 16 == 15)
+            {
+                if ((y + 1) / 2 != vEngine.Height)
+                {
+                    dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y + 1), z));
+                }
+            }
+
+            if (z % 16 == 0)
+            {
+                if (z != 0)
+                {
+                    dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z - 1)));
+                }
+            }
+            else if (z % 16 == 15)
+            {
+                if ((z + 1) / 2 != vEngine.Width)
+                {
+                    dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z + 1)));
+                }
+            }
+
+
+            foreach (ChunkID ID in dirtiedChunks)
+            {
+                currentWorld.Chunks[ID].dirty = true;
+            }
+
+            dirtiedChunks.Clear();
         }
 
         public void ProcessActionInputs(Rigidbody playerRb)
@@ -152,8 +210,10 @@ namespace Client
 
             CurrentActionState.ApplyInputs(inputs, playerRb);
 
-            OnSendInputs(inputs, playerRb);
+            SendActionInputs(inputs);
         }
+
+        protected abstract void SendActionInputs(ActionInputs inputs);
 
 
         public void ApplyInputsSinglePlayer(ActionInputs inputs)
@@ -176,9 +236,24 @@ namespace Client
             }
         }
 
-        public void ApplyInputsClient()
+        public void ApplyInputsClient(ActionInputs inputs)
         {
             ShowSelection();
+
+            if (inputs.MouseZero)
+            {
+                BreakBlock();
+            }
+
+            if (inputs.MouseOne)
+            {
+                PlaceBlock();
+            }
+
+            if (inputs.MouseTwo)
+            {
+                SelectBlock();
+            }
         }
 
 

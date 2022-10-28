@@ -32,7 +32,7 @@ namespace Client
             CurrentActionState = ActionStates[ActionState];
         }
 
-        protected override void OnSendInputs(ActionInputs inputs, Rigidbody playerRb)
+        protected override void SendActionInputs(ActionInputs inputs)
         {
             if (inputs.One || inputs.Two || inputs.Three || inputs.MouseZero || inputs.MouseOne || inputs.MouseTwo)
             {
@@ -46,10 +46,9 @@ namespace Client
                 actionMessage.WriteUShort(inputs.MouseZero ? (ushort) 1 : (ushort) 0);
                 actionMessage.WriteUShort(inputs.MouseOne ? (ushort) 1 : (ushort) 0);
                 actionMessage.WriteUShort(inputs.MouseTwo ? (ushort) 1 : (ushort) 0);
-                Vector3 rbPosition = playerRb.transform.position;
-                actionMessage.WriteFloat(rbPosition.x);
-                actionMessage.WriteFloat(rbPosition.y);
-                actionMessage.WriteFloat(rbPosition.z);
+                actionMessage.WriteFloat(inputs.PosX);
+                actionMessage.WriteFloat(inputs.PosY);
+                actionMessage.WriteFloat(inputs.PosZ);
                 Vector3 camForward = playerCam.transform.forward;
                 actionMessage.WriteFloat(camForward.x);
                 actionMessage.WriteFloat(camForward.y);
@@ -62,11 +61,18 @@ namespace Client
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)
         {
             vClient.SendBlockEdit(x, y, z, 0);
+
+            currentWorld[x, y, z] = 0;
+            CheckChunks(x , y , z);
         }
 
         protected override void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag)
         {
             vClient.SendBlockEdit(x, y, z, blockTag);
+            
+            currentWorld[x, y, z] = blockTag;
+            CheckChunks(x , y , z);
+
         }
     }
 }

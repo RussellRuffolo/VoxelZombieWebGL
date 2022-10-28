@@ -55,7 +55,7 @@ public class GrenadeController : MonoBehaviour
 
                             if (bEditor.TryApplyEdit(blockX, blockY, blockZ, 0))
                             {
-                                vServer.SendBlockEdit(blockX, blockY, blockZ, 0);
+                             //   vServer.SendBlockEdit(blockX, blockY, blockZ, 0);
                             }
                         }
                     }
