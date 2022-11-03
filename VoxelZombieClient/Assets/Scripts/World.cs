@@ -5,7 +5,16 @@ using UnityEngine;
 
 public class World : IWorld
 {
+    List<ChunkID> dirtiedChunks = new List<ChunkID>();
+
+    public World(IVoxelEngine voxelEngine)
+    {
+        vEngine = voxelEngine;
+    }
+
     public Dictionary<ChunkID, IChunk> Chunks { get; } = new Dictionary<ChunkID, IChunk>();
+
+    private IVoxelEngine vEngine;
 
     public byte this[float x, float y, float z]
     {
@@ -36,6 +45,69 @@ public class World : IWorld
                 chunk.dirty = true;
             }
         }
+    }
+
+    public void CheckChunks(float x, float y, float z)
+    {
+        CheckChunks((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2));
+    }
+
+    public void CheckChunks(ushort x, ushort y, ushort z)
+    {
+        dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, z));
+
+        if (x % 16 == 0)
+        {
+            if (x != 0)
+            {
+                dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x - 1), y, z));
+            }
+        }
+        else if (x % 16 == 15)
+        {
+            if ((x + 1) / 2 != vEngine.Length)
+            {
+                dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x + 1), y, z));
+            }
+        }
+
+        if (y % 16 == 0)
+        {
+            if (y != 0)
+            {
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y - 1), z));
+            }
+        }
+        else if (y % 16 == 15)
+        {
+            if ((y + 1) / 2 != vEngine.Height)
+            {
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y + 1), z));
+            }
+        }
+
+        if (z % 16 == 0)
+        {
+            if (z != 0)
+            {
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z - 1)));
+            }
+        }
+        else if (z % 16 == 15)
+        {
+            if ((z + 1) / 2 != vEngine.Width)
+            {
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z + 1)));
+            }
+        }
+
+
+        foreach (ChunkID ID in dirtiedChunks)
+        {
+            Chunks[ID].dirty = true;
+        }
+
+        dirtiedChunks.Clear();
     }
 
     // public byte this[int x, int y, int z]

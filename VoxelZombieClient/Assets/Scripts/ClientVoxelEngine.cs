@@ -15,7 +15,7 @@ public delegate void MapLoadedDelegate(Vector3 spawnPosition);
 
 public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 {
-    public IWorld World { get; } = new World();
+    public IWorld World { get; private set; }
 
     [SerializeField] private List<Material> Materials;
     public List<Material> materialList => Materials;
@@ -32,6 +32,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 
     private void Awake()
     {
+        World = new World(this);
         foreach (Material mat in materialList)
         {
             mat.SetFloat("_Glossiness", 0);

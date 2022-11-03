@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 {
-    public IWorld World { get; } = new World();
+    public IWorld World { get; private set; }
 
     [SerializeField] private List<Material> Materials;
     public List<Material> materialList => Materials;
@@ -21,13 +21,15 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
     [SerializeField] public Material MaterialaArray;
     private static readonly int MainTex = Shader.PropertyToID("_MainTex");
+
+    public SinglePlayerMenuController SinglePlayerMenuController;
     public int Length { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
 
     private void Awake()
     {
-
+        World = new World(this);
         //CreateTextureArray();
     }
 
@@ -41,8 +43,9 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
         string url = Application.streamingAssetsPath + "/" + mapName + ".bin";
 
+        Vector3 spawnPosition = MapInfo.SpawnPositions[mapName];
 
-        StartCoroutine(GetMapData(url));
+        StartCoroutine(GetMapData(url, spawnPosition));
     }
 
 
@@ -71,7 +74,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
     // }
 
 
-    private IEnumerator GetMapData(string url)
+    private IEnumerator GetMapData(string url, Vector3 spawnPosition)
     {
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
@@ -86,11 +89,11 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
             Length = length;
             Width = width;
             Height = height;
-            ApplyMapData(test);
+            ApplyMapData(test, spawnPosition);
         }
     }
 
-    private void ApplyMapData(byte[] mapBytes)
+    private void ApplyMapData(byte[] mapBytes, Vector3 spawnPosition)
     {
         bController.SetMapBoundaries(Length, Width, Height);
 
@@ -156,6 +159,8 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
                 }
             }
         }
+
+        SinglePlayerMenuController.OnMapLoaded(spawnPosition);
     }
 
     public void UnloadMap()

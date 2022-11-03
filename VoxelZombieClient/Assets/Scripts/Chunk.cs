@@ -8,7 +8,8 @@ public abstract class Chunk : MonoBehaviour, IChunk
 {
     public IWorld world { get; set; }
 
-
+    public ChunkID ID;
+    
     protected byte[] voxels = new byte[16 * 16 * 16];
 
     public byte this[int x, int y, int z]
@@ -106,16 +107,16 @@ public abstract class Chunk : MonoBehaviour, IChunk
                     //RENDER FRONT
                     if (z == 0)
                     {
-                        // ChunkID frontID = new ChunkID(ID.X, ID.Y, ID.Z - 1);
-                        // if (world.Chunks.ContainsKey(frontID))
-                        // {
-                        //     blockCheck = GetBlock(x, y, z - 1);
-                        // }
-                        // else
-                        // {
-                        //     blockCheck = 0;
-                        // }
-                        blockCheck = 0;
+                        ChunkID frontID = new ChunkID(ID.X, ID.Y, ID.Z - 1);
+                        if (world.Chunks.ContainsKey(frontID))
+                        {
+                            blockCheck = GetOutsideBlock(x, y, z - 1);
+                        }
+                        else
+                        {
+                            blockCheck = 0;
+                        }
+                      //  blockCheck = 0;
                     }
                     else
                     {
@@ -141,16 +142,16 @@ public abstract class Chunk : MonoBehaviour, IChunk
                     //RENDER TOP
                     if (y == 15)
                     {
-                        // ChunkID topID = new ChunkID(ID.X, ID.Y + 1, ID.Z);
-                        // if (world.Chunks.ContainsKey(topID))
-                        // {
-                        //     blockCheck = GetBlock(x, y + 1, z);
-                        // }
-                        // else
-                        // {
-                        //     blockCheck = 0;
-                        // }
-                        blockCheck = 0;
+                        ChunkID topID = new ChunkID(ID.X, ID.Y + 1, ID.Z);
+                        if (world.Chunks.ContainsKey(topID))
+                        {
+                            blockCheck = GetOutsideBlock(x, y + 1, z);
+                        }
+                        else
+                        {
+                            blockCheck = 0;
+                        }
+                       // blockCheck = 0;
                     }
                     else
                     {
@@ -177,16 +178,16 @@ public abstract class Chunk : MonoBehaviour, IChunk
                     //RENDER RIGHT
                     if (x == 15)
                     {
-                        // ChunkID rightID = new ChunkID(ID.X + 1, ID.Y, ID.Z);
-                        // if (world.Chunks.ContainsKey(rightID))
-                        // {
-                        //     blockCheck = GetBlock(x + 1, y, z);
-                        // }
-                        // else
-                        // {
-                        //     blockCheck = 0;
-                        // }
-                        blockCheck = 0;
+                        ChunkID rightID = new ChunkID(ID.X + 1, ID.Y, ID.Z);
+                        if (world.Chunks.ContainsKey(rightID))
+                        {
+                            blockCheck = GetOutsideBlock(x + 1, y, z);
+                        }
+                        else
+                        {
+                            blockCheck = 0;
+                        }
+                    //    blockCheck = 0;
                     }
                     else
                     {
@@ -213,16 +214,16 @@ public abstract class Chunk : MonoBehaviour, IChunk
                     //RENDER LEFT
                     if (x == 0)
                     {
-                        // ChunkID leftID = new ChunkID(ID.X - 1, ID.Y, ID.Z);
-                        // if (world.Chunks.ContainsKey(leftID))
-                        // {
-                        //     blockCheck = GetBlock(x - 1, y, z);
-                        // }
-                        // else
-                        // {
-                        //     blockCheck = 0;
-                        // }
-                        blockCheck = 0;
+                        ChunkID leftID = new ChunkID(ID.X - 1, ID.Y, ID.Z);
+                        if (world.Chunks.ContainsKey(leftID))
+                        {
+                            blockCheck = GetOutsideBlock(x - 1, y, z);
+                        }
+                        else
+                        {
+                            blockCheck = 0;
+                        }
+                       // blockCheck = 0;
                     }
                     else
                     {
@@ -250,16 +251,16 @@ public abstract class Chunk : MonoBehaviour, IChunk
 
                     if (z == 15)
                     {
-                        // ChunkID backID = new ChunkID(ID.X, ID.Y, ID.Z + 1);
-                        // if (world.Chunks.ContainsKey(backID))
-                        // {
-                        //     blockCheck = GetBlock(x, y, z + 1);
-                        // }
-                        // else
-                        // {
-                        //     blockCheck = 0;
-                        // }
-                        blockCheck = 0;
+                        ChunkID backID = new ChunkID(ID.X, ID.Y, ID.Z + 1);
+                        if (world.Chunks.ContainsKey(backID))
+                        {
+                            blockCheck = GetOutsideBlock(x, y, z + 1);
+                        }
+                        else
+                        {
+                            blockCheck = 0;
+                        }
+                    //    blockCheck = 0;
                     }
                     else
                     {
@@ -287,16 +288,16 @@ public abstract class Chunk : MonoBehaviour, IChunk
                     //RENDER BOTTOM
                     if (y == 0)
                     {
-                        // ChunkID bottomID = new ChunkID(ID.X, ID.Y - 1, ID.Z);
-                        // if (world.Chunks.ContainsKey(bottomID))
-                        // {
-                        //     blockCheck = GetBlock(x, y - 1, z);
-                        // }
-                        // else
-                        // {
-                        //     blockCheck = 0;
-                        // }
-                        blockCheck = 0;
+                        ChunkID bottomID = new ChunkID(ID.X, ID.Y - 1, ID.Z);
+                        if (world.Chunks.ContainsKey(bottomID))
+                        {
+                            blockCheck = GetOutsideBlock(x, y - 1, z);
+                        }
+                        else
+                        {
+                            blockCheck = 0;
+                        }
+                       // blockCheck = 0;
                     }
                     else
                     {
@@ -431,5 +432,13 @@ public abstract class Chunk : MonoBehaviour, IChunk
     protected byte GetBlock(int x, int y, int z)
     {
         return this[x, y, z];
+    }
+
+    protected byte GetOutsideBlock(int x, int y, int z)
+    {
+        ushort xVal = (ushort)(ID.X * 16 + x);
+        ushort yVal = (ushort)(ID.Y * 16 + y);
+        ushort zVal = (ushort)(ID.Z * 16 + z);
+        return world[xVal, yVal, zVal];
     }
 }

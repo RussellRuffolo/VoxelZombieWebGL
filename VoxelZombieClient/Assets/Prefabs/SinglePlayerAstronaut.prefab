@@ -234,6 +234,8 @@ MonoBehaviour:
   LocalPlayerSim: {fileID: 0}
   minimumX: -90
   maximumX: 90
+  MaxScrollDistance: 3
+  ScrollSpeed: 0.1
   sensitivityX: 5
   sensitivityY: 5
   rotationY: 0

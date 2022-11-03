@@ -10,7 +10,8 @@ namespace Client
         public float minimumX = -60f;
         public float maximumX = 60f;
 
-
+        public float MaxScrollDistance;
+        public float ScrollSpeed;
         public float sensitivityX = 5f;
         public float sensitivityY = 5f;
 
@@ -40,18 +41,22 @@ namespace Client
         void Update()
         {
             if (PlayerController.InputState == InputState.Standard)
+            {
                 CameraLook();
+                CameraScroll();
+            }
         }
 
         private void LateUpdate()
         {
-            Vector3 targetPosition = LocalPlayerSim.position;
-
+            Vector3 cameraTarget = LocalPlayerSim.position - playerCam.transform.forward - playerCam.transform.forward * (scrollDistance * MaxScrollDistance) + Vector3.up;
+            Vector3 positionTarget = LocalPlayerSim.transform.position;
             if (PlayerController.MoveState == MoveState.basicSliding ||
                 PlayerController.MoveState == MoveState.basicCrawling ||
                 PlayerController.MoveState == MoveState.slideAir)
             {
-                targetPosition -= Vector3.up;
+                cameraTarget -= Vector3.up;
+                positionTarget -= Vector3.up;
             }
 
             // float clientError = Vector3.Distance(transform.position, LocalPlayerSim.position);
@@ -61,8 +66,8 @@ namespace Client
             // }
             // else
             //{
-            transform.position = Vector3.Lerp(transform.position, targetPosition, .5f);
-            playerCam.transform.position = Vector3.Lerp(  playerCam.transform.position, targetPosition - playerCam.transform.forward + Vector3.up, .5f);
+            transform.position = Vector3.Lerp(transform.position, positionTarget, .5f);
+            playerCam.transform.position = Vector3.Lerp(  playerCam.transform.position, cameraTarget , .5f);
             //  }
         }
 
@@ -76,6 +81,13 @@ namespace Client
 
             playerCam.transform.localEulerAngles = new Vector3(-rotationX, rotationY, 0);
             playerModel.transform.rotation = Quaternion.Euler(0, rotationY, 0);
+        }
+
+        
+        private float scrollDistance;
+        void CameraScroll()
+        {
+            scrollDistance = Mathf.Clamp01(scrollDistance - Input.mouseScrollDelta.y * ScrollSpeed);
         }
     }
 }

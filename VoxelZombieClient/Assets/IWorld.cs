@@ -9,4 +9,8 @@ public interface IWorld
   byte this[float x, float y, float z] { get; set; }
     byte this[ushort x, ushort y, ushort z] { get; set; }
 
+    void CheckChunks(ushort x, ushort y, ushort z);
+    
+    void CheckChunks(float x, float y, float z);
+
 }

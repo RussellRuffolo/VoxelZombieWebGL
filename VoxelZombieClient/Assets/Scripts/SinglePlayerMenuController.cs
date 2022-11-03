@@ -27,6 +27,7 @@ public class SinglePlayerMenuController : MonoBehaviour
 
     private SinglePlayerPlayerController singlePlayerPlayerController;
 
+    private string CurrentMap { get; set; }
     // public Canvas ChatCanvas;
 
     // Start is called before the first frame update
@@ -59,9 +60,14 @@ public class SinglePlayerMenuController : MonoBehaviour
 
         vEngine.LoadMap(mapName);
 
+        
+    }
+
+    public void OnMapLoaded(Vector3 spawnPosition)
+    {
         Destroy(SinglePlayerCanvas.gameObject);
 
-        Vector3 position = MapInfo.SpawnPositions[mapName];
+        Vector3 position = spawnPosition;
 
         Vector3 eulerRotation = Vector3.zero;
 
@@ -81,7 +87,7 @@ public class SinglePlayerMenuController : MonoBehaviour
             LocalPlayer.GetComponent<ClientCameraController>();
 
         singlePlayerPlayerController.PlayerAnimator = LocalPlayer.GetComponentInChildren<Animator>();
-   //     singlePlayerPlayerController.PlayerAnimator.SetBool("IsHuman", true);
+        //     singlePlayerPlayerController.PlayerAnimator.SetBool("IsHuman", true);
 
         LocalPlayer.GetComponent<SinglePlayerBlockEditor>().blockBreakParticleSystem =
             Instantiate(BreakBlockParticleSystem, null);
