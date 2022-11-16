@@ -89,30 +89,30 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
         bController.SetMapBoundaries(Length, Width, Height);
 
 
-        // for (int z = 0; z < Width / 8; z++)
-        // {
-        //     for (int x = 0; x < Length / 8; x++)
-        //     {
-        //         for (int y = 0; y < Height / 8; y++)
-        //         {
-        //             var newChunkObj =
-        //                 new GameObject(namePrefix + x.ToString() + "," + y.ToString() + "," + z.ToString());
-        //             newChunkObj.transform.position = new Vector3(x * 8, y * 8, z * 8);
-        //
-        //
-        //             var chunk = newChunkObj.AddComponent<ClientChunk>();
-        //
-        //             chunk.world = World;
-        //             chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
-        //             ChunkID newID = new ChunkID(x, y, z);
-        //             World.Chunks.Add(newID, chunk);
-        //             chunk.ID = newID;
-        //             chunk.VoxelClient = VoxelClient;
-        //
-        //             chunk.GetComponent<ClientChunk>().init();
-        //         }
-        //     }
-        // }
+        for (int z = 0; z < Width / 8; z++)
+        {
+            for (int x = 0; x < Length / 8; x++)
+            {
+                for (int y = 0; y < Height / 8; y++)
+                {
+                    var newChunkObj =
+                        new GameObject(namePrefix + x.ToString() + "," + y.ToString() + "," + z.ToString());
+                    newChunkObj.transform.position = new Vector3(x * 8, y * 8, z * 8);
+        
+        
+                    var chunk = newChunkObj.AddComponent<ClientChunk>();
+        
+                    chunk.world = World;
+                    chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();
+                    ChunkID newID = new ChunkID(x, y, z);
+                    World.Chunks.Add(newID, chunk);
+                    chunk.ID = newID;
+                    chunk.VoxelClient = VoxelClient;
+        
+                    chunk.GetComponent<ClientChunk>().init();
+                }
+            }
+        }
     }
 
     private void ApplyMapData(byte[] mapBytes)
