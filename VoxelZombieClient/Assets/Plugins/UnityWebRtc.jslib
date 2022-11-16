@@ -135,7 +135,7 @@ else if(document.referrer == "https://accounts.google.com/"){
     callbackUrl = new URL('https://id.crashblox.net/auth/google/callback');
 }
 else{
-console.log("Unknown referrer");
+console.log("Unknown referrer: " + document.referrer);
 }
 
 
