@@ -48,6 +48,12 @@ namespace Client
         void Start()
         {
 
+            RtcMessage testMessage = new RtcMessage(Tags.MAP_TAG);
+            testMessage.WriteByte(253);
+            RtcMessageReader testReader = new RtcMessageReader(testMessage.GetMessage());
+            testReader.ReadTag();
+            Debug.Log(testReader.ReadByte());
+
 
             VoxelClient = GetComponent<VoxelClient>();
             cManager = GetComponent<ClientChatManager>();
