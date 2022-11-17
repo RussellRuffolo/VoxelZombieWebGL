@@ -6,7 +6,7 @@ public static class MapInfo
 {
     public static Dictionary<string, Vector3> SpawnPositions = new Dictionary<string, Vector3>()
     {
-        {"one_chunk", new Vector3(8, 18, 8)},
+        {"block_test", new Vector3(8, 18, 8)},
         {"gurka", new Vector3(55, 42.5f, 28)},
         {"prison", new Vector3(62, 1.5f, 62)},
         {"stadium", new Vector3(112, 65.5f, 65)},
