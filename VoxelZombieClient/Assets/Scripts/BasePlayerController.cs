@@ -156,8 +156,8 @@ namespace Client
                     {
                         ChunkID activeId = new ChunkID(currentId.X + i, currentId.Y + j, currentId.Z + k);
 
-                      //  if (World.IsInChunkBounds(activeId))
-                       // {
+                        if (World.IsInChunkBounds(activeId))
+                        {
                             if (!World.Chunks.ContainsKey(activeId))
                             {
                                 ((ClientVoxelEngine) World.VoxelEngine).CreateChunk(activeId);
@@ -168,7 +168,7 @@ namespace Client
                                 World.Chunks[activeId].SetActiveRendering();
                                 ActiveIds.Add(activeId);
                             }
-                       // }
+                        }
                     }
                 }
             }
