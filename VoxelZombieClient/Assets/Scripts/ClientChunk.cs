@@ -9,7 +9,6 @@ using UnityEngine;
 [RequireComponent(typeof(MeshCollider))]
 public class ClientChunk : Chunk
 {
-    public ChunkID ID;
 
 
     private List<int>[] TriangleLists = new List<int>[55];
@@ -17,7 +16,7 @@ public class ClientChunk : Chunk
     public VoxelClient VoxelClient { get; set; }
 
 
-    public bool dirty { get; set; } = false;
+    public bool dirty { get; set; } = true;
 
 
     public override void SetActiveRendering()
