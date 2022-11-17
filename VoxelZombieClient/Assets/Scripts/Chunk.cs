@@ -54,6 +54,16 @@ public abstract class Chunk : MonoBehaviour, IChunk
         Debug.LogError("2");
         for (int i = 0; i < 55; i++)
         {
+            if (TriangleLists == null)
+            {
+                Debug.LogError("Triangle Lists null");
+            }
+            else if (TriangleLists[i] == null)
+            {
+                Debug.LogError("Triangle List null: " + i);
+            }
+            
+            
             TriangleLists[i].Clear();
         }
         Debug.LogError("3");
