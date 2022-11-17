@@ -48,35 +48,38 @@ public abstract class Chunk : MonoBehaviour, IChunk
 
     protected void RenderToMesh()
     {
+        Debug.LogError("1");
         vertices.Clear();
         uvList.Clear();
-
+        Debug.LogError("2");
         for (int i = 0; i < 55; i++)
         {
             TriangleLists[i].Clear();
         }
-
+        Debug.LogError("3");
         normals.Clear();
 
         mesh.Clear();
         mesh.subMeshCount = 55;
-
+        Debug.LogError("4");
         //GreedyMesh();
         QuickMesh();
-
+        Debug.LogError("5");
         mesh.SetVertices(vertices);
-
+        Debug.LogError("6");
         for (int i = 0; i < 55; i++)
         {
             mesh.SetTriangles(TriangleLists[i].ToArray(), i);
         }
-
+        Debug.LogError("7");
         mesh.SetNormals(normals);
         mesh.SetUVs(0, uvList);
+        Debug.LogError("8");
         //  mesh.SetUVs(0, UvCalculator.CalculateUVs(vertices.ToArray(), 1).ToList());
         meshFilter.mesh = mesh;
+        Debug.LogError("9");
         meshCollider.sharedMesh = mesh;
-
+        Debug.LogError("10");
         dirty = false;
     }
 
@@ -87,7 +90,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
         byte voxelType;
 
         byte blockCheck;
-
+        Debug.LogError(" quickmesh 1");
         for (var x = 0; x < 16; x++)
         {
             for (var y = 0; y < 16; y++)
@@ -97,8 +100,9 @@ public abstract class Chunk : MonoBehaviour, IChunk
                     pos = new Vector3(x * .5f, y * .5f, z * .5f);
                     verticesPos = vertices.Count;
 
+                    Debug.LogError(" quickmesh 2");
                     voxelType = GetBlock(x, y, z);
-
+                    Debug.LogError(" quickmesh 3");
                     if (voxelType == 0)
                     {
                         continue;
@@ -108,14 +112,17 @@ public abstract class Chunk : MonoBehaviour, IChunk
                     if (z == 0)
                     {
                         ChunkID frontID = new ChunkID(ID.X, ID.Y, ID.Z - 1);
+                        Debug.LogError(" quickmesh 4");
                         if (world.Chunks.ContainsKey(frontID))
                         {
+                            
                             blockCheck = GetOutsideBlock(x, y, z - 1);
                         }
                         else
                         {
                             blockCheck = 0;
                         }
+                        Debug.LogError(" quickmesh 5");
                       //  blockCheck = 0;
                     }
                     else
@@ -324,6 +331,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
 
     private void AddTriangles(int vType, int vPos, int[] triangles)
     {
+        Debug.LogError(" add triangles 1");
         //0-48 are default MC ids offset back by 1 because 0 was air
         //49 is grass top
         //50 is wood top
