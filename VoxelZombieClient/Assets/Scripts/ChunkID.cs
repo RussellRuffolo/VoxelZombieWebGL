@@ -63,4 +63,9 @@ public struct ChunkID : IEquatable<ChunkID>
     {
         return new ChunkID((x ) >> 4, (y ) >> 4, (z ) >> 4);
     }
+
+    public override string ToString()
+    {
+        return X + " " + Y + " " + Z;
+    }
 }

@@ -64,7 +64,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
         newChunkObj.transform.position = new Vector3(id.X * 8, id.Y * 8, id.Z * 8);
 
 
-        var chunk = newChunkObj.AddComponent<ClientChunk>();
+        ClientChunk chunk = newChunkObj.AddComponent<ClientChunk>();
 
         chunk.world = World;
         chunk.GetComponent<MeshRenderer>().materials = materialList.ToArray();

@@ -74,6 +74,7 @@ namespace Client
             var id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
             if (!vEngine.World.Chunks.ContainsKey(id))
             {
+                Debug.LogError("Creating chunk: " + id);
                 vEngine.CreateChunk(id);
             }
 
