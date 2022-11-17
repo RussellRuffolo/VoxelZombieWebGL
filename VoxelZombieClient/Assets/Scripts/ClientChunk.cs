@@ -24,6 +24,7 @@ public class ClientChunk : Chunk
     {
         if (!ActiveRendering)
         {
+            Debug.LogError("Set Active Rendering " + ID.X + " " + ID.Y + " " + ID.Z);
             ActiveRendering = true;
 
             RtcMessage chunkActiveMessage = new RtcMessage(Tags.CHUNK_ACTIVE_TAG);
@@ -107,7 +108,7 @@ public class ClientChunk : Chunk
             voxels[i] = reader.ReadByte();
         }
 
-        Debug.Log("PROCESSED CHUNK CHANGE");
+        Debug.Log("PROCESSED CHUNK CHANGE" + ID.X + " " + ID.Y + " " + ID.Z);
         dirty = true;
         //
         // int vertexCount = reader.ReadInt();

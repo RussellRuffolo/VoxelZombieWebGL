@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -6,6 +7,11 @@ using UnityEngine;
 [RequireComponent(typeof(MeshCollider))]
 public abstract class Chunk : MonoBehaviour, IChunk
 {
+    private void Awake()
+    {
+        Debug.LogError("Awake Chunk: " + ID.X + " " + ID.Y + " " + ID.Z);
+    }
+
     public IWorld world { get; set; }
 
     public ChunkID ID;
