@@ -57,10 +57,16 @@ public abstract class Chunk : MonoBehaviour, IChunk
         vertices.Clear();
         uvList.Clear();
 
+        if (TriangleLists[0] == null)
+        {
+            Debug.LogError("Triangle Lists 0 is NULL: " + ID);
+        }
+        
         for (int i = 0; i < 55; i++)
         {
             TriangleLists[i].Clear();
         }
+        Debug.LogError("HOW DID WE GET HERE");
 
         normals.Clear();
 
