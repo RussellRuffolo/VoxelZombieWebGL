@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -16,6 +17,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
     {
         get { return voxels[x * 16 * 16 + y * 16 + z]; }
         set { voxels[x * 16 * 16 + y * 16 + z] = value; }
+    }
+
+    private void Start()
+    {
+        Debug.LogError("Chunk Start" + ID.X + ID.Y + ID.Z);
     }
 
     protected MeshFilter meshFilter;

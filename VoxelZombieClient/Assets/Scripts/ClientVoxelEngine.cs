@@ -72,7 +72,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
         chunk.ID = id;
         chunk.VoxelClient = VoxelClient;
 
-        chunk.GetComponent<ClientChunk>().init();
+        chunk.init();
     }
 
     string namePrefix = "Chunk ";
