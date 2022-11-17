@@ -105,8 +105,8 @@ namespace Client
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            renderDistance = (int)rDistance / 8;
-
+            renderDistance = (int) rDistance / 8;
+            Debug.LogError("Render distance is: " + renderDistance);
             OnAwake();
         }
 
@@ -139,15 +139,14 @@ namespace Client
 
 
         public float rDistance;
-        
+
         void CheckChunkRendering()
         {
             Vector3 position = transform.position;
             ChunkID currentId = ChunkID.FromWorldPos(position.x, position.y, position.z);
 
             ActiveIds.Clear();
-            
-            
+
 
             for (int i = 0 - renderDistance; i < 1 + renderDistance; i++)
             {
@@ -161,18 +160,15 @@ namespace Client
                         {
                             if (!World.Chunks.ContainsKey(activeId))
                             {
-                               ((ClientVoxelEngine)World.VoxelEngine).CreateChunk(activeId);
-                          
+                                ((ClientVoxelEngine) World.VoxelEngine).CreateChunk(activeId);
                             }
-                            
+
                             if (Vector3.Distance(World.Chunks[activeId].centerPosition, transform.position) < rDistance)
                             {
                                 World.Chunks[activeId].SetActiveRendering();
                                 ActiveIds.Add(activeId);
                             }
                         }
-                      
-                     
                     }
                 }
             }
