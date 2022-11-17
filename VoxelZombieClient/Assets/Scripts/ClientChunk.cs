@@ -11,12 +11,10 @@ public class ClientChunk : Chunk
 {
 
 
-    private List<int>[] TriangleLists = new List<int>[55];
 
     public VoxelClient VoxelClient { get; set; }
 
 
-    public bool dirty { get; set; } = true;
 
 
     public override void SetActiveRendering()
