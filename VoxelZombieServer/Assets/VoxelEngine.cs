@@ -24,7 +24,7 @@ public class VoxelEngine : MonoBehaviour
 
     public bool loadingMap = false;
 
-    const ushort MAP_TAG = 4;
+    //const ushort MAP_TAG = 4;
 
     private void Awake()
     {

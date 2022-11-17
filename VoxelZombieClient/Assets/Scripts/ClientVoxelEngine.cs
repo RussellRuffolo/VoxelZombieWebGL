@@ -79,6 +79,7 @@ public class ClientVoxelEngine : MonoBehaviour, IVoxelEngine
 
     public void CreateChunks(int l, int w, int h, float spawnX, float spawnY, float spawnZ)
     {
+        Debug.LogError("Create Chunks with size: " + l + " " + w + " " + h);
         if (World.Chunks.Count != 0)
         {
             UnloadMap();
