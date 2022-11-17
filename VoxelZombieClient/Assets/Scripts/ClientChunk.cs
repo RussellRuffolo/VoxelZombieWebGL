@@ -17,7 +17,7 @@ public class ClientChunk : Chunk
     public VoxelClient VoxelClient { get; set; }
 
 
-    public bool dirty { get; set; } = true;
+    public bool dirty { get; set; } = false;
 
 
     public override void SetActiveRendering()
