@@ -13,4 +13,6 @@ public interface IWorld
     
     void CheckChunks(float x, float y, float z);
 
+    bool IsInChunkBounds(ChunkID id);
+    IVoxelEngine VoxelEngine { get; }
 }

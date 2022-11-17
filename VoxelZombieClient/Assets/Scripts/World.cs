@@ -9,12 +9,17 @@ public class World : IWorld
 
     public World(IVoxelEngine voxelEngine)
     {
-        vEngine = voxelEngine;
+        VoxelEngine = voxelEngine;
     }
 
     public Dictionary<ChunkID, IChunk> Chunks { get; } = new Dictionary<ChunkID, IChunk>();
 
-    private IVoxelEngine vEngine;
+    public bool IsInChunkBounds(ChunkID id)
+    {
+        return id.Z < VoxelEngine.Width / 8 && id.X < VoxelEngine.Length / 8 && id.Y < VoxelEngine.Height / 8 && id.Z > 0 && id.Y > 0 && id.Z > 0;
+    }
+
+    public IVoxelEngine VoxelEngine { get; set; }
 
     public byte this[float x, float y, float z]
     {
@@ -65,7 +70,7 @@ public class World : IWorld
         }
         else if (x % 16 == 15)
         {
-            if ((x + 1) / 2 != vEngine.Length)
+            if ((x + 1) / 2 != VoxelEngine.Length)
             {
                 dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x + 1), y, z));
             }
@@ -80,7 +85,7 @@ public class World : IWorld
         }
         else if (y % 16 == 15)
         {
-            if ((y + 1) / 2 != vEngine.Height)
+            if ((y + 1) / 2 != VoxelEngine.Height)
             {
                 dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y + 1), z));
             }
@@ -95,7 +100,7 @@ public class World : IWorld
         }
         else if (z % 16 == 15)
         {
-            if ((z + 1) / 2 != vEngine.Width)
+            if ((z + 1) / 2 != VoxelEngine.Width)
             {
                 dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z + 1)));
             }

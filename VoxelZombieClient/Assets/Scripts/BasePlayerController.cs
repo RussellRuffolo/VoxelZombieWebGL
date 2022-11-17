@@ -156,16 +156,23 @@ namespace Client
                     for (int k = 0 - renderDistance; k < 1 + renderDistance; k++)
                     {
                         ChunkID activeId = new ChunkID(currentId.X + i, currentId.Y + j, currentId.Z + k);
-                
-                        if (World.Chunks.ContainsKey(activeId))
+
+                        if (World.IsInChunkBounds(activeId))
                         {
+                            if (!World.Chunks.ContainsKey(activeId))
+                            {
+                               ((ClientVoxelEngine)World.VoxelEngine).CreateChunk(activeId);
+                          
+                            }
+                            
                             if (Vector3.Distance(World.Chunks[activeId].centerPosition, transform.position) < rDistance)
                             {
                                 World.Chunks[activeId].SetActiveRendering();
                                 ActiveIds.Add(activeId);
                             }
-                          
                         }
+                      
+                     
                     }
                 }
             }
