@@ -16,7 +16,7 @@ public class World : IWorld
 
     public bool IsInChunkBounds(ChunkID id)
     {
-        return id.Z < VoxelEngine.Width / 8 && id.X < VoxelEngine.Length / 8 && id.Y < VoxelEngine.Height / 8 && id.Z > 0 && id.Y > 0 && id.Z > 0;
+        return id.Z < VoxelEngine.Width / 8 && id.X < VoxelEngine.Length / 8 && id.Y < VoxelEngine.Height / 8 && id.Z >= 0 && id.Y >= 0 && id.Z >= 0;
     }
 
     public IVoxelEngine VoxelEngine { get; set; }
