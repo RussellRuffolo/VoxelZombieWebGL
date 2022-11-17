@@ -60,7 +60,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
             }
             else if (TriangleLists[i] == null)
             {
-                Debug.LogError("Triangle List null: " + i);
+                Debug.LogError("Triangle List null: " + i + " " + ID.X + " " + ID.Y + " " + ID.Z);
             }
             
             

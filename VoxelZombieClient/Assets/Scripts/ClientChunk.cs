@@ -58,7 +58,7 @@ public class ClientChunk : Chunk
         mesh = new Mesh();
         mesh.subMeshCount = 55;
 
-        Debug.LogError("Client chunk init");
+        Debug.LogError("Client chunk init: " + ID.X + " " + ID.Y + " " + ID.Z);
         for (int i = 0; i < 55; i++)
         {
             TriangleLists[i] = new List<int>();
