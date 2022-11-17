@@ -90,8 +90,7 @@ MonoBehaviour:
   camController: {fileID: 0}
   playerRB: {fileID: 4940741137197650718}
   bEditor: {fileID: 0}
-  renderDistance: 2
-  rDistance: 30
+  rDistance: 40
   lastVelocity: {x: 0, y: 0, z: 0}
   playerRb: {fileID: 4940741137197650718}
   lastPosition: {x: 0, y: 0, z: 0}

@@ -135,7 +135,7 @@ namespace Client
         private List<ChunkID> ActiveIds = new List<ChunkID>();
         private List<ChunkID> lastIds = new List<ChunkID>();
 
-        public int renderDistance;
+        private int renderDistance;
 
 
         public float rDistance;

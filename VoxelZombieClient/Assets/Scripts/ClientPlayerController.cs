@@ -113,7 +113,7 @@ namespace Client
         protected override void SendInputs()
         {
             int index = lastReceivedStateTick % 1024;
-            if (lastReceivedStateTick < tickNumber - 1)
+            if (lastReceivedStateTick <= tickNumber - 1)
             {
                 int numInputs = (tickNumber - 1) - lastReceivedStateTick;
 
