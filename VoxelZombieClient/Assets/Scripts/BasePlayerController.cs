@@ -106,7 +106,6 @@ namespace Client
             Cursor.visible = false;
 
             renderDistance = (int) rDistance / 8;
-            Debug.LogError("Render distance is: " + renderDistance);
             OnAwake();
         }
 

@@ -38,7 +38,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
         set { voxels[x * 16 * 16 + y * 16 + z + 3] = value; }
     }
 
-    public RtcMessage CurrentChunkData { get; set; }
+   // public RtcMessage CurrentChunkData { get; set; }
 
     private VoxelServer vServer;
     private bool ActiveRendering { get; set; }
@@ -668,7 +668,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
             }
         }
 
-        CreateMessage();
+        //CreateMessage();
 
         // UnityMainThreadDispatcher.Instance().Enqueue(ApplyChunkData());
     }
@@ -686,7 +686,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
         }
 
 
-        CurrentChunkData = chunkDataMessage;
+     //   CurrentChunkData = chunkDataMessage;
     }
 
     public byte[] GetVoxelMessage()

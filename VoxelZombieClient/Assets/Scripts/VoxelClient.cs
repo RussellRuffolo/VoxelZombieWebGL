@@ -72,10 +72,8 @@ namespace Client
         public void HandleChunkChange(RtcMessageReader reader)
         {
             var id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
-            Debug.LogError("Received message for chunk: " + id);
             if (!vEngine.World.Chunks.ContainsKey(id))
             {
-                Debug.LogError("Creating chunk: " + id);
                 vEngine.CreateChunk(id);
             }
 

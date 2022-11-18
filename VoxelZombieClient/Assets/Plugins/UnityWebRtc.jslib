@@ -66,7 +66,7 @@ mergeInto(LibraryManager.library, {
 
 
         dataChannel.onmessage = function(event) {            
-
+	  console.log(typeof event.data)
           window.unityInstance.SendMessage('Network', 'ReceiveReliableMessage', event.data)
         }
       }

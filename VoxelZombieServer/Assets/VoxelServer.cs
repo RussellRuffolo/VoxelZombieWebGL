@@ -140,15 +140,7 @@ public class VoxelServer : MonoBehaviour
         {
             ChunkID id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
             vEngine.world.Chunks[id].AddActivePlayer(clientId);
-
-
-            if (vEngine.world.Chunks[id].CurrentChunkData == null)
-            {
-                // vEngine.world.Chunks[id].CreateMessage();
-            }
-
-            //    client.SendReliableMessage(vEngine.world.Chunks[id].CurrentChunkData);
-
+            
             client.SendByteMessage(vEngine.world.Chunks[id].GetVoxelMessage());
         }
         else if (messageTag == Tags.BLOCK_EDIT_TAG)
@@ -628,7 +620,7 @@ public class VoxelServer : MonoBehaviour
         client.SendReliableMessage(playerMessage);
         foreach (ChunkID id in vEngine.SpawnChunks)
         {
-            client.SendReliableMessage(vEngine.world.Chunks[id].CurrentChunkData);
+            client.SendByteMessage(vEngine.world.Chunks[id].GetVoxelMessage());
         }
 
 

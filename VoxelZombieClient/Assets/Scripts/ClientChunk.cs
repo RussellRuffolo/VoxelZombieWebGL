@@ -64,7 +64,6 @@ public class ClientChunk : Chunk
 
         centerPosition = new Vector3(4 + ID.X * 8, 4 + ID.Y * 8, 4 + ID.Z * 8);
         
-        Debug.LogError("Init Chunk: " + ID);
     }
 
     private void Update()
