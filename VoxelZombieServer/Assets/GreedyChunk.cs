@@ -11,7 +11,7 @@ using UnityEngine;
 public class GreedyChunk : MonoBehaviour, IChunk
 {
     public IWorld world;
-    private byte[] voxels = new byte[16 * 16 * 16];
+    private byte[] voxels = new byte[16 * 16 * 16 + 3];
 
     public ChunkID ID;
 
@@ -34,8 +34,8 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
     public byte this[int x, int y, int z]
     {
-        get { return voxels[x * 16 * 16 + y * 16 + z]; }
-        set { voxels[x * 16 * 16 + y * 16 + z] = value; }
+        get { return voxels[x * 16 * 16 + y * 16 + z + 3]; }
+        set { voxels[x * 16 * 16 + y * 16 + z + 3] = value; }
     }
 
     public RtcMessage CurrentChunkData { get; set; }
@@ -62,6 +62,10 @@ public class GreedyChunk : MonoBehaviour, IChunk
         chunkPosX = ID.X * 8;
         chunkPosY = ID.Y * 8;
         chunkPosZ = ID.Z * 8;
+
+        voxels[0] = (byte)ID.X;
+        voxels[1] = (byte)ID.Y;
+        voxels[2] = (byte)ID.Z;
     }
 
     private void Update()
@@ -155,7 +159,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
             var q = new int[3];
 
             var mask = new byte[CHUNK_SIZE * CHUNK_SIZE];
-            var mask2 = new byte[CHUNK_SIZE * CHUNK_SIZE];
+            var mask2 = new byte[CHUNK_SIZE * CHUNK_SIZE]; 
 
             q[d] = 1;
 
@@ -683,6 +687,11 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
 
         CurrentChunkData = chunkDataMessage;
+    }
+
+    public byte[] GetVoxelMessage()
+    {
+        return voxels;
     }
 
     private void AddTriangles(int vType, int vPos, int[] triangles)

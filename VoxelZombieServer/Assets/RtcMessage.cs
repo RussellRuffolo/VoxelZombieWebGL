@@ -109,6 +109,7 @@ public class RtcMessage
         messageString += byteString;
     }
 
+    
 
     public string GetMessage()
     {

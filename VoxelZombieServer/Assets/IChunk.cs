@@ -18,5 +18,7 @@ public interface IChunk
 
     void SetActiveRendering();
 
+    byte[] GetVoxelMessage();
+
     void CreateMessage();
 }

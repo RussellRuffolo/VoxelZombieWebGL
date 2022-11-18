@@ -35,6 +35,11 @@ public class MessageReceiver : MonoBehaviour
     {
         ReceiveMessage(message);
     }
+    
+    public void ReceiveReliableMessage(byte[] message)
+    {
+       Debug.LogError("RECEIVED BYTE MESSAGE");
+    }
 
     public void ReceiveUnreliableMessage(string message)
     {

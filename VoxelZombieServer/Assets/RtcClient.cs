@@ -8,7 +8,8 @@ using ClientId = System.UInt16;
 public delegate void ConnectionReadyDelegate();
 
 public delegate void ConnectionClosedDelegate();
-public class RtcClient 
+
+public class RtcClient
 {
     public RTCPeerConnection PeerConnection;
 
@@ -28,7 +29,7 @@ public class RtcClient
     public ConnectionReadyDelegate ConnectionReady;
 
     public ConnectionClosedDelegate ConnectionClosed;
-    
+
     public bool SendUnreliableMessage(RtcMessage message)
     {
         //FOR DEBUG, not necessary
@@ -47,13 +48,17 @@ public class RtcClient
         //FOR DEBUG, not necessary
         if (ReliableDataChannel.ReadyState == RTCDataChannelState.Open)
         {
-            
             ReliableDataChannel.Send(message.GetMessage());
             return true;
         }
 
         Debug.LogWarning("Sent message to non-open client");
         return false;
+    }
+
+    public void SendByteMessage(byte[] message)
+    {
+        ReliableDataChannel.Send(message);
     }
 
 

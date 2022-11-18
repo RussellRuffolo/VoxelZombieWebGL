@@ -58,8 +58,9 @@ public class VoxelServer : MonoBehaviour
 
         message.WriteFloat(vEngine.currentMap.SpawnZ);
 
-        
-        Debug.Log("Sending message for map with dimensions: " + vEngine.currentMap.Length + " " + vEngine.currentMap.Width + " " + vEngine.currentMap.Height);
+
+        Debug.Log("Sending message for map with dimensions: " + vEngine.currentMap.Length + " " +
+                  vEngine.currentMap.Width + " " + vEngine.currentMap.Height);
         client.SendReliableMessage(message);
     }
 
@@ -143,10 +144,12 @@ public class VoxelServer : MonoBehaviour
 
             if (vEngine.world.Chunks[id].CurrentChunkData == null)
             {
-                vEngine.world.Chunks[id].CreateMessage();
+                // vEngine.world.Chunks[id].CreateMessage();
             }
-            
-            client.SendReliableMessage(vEngine.world.Chunks[id].CurrentChunkData);
+
+            //    client.SendReliableMessage(vEngine.world.Chunks[id].CurrentChunkData);
+
+            client.SendByteMessage(vEngine.world.Chunks[id].GetVoxelMessage());
         }
         else if (messageTag == Tags.BLOCK_EDIT_TAG)
         {
