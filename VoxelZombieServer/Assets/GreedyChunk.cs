@@ -24,8 +24,21 @@ public class GreedyChunk : MonoBehaviour, IChunk
     List<Vector3> vertices = new List<Vector3>();
     List<Vector3> normals = new List<Vector3>();
     List<Vector3> uvList = new List<Vector3>();
+    private bool m_Dirty = true;
 
-    public bool dirty { get; set; } = true;
+    public bool dirty
+    {
+        get => m_Dirty;
+        set
+        {
+            if (value)
+            {
+                CreateMessage();
+            }
+
+            m_Dirty = value;
+        }
+    }
 
     public byte this[int x, int y, int z]
     {
@@ -660,6 +673,13 @@ public class GreedyChunk : MonoBehaviour, IChunk
             }
         }
 
+        CreateMessage();
+
+        // UnityMainThreadDispatcher.Instance().Enqueue(ApplyChunkData());
+    }
+
+    private void CreateMessage()
+    {
         RtcMessage chunkDataMessage = new RtcMessage(Tags.CHUNK_DATA_TAG);
         chunkDataMessage.WriteInt(ID.X);
         chunkDataMessage.WriteInt(ID.Y);
@@ -672,10 +692,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
 
         CurrentChunkData = chunkDataMessage;
-
-        // UnityMainThreadDispatcher.Instance().Enqueue(ApplyChunkData());
     }
-
 
     private void AddTriangles(int vType, int vPos, int[] triangles)
     {
