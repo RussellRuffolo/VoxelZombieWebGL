@@ -121,9 +121,9 @@ public class VoxelEngine : MonoBehaviour
         short width = binReader.ReadInt16();
         short height = binReader.ReadInt16();
 
-        map.Length = length;
-        map.Width = width;
-        map.Height = height;
+        currentMap.Length = length;
+        currentMap.Width = width;
+        currentMap.Height = height;
 
         bController.SetMapBoundaries(length, width, height);
 
@@ -261,8 +261,7 @@ public class VoxelEngine : MonoBehaviour
 public struct MapData : IEquatable<MapData>
 {
     public string Name;
-
-
+    
     public float SpawnX;
     public float SpawnY;
     public float SpawnZ;
