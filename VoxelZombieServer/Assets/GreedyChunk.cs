@@ -133,7 +133,6 @@ public class GreedyChunk : MonoBehaviour, IChunk
         ActiveClientIds.Remove(playerId);
         if (ActiveClientIds.Count == 0)
         {
-            ClearMesh();
             ActiveRendering = false;
         }
     }
