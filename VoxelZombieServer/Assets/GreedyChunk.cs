@@ -29,15 +29,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
     public bool dirty
     {
         get => m_Dirty;
-        set
-        {
-            if (value)
-            {
-                CreateMessage();
-            }
-
-            m_Dirty = value;
-        }
+        set { m_Dirty = value; }
     }
 
     public byte this[int x, int y, int z]
@@ -678,7 +670,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
         // UnityMainThreadDispatcher.Instance().Enqueue(ApplyChunkData());
     }
 
-    private void CreateMessage()
+    public void CreateMessage()
     {
         RtcMessage chunkDataMessage = new RtcMessage(Tags.CHUNK_DATA_TAG);
         chunkDataMessage.WriteInt(ID.X);

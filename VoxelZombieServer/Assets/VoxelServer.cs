@@ -141,6 +141,11 @@ public class VoxelServer : MonoBehaviour
             vEngine.world.Chunks[id].AddActivePlayer(clientId);
 
 
+            if (vEngine.world.Chunks[id].CurrentChunkData == null)
+            {
+                vEngine.world.Chunks[id].CreateMessage();
+            }
+            
             client.SendReliableMessage(vEngine.world.Chunks[id].CurrentChunkData);
         }
         else if (messageTag == Tags.BLOCK_EDIT_TAG)
