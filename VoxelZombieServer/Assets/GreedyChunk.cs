@@ -26,7 +26,6 @@ public class GreedyChunk : MonoBehaviour, IChunk
     List<Vector3> uvList = new List<Vector3>();
 
     public bool dirty { get; set; } = true;
-    public bool meshing { get; set; } = false;
 
     public byte this[int x, int y, int z]
     {
@@ -37,6 +36,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
     public RtcMessage CurrentChunkData { get; set; }
 
     private VoxelServer vServer;
+    private bool ActiveRendering { get; set; }
 
     public void init()
     {
@@ -61,7 +61,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
     private void Update()
     {
-        if (dirty && !meshing)
+        if (dirty && ActiveRendering)
         {
             RenderToMesh();
         }
@@ -70,9 +70,28 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
     private void RenderToMesh()
     {
-        meshing = true;
         dirty = false;
 
+        ClearMesh();
+
+        // Task.Run(() => QuickMesh());
+        QuickMesh();
+
+        mesh.SetVertices(vertices);
+
+        for (int i = 0; i < 55; i++)
+        {
+            mesh.SetTriangles(TriangleLists[i].ToArray(), i);
+        }
+
+        mesh.SetNormals(normals);
+        mesh.SetUVs(0, uvList);
+        meshFilter.mesh = mesh;
+        meshCollider.sharedMesh = mesh;
+    }
+
+    private void ClearMesh()
+    {
         vertices.Clear();
         uvList.Clear();
 
@@ -85,24 +104,6 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
         mesh.Clear();
         mesh.subMeshCount = 55;
-
-        // Task.Run(() => QuickMesh());
-        QuickMesh();
-
-        mesh.SetVertices(vertices);
-
-        for (int i = 0; i < 55; i++)
-        {
-            mesh.SetTriangles(TriangleLists[i].ToArray(), i);
-        }
-
-        mesh.SetNormals(normals); 
-        mesh.SetUVs(0, uvList);
-        meshFilter.mesh = mesh;
-        meshCollider.sharedMesh = mesh;
-
-
-        meshing = false;
     }
 
     public int CHUNK_SIZE = 16;
@@ -113,12 +114,18 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
     public void AddActivePlayer(ushort playerId)
     {
+        ActiveRendering = true;
         ActiveClientIds.Add(playerId);
     }
 
     public void RemoveActivePlayer(ushort playerId)
     {
         ActiveClientIds.Remove(playerId);
+        if (ActiveClientIds.Count == 0)
+        {
+            ClearMesh();
+            ActiveRendering = false;
+        }
     }
 
     private List<ushort> ActiveClientIds = new List<ushort>();
@@ -358,25 +365,6 @@ public class GreedyChunk : MonoBehaviour, IChunk
         //UnityMainThreadDispatcher.Instance().Enqueue(ApplyChunkData());
     }
 
-    public IEnumerator ApplyChunkData()
-    {
-        mesh.SetVertices(vertices);
-
-        for (int i = 0; i < 55; i++)
-        {
-            mesh.SetTriangles(TriangleLists[i].ToArray(), i);
-        }
-
-        mesh.SetNormals(normals);
-        // mesh.SetUVs(0, uvList);
-        meshFilter.mesh = mesh;
-        meshCollider.sharedMesh = mesh;
-
-
-        meshing = false;
-
-        yield return this;
-    }
 
     public void AppendQuad(Vector3 tl, Vector3 tr, Vector3 bl, Vector3 br,
         ushort blockTag, bool wind)
@@ -671,16 +659,16 @@ public class GreedyChunk : MonoBehaviour, IChunk
         chunkDataMessage.WriteInt(ID.X);
         chunkDataMessage.WriteInt(ID.Y);
         chunkDataMessage.WriteInt(ID.Z);
-        
+
         for (int i = 0; i < voxels.Length; i++)
         {
             chunkDataMessage.WriteByte(voxels[i]);
         }
-        
-        
+
+
         CurrentChunkData = chunkDataMessage;
 
-       // UnityMainThreadDispatcher.Instance().Enqueue(ApplyChunkData());
+        // UnityMainThreadDispatcher.Instance().Enqueue(ApplyChunkData());
     }
 
 
