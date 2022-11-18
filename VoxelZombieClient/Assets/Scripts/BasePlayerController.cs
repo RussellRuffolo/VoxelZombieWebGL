@@ -158,9 +158,10 @@ namespace Client
 
                         if (World.IsInChunkBounds(activeId))
                         {
-                            if (!World.Chunks.ContainsKey(activeId))
+                            if (!World.Chunks.ContainsKey(activeId) &&
+                                World.VoxelEngine is ClientVoxelEngine clientVoxelEngine)
                             {
-                                ((ClientVoxelEngine) World.VoxelEngine).CreateChunk(activeId);
+                                clientVoxelEngine.CreateChunk(activeId);
                             }
 
                             if (Vector3.Distance(World.Chunks[activeId].centerPosition, transform.position) < rDistance)

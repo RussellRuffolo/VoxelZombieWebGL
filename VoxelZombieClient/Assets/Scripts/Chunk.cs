@@ -10,7 +10,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
     public IWorld world { get; set; }
 
     public ChunkID ID;
-    
+
     protected byte[] voxels = new byte[16 * 16 * 16];
 
     public byte this[int x, int y, int z]
@@ -19,10 +19,6 @@ public abstract class Chunk : MonoBehaviour, IChunk
         set { voxels[x * 16 * 16 + y * 16 + z] = value; }
     }
 
-    private void Start()
-    {
-        Debug.LogError("Chunk Start" + ID.X + ID.Y + ID.Z);
-    }
 
     protected MeshFilter meshFilter;
     protected MeshCollider meshCollider;
@@ -39,11 +35,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
     public bool dirty
     {
         get => m_dirty;
-        set
-        {
-            m_dirty = value;
-            
-        }
+        set { m_dirty = value; }
     }
 
     public Vector3 centerPosition { get; set; }
@@ -57,16 +49,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
         vertices.Clear();
         uvList.Clear();
 
-        if (TriangleLists[0] == null)
-        {
-            Debug.LogError("Triangle Lists 0 is NULL: " + ID);
-        }
-        
+
         for (int i = 0; i < 55; i++)
         {
             TriangleLists[i].Clear();
         }
-        Debug.LogError("HOW DID WE GET HERE");
 
         normals.Clear();
 
@@ -128,7 +115,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         {
                             blockCheck = 0;
                         }
-                      //  blockCheck = 0;
+                        //  blockCheck = 0;
                     }
                     else
                     {
@@ -163,7 +150,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         {
                             blockCheck = 0;
                         }
-                       // blockCheck = 0;
+                        // blockCheck = 0;
                     }
                     else
                     {
@@ -199,7 +186,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         {
                             blockCheck = 0;
                         }
-                    //    blockCheck = 0;
+                        //    blockCheck = 0;
                     }
                     else
                     {
@@ -235,7 +222,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         {
                             blockCheck = 0;
                         }
-                       // blockCheck = 0;
+                        // blockCheck = 0;
                     }
                     else
                     {
@@ -272,7 +259,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         {
                             blockCheck = 0;
                         }
-                    //    blockCheck = 0;
+                        //    blockCheck = 0;
                     }
                     else
                     {
@@ -309,7 +296,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         {
                             blockCheck = 0;
                         }
-                       // blockCheck = 0;
+                        // blockCheck = 0;
                     }
                     else
                     {
@@ -448,9 +435,9 @@ public abstract class Chunk : MonoBehaviour, IChunk
 
     protected byte GetOutsideBlock(int x, int y, int z)
     {
-        ushort xVal = (ushort)(ID.X * 16 + x);
-        ushort yVal = (ushort)(ID.Y * 16 + y);
-        ushort zVal = (ushort)(ID.Z * 16 + z);
+        ushort xVal = (ushort) (ID.X * 16 + x);
+        ushort yVal = (ushort) (ID.Y * 16 + y);
+        ushort zVal = (ushort) (ID.Z * 16 + z);
         return world[xVal, yVal, zVal];
     }
 }

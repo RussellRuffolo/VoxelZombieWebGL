@@ -195,6 +195,8 @@ public class ClientConnectionManager : MonoBehaviour
         string jsonResponse = JsonUtility.ToJson(respObject);
         byte[] respBytes = Encoding.UTF8.GetBytes(jsonResponse);
 
+        
+        Debug.Log("Closing Response");
         resp.Close(respBytes, false);
 
         peerConnection.OnIceCandidate += candidate =>
