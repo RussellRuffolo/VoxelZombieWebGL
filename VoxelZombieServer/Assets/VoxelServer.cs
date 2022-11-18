@@ -58,6 +58,8 @@ public class VoxelServer : MonoBehaviour
 
         message.WriteFloat(vEngine.currentMap.SpawnZ);
 
+        
+        Debug.Log("Sending message for map with dimensions: " + vEngine.currentMap.Length + " " + vEngine.currentMap.Width + " " + vEngine.currentMap.Height);
         client.SendReliableMessage(message);
     }
 

@@ -127,6 +127,7 @@ public class VoxelEngine : MonoBehaviour
 
         bController.SetMapBoundaries(length, width, height);
 
+        Debug.Log("Map Boundaries" + length + " " + width + " " + height);
 
         byte[] mapBytes = binReader.ReadBytes(length * width * height);
 

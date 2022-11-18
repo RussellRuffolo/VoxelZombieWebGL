@@ -57,7 +57,7 @@ public class MessageReceiver : MonoBehaviour
                 float spawnY = reader.ReadFloat();
 
                 float spawnZ = reader.ReadFloat();
-
+                Debug.LogError("Received map message with dimensions: " + length + " " + width + " " + height);
                 VoxelClient.LoadMap(mapName, length, width, height, spawnX, spawnY, spawnZ);
                 break;
             case Tags.LOGIN_ATTEMPT_TAG:
