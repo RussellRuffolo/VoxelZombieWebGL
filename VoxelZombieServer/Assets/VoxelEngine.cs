@@ -161,6 +161,14 @@ public class VoxelEngine : MonoBehaviour
         SpawnChunks.Add(ChunkID.FromWorldPos(map.SpawnX, map.SpawnY, map.SpawnZ));
         SpawnChunks.Add(ChunkID.FromWorldPos(map.SpawnX, map.SpawnY - 8, map.SpawnZ));
 
+        foreach (ChunkID spawnChunk in SpawnChunks)
+        {
+            if (world.Chunks.ContainsKey(spawnChunk))
+            {
+                world.Chunks[spawnChunk].SetActiveRendering();
+            }
+           
+        }
 
         int blockCount = 0;
         for (int y = 0; y < height; y++)

@@ -15,4 +15,6 @@ public interface IChunk
 
 
     RtcMessage CurrentChunkData { get; set; }
+
+    void SetActiveRendering();
 }

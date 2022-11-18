@@ -114,8 +114,13 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
     public void AddActivePlayer(ushort playerId)
     {
-        ActiveRendering = true;
+        SetActiveRendering();
         ActiveClientIds.Add(playerId);
+    }
+
+    public void SetActiveRendering()
+    {
+        ActiveRendering = true;
     }
 
     public void RemoveActivePlayer(ushort playerId)
