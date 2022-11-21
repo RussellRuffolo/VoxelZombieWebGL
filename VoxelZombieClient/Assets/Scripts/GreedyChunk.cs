@@ -377,7 +377,7 @@ public class GreedyChunk : Chunk
     private byte GetBlock(int x, int y, int z)
     {
         
-        return this[x, y, z];
+        return GetVoxel(x, y, z);
         // return voxels[x * 16 * 16 + y * 16 + z];
         // float xPos = chunkPosX + x / 2f;
         // float yPos = chunkPosY + y / 2f;

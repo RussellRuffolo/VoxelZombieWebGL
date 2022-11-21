@@ -66,7 +66,7 @@ public static class PlayerUtils
                 ushort y = (ushort) Mathf.FloorToInt(testPoint.y);
                 ushort z = (ushort) Mathf.FloorToInt(testPoint.z);
 
-                if (IsSolidBlock(world[x, y, z]) && IsSolidBlock(world[x, y + 1, z]))
+                if (IsSolidBlock(world.GetVoxel(x, y, z)) && IsSolidBlock(world.GetVoxel(x, y + 1, z)))
                 {
                     return true;
                 }
@@ -97,7 +97,7 @@ public static class PlayerUtils
         ushort y = (ushort) Mathf.FloorToInt(playerPosition.y);
         ushort z = (ushort) Mathf.FloorToInt(playerPosition.z);
 
-        if (world[x, y, z] == 9)
+        if (world.GetVoxel(x, y, z) == 9)
         {
             return true;
         }
@@ -116,7 +116,7 @@ public static class PlayerUtils
         ushort y = (ushort) Mathf.FloorToInt(blockPosition.y);
         ushort z = (ushort) Mathf.FloorToInt(blockPosition.z);
 
-        if (!IsSolidBlock(world[blockPosition.x, blockPosition.y, blockPosition.z]))
+        if (!IsSolidBlock(world.GetVoxel(blockPosition.x, blockPosition.y, blockPosition.z)))
         {
             return false;
         }

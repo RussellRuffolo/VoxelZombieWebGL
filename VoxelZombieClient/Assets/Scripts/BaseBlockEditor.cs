@@ -270,8 +270,7 @@ namespace Client
                     selectionY = (ushort) (testPosition.y * 2);
                     selectionZ = (ushort) (testPosition.z * 2);
                     testPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
-                    if (PlayerUtils.IsSolidBlock(currentWorld[testPosition.x, testPosition.y,
-                            testPosition.z]))
+                    if (PlayerUtils.IsSolidBlock(currentWorld.GetVoxel(testPosition.x, testPosition.y, testPosition.z)))
                     {
                         selectionPosition = testPosition;
                         selectionNormal = raycastHit.normal;
@@ -391,7 +390,7 @@ namespace Client
 
         bool CheckBlock(Vector3 checkPosition)
         {
-            byte blockTag = currentWorld[checkPosition.x, checkPosition.y, checkPosition.z];
+            byte blockTag = currentWorld.GetVoxel(checkPosition.x, checkPosition.y, checkPosition.z);
 
 
             //untargetable blocks: air, water, lava, outside of map
@@ -420,7 +419,7 @@ namespace Client
                 int z = (int) selectionPosition.z;
 
                 //    ulong breakSpotTag = currentWorld[x, y, z];
-                byte breakSpotTag = currentWorld[selectionPosition.x, selectionPosition.y, selectionPosition.z];
+                byte breakSpotTag = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
                 if (breakSpotTag == 0)
                 {
                     return;
@@ -455,7 +454,7 @@ namespace Client
                 ushort y = (ushort) (selectionY + selectionNormal.y);
                 ushort z = (ushort) (selectionZ + selectionNormal.z);
 
-                byte placeSpotTag = currentWorld[x, y, z];
+                byte placeSpotTag = currentWorld.GetVoxel(x, y, z);
 
                 if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
                 {
@@ -476,7 +475,7 @@ namespace Client
 
                 if (x < vEngine.Length && y < vEngine.Height && z < vEngine.Width)
                 {
-                    byte selectTag = currentWorld[selectionPosition.x, selectionPosition.y, selectionPosition.z];
+                    byte selectTag = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
 
                     if (selectTag != 7 && selectTag != 0 && selectTag != 9 && selectTag != 11)
                     {
