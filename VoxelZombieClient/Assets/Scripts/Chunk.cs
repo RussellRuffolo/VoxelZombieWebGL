@@ -18,12 +18,12 @@ public abstract class Chunk : MonoBehaviour, IChunk
     
     protected byte[] voxels = new byte[16 * 16 * 16];
 
-    public byte GetVoxel(int x, int y, int z)
+    public Voxel GetVoxel(int x, int y, int z)
     {
         return voxels[x * 16 * 16 + y * 16 + z];
     }
 
-    public void SetVoxel(int x, int y, int z, byte value)
+    public void SetVoxel(int x, int y, int z, Voxel value)
     {
         voxels[x * 16 * 16 + y * 16 + z] = value;
     }

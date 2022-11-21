@@ -16,12 +16,12 @@ public class World : IWorld
 
     private IVoxelEngine vEngine;
 
-    public byte GetVoxel(float x, float y, float z) => GetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2));
+    public Voxel GetVoxel(float x, float y, float z) => GetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2));
 
-    public void SetVoxel(float x, float y, float z, byte value) =>
+    public void SetVoxel(float x, float y, float z, Voxel value) =>
         SetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2), value);
 
-    public byte GetVoxel(ushort x, ushort y, ushort z)
+    public Voxel GetVoxel(ushort x, ushort y, ushort z)
     {
         ChunkID ID = ChunkID.FromBlockPos(x, y, z);
 
@@ -33,13 +33,13 @@ public class World : IWorld
         return 0;
     }
 
-    public void SetVoxel(ushort x, ushort y, ushort z, byte value)
+    public void SetVoxel(ushort x, ushort y, ushort z, byte Voxel)
     {
         ChunkID ID = ChunkID.FromBlockPos(x, y, z);
 
         if (Chunks.TryGetValue(ID, out var chunk))
         {
-            chunk.SetVoxel(x & 0xF, y & 0xF, z & 0xF, value);
+            chunk.SetVoxel(x & 0xF, y & 0xF, z & 0xF, Voxel);
             chunk.dirty = true;
         }
     }
