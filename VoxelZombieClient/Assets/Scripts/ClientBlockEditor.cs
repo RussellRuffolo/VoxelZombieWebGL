@@ -70,7 +70,7 @@ namespace Client
         {
             vClient.SendBlockEdit(x, y, z, blockTag);
 
-            currentWorld.SetVoxel(x, y, z, blockTag);
+            currentWorld.SetVoxel(x, y, z, (Voxel)blockTag);
             currentWorld.CheckChunks(x, y, z);
         }
     }

@@ -9,7 +9,7 @@ public interface IWorld
   Voxel GetVoxel(float x, float y, float z);
   void SetVoxel(float x, float y, float z, Voxel value);
   Voxel GetVoxel(ushort x, ushort y, ushort z);
-  void SetVoxel(ushort x, ushort y, ushort z, byte Voxel);
+  void SetVoxel(ushort x, ushort y, ushort z, Voxel value);
 
   void CheckChunks(ushort x, ushort y, ushort z);
     

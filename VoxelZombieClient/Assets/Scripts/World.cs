@@ -33,13 +33,13 @@ public class World : IWorld
         return 0;
     }
 
-    public void SetVoxel(ushort x, ushort y, ushort z, byte Voxel)
+    public void SetVoxel(ushort x, ushort y, ushort z, Voxel value)
     {
         ChunkID ID = ChunkID.FromBlockPos(x, y, z);
 
         if (Chunks.TryGetValue(ID, out var chunk))
         {
-            chunk.SetVoxel(x & 0xF, y & 0xF, z & 0xF, Voxel);
+            chunk.SetVoxel(x & 0xF, y & 0xF, z & 0xF, value);
             chunk.dirty = true;
         }
     }
