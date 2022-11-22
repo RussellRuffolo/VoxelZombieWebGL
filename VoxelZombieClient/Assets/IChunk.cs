@@ -3,7 +3,8 @@ using UnityEngine;
 
 public interface IChunk
 {
-    byte this[int x, int y, int z] { get; set; }
+    byte GetVoxel(int x, int y, int z);
+    void SetVoxel(int x, int y, int z, byte value);
 
     bool dirty { get; set; }
 

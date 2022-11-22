@@ -58,8 +58,7 @@ namespace Client
             Vector3 headPosition = new Vector3(transform.position.x, transform.position.y - .08f + (1.76f / 2),
                 transform.position.z);
 
-            ushort jumpTag = (ushort)world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y + .2f),
-                Mathf.FloorToInt(feetPosition.z)];
+            ushort jumpTag = (ushort)world.GetVoxel(Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y + .2f), Mathf.FloorToInt(feetPosition.z));
             if (jumpTag == 9 || jumpTag == 11)
             {
                 hasWaterJump = true;
@@ -90,13 +89,9 @@ namespace Client
             }
 
 
-            if (world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y),
-                    Mathf.FloorToInt(feetPosition.z)] != 9 &&
-                world[Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y),
-                    Mathf.FloorToInt(headPosition.z)] != 9 &&
-                world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y),
-                    Mathf.FloorToInt(feetPosition.z)] != 11 && world[Mathf.FloorToInt(headPosition.x),
-                    Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)] != 11)
+            if (world.GetVoxel(Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z)) != 9 &&
+                world.GetVoxel(Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)) != 9 &&
+                world.GetVoxel(Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z)) != 11 && world.GetVoxel(Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)) != 11)
             {
                 if (lastMoveState == 1 || lastMoveState == 4)
                 {
@@ -109,9 +104,7 @@ namespace Client
                 return 0;
             }
 
-            if (world[Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y),
-                    Mathf.FloorToInt(feetPosition.z)] == 9 && world[Mathf.FloorToInt(headPosition.x),
-                    Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)] == 9)
+            if (world.GetVoxel(Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z)) == 9 && world.GetVoxel(Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)) == 9)
             {
                 lastMoveState = 1;
                 return 1;

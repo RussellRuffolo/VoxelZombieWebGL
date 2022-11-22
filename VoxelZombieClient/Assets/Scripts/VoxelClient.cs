@@ -316,7 +316,7 @@ namespace Client
                 ushort z = reader.ReadUShort();
 
                 byte blockTag = (byte) reader.ReadUShort();
-                world[x, y, z] = blockTag;
+                world.SetVoxel(x, y, z, blockTag);
 
                 dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, z));
 

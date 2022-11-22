@@ -62,7 +62,7 @@ namespace Client
         {
             vClient.SendBlockEdit(x, y, z, 0);
 
-            currentWorld[x, y, z] = 0;
+            currentWorld.SetVoxel(x, y, z, 0);
             currentWorld.CheckChunks(x, y, z);
         }
 
@@ -70,7 +70,7 @@ namespace Client
         {
             vClient.SendBlockEdit(x, y, z, blockTag);
 
-            currentWorld[x, y, z] = blockTag;
+            currentWorld.SetVoxel(x, y, z, blockTag);
             currentWorld.CheckChunks(x, y, z);
         }
     }

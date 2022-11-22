@@ -42,13 +42,13 @@ namespace Client
 
         protected override void OnBreakBlock(ushort x, ushort y, ushort z)
         {
-            currentWorld[x, y, z] = 0;
+            currentWorld.SetVoxel(x, y, z, 0);
             currentWorld.CheckChunks(x , y , z);
         }
 
         protected override void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag)
         {
-            currentWorld[x, y, z] = blockTag;
+            currentWorld.SetVoxel(x, y, z, blockTag);
             currentWorld.CheckChunks(x , y , z);
         }
 

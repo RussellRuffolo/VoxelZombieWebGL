@@ -13,10 +13,14 @@ public abstract class Chunk : MonoBehaviour, IChunk
 
     protected byte[] voxels = new byte[16 * 16 * 16];
 
-    public byte this[int x, int y, int z]
+    public byte GetVoxel(int x, int y, int z)
     {
-        get { return voxels[x * 16 * 16 + y * 16 + z]; }
-        set { voxels[x * 16 * 16 + y * 16 + z] = value; }
+        return voxels[x * 16 * 16 + y * 16 + z];
+    }
+
+    public void SetVoxel(int x, int y, int z, byte value)
+    {
+        voxels[x * 16 * 16 + y * 16 + z] = value;
     }
 
 
@@ -430,7 +434,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
 
     protected byte GetBlock(int x, int y, int z)
     {
-        return this[x, y, z];
+        return GetVoxel(x, y, z);
     }
 
     protected byte GetOutsideBlock(int x, int y, int z)
@@ -438,6 +442,6 @@ public abstract class Chunk : MonoBehaviour, IChunk
         ushort xVal = (ushort) (ID.X * 16 + x);
         ushort yVal = (ushort) (ID.Y * 16 + y);
         ushort zVal = (ushort) (ID.Z * 16 + z);
-        return world[xVal, yVal, zVal];
+        return world.GetVoxel(xVal, yVal, zVal);
     }
 }
