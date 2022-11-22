@@ -52,6 +52,7 @@ namespace Client
 
 
         public ushort CheckPlayerState(ushort lastState)
+        // Todo (Russell): This is unused?
         {
             Vector3 feetPosition = new Vector3(transform.position.x, transform.position.y - .08f - (1.76f / 2),
                 transform.position.z);
@@ -87,11 +88,10 @@ namespace Client
                 lastMoveState = 1;
                 return 1;
             }
-
-
-            if (world.GetVoxel(Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z)) != 9 &&
-                world.GetVoxel(Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)) != 9 &&
-                world.GetVoxel(Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z)) != 11 && world.GetVoxel(Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)) != 11)
+            
+            Voxel voxelAtFeet = world.GetVoxel(Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z));
+            Voxel voxelAtHead = world.GetVoxel(Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z));
+            if(!voxelAtFeet.isLiquid() && !voxelAtHead.isLiquid())
             {
                 if (lastMoveState == 1 || lastMoveState == 4)
                 {
@@ -103,13 +103,11 @@ namespace Client
                 lastMoveState = 0;
                 return 0;
             }
-
-            if (world.GetVoxel(Mathf.FloorToInt(feetPosition.x), Mathf.FloorToInt(feetPosition.y), Mathf.FloorToInt(feetPosition.z)) == 9 && world.GetVoxel(Mathf.FloorToInt(headPosition.x), Mathf.FloorToInt(headPosition.y), Mathf.FloorToInt(headPosition.z)) == 9)
+            if (voxelAtFeet.isLiquid() && voxelAtHead.isLiquid())
             {
                 lastMoveState = 1;
                 return 1;
             }
-            else
             {
                 lastMoveState = 4;
                 return 4;
@@ -117,6 +115,7 @@ namespace Client
         }
 
         public bool CheckWaterJump()
+        // Todo (Russell): Unused?
         {
             if (hasWaterJump)
             {
@@ -127,6 +126,7 @@ namespace Client
         }
 
         public void UseWaterJump()
+        // Todo (Russell): Unused?
         {
             hasWaterJump = false;
         }
@@ -163,6 +163,7 @@ namespace Client
         }
 
         public bool CheckGrounded()
+        // Todo (Russell): Unused?
         {
             ContactPoint groundCP = default(ContactPoint);
 

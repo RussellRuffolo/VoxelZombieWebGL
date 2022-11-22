@@ -11,8 +11,8 @@ namespace Client
         public float stepDistance;
         protected IWorld currentWorld;
         private IVoxelEngine vEngine;
-
-        private byte placeBlockTag = 1;
+        // Todo (Russell): Why does this have state? Can we just make this a local variable?
+        private Voxel placeBlockTag = Voxel.Stone;
 
         public LineRenderer blockOutline;
 
@@ -270,7 +270,7 @@ namespace Client
                     selectionY = (ushort) (testPosition.y * 2);
                     selectionZ = (ushort) (testPosition.z * 2);
                     testPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
-                    if (PlayerUtils.IsSolidBlock(currentWorld.GetVoxel(testPosition.x, testPosition.y, testPosition.z)))
+                    if (currentWorld.GetVoxel(testPosition.x, testPosition.y, testPosition.z).isSolid())
                     {
                         selectionPosition = testPosition;
                         selectionNormal = raycastHit.normal;
@@ -279,54 +279,6 @@ namespace Client
                 }
             }
 
-            blockOutline.positionCount = 0;
-            selectionPosition = Vector3.zero;
-            selectionNormal = Vector3.zero;
-            return;
-
-            Vector3 currentPosition = startPosition;
-
-            float distanceStepped = 0;
-
-
-            while (distanceStepped < editDistance)
-            {
-                currentPosition += direction * stepDistance;
-                distanceStepped += stepDistance;
-
-
-                if (CheckBlock(currentPosition))
-                {
-                    // selectionPosition = new Vector3(x, y, z);
-                    selectionX = (ushort) (currentPosition.x * 2);
-                    selectionY = (ushort) (currentPosition.y * 2);
-                    selectionZ = (ushort) (currentPosition.z * 2);
-                    selectionPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
-                    FindNormal(currentPosition, -direction);
-
-                    return;
-                }
-                // else if (currentBlock == 2 && lastRaycastedTarget != new Vector3(x, y, z))
-                // {
-                //     RaycastHit[] hitData = Physics.RaycastAll(
-                //         playerCam.transform.position - playerCam.transform.forward, playerCam.transform.forward,
-                //         editDistance);
-                //
-                //     foreach (RaycastHit hit in hitData)
-                //     {
-                //         if (hit.collider.CompareTag("Model"))
-                //         {
-                //             selectionPosition = new Vector3(x, y, z);
-                //             FindNormal(currentPosition, -direction);
-                //             return;
-                //         }
-                //     }
-                //
-                //     lastRaycastedTarget = new Vector3(x, y, z);
-                // }
-            }
-
-            //If no block found
             blockOutline.positionCount = 0;
             selectionPosition = Vector3.zero;
             selectionNormal = Vector3.zero;
@@ -389,59 +341,38 @@ namespace Client
         }
 
         bool CheckBlock(Vector3 checkPosition)
+        // Check if a block is a block is targetable
         {
-            byte blockTag = currentWorld.GetVoxel(checkPosition.x, checkPosition.y, checkPosition.z);
-
-
-            //untargetable blocks: air, water, lava, outside of map
-            if (blockTag == 0 || blockTag == 9 || blockTag == 11 || blockTag == 100)
+            Voxel voxel = currentWorld.GetVoxel(checkPosition.x, checkPosition.y, checkPosition.z);
+            if (voxel.isNonbreakable() | voxel.isVegetation())
             {
                 return false;
             }
-
-
-            //modeled blocks: flowers, mushorooms
-            if (blockTag == 37 || blockTag == 38 || blockTag == 39 || blockTag == 40)
-            {
-                return false;
-            }
-
-            //any targetable block
             return true;
         }
 
         void BreakBlock()
         {
-            if (selectionNormal != Vector3.zero)
+            if (selectionNormal == Vector3.zero) return;
+            
+            int x = (int) selectionPosition.x;
+            int y = (int) selectionPosition.y;
+            int z = (int) selectionPosition.z;
+
+            Voxel voxel = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
+            if (voxel.isNonbreakable())
             {
-                int x = (int) selectionPosition.x;
-                int y = (int) selectionPosition.y;
-                int z = (int) selectionPosition.z;
-
-                //    ulong breakSpotTag = currentWorld[x, y, z];
-                byte breakSpotTag = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
-                if (breakSpotTag == 0)
-                {
-                    return;
-                }
-
-                //bedrock, water, and lava can not be broken
-                if (breakSpotTag == 7 || breakSpotTag == 9 || breakSpotTag == 11)
-                {
-                    return;
-                }
-
-                blockBreakParticleSystem.GetComponent<Renderer>().material =
-                    vEngine.materialList[(int) (breakSpotTag - 1)];
-                blockBreakParticleSystem.transform.position = selectionPosition;
-                blockBreakParticleSystem.Play();
-                //
-                //
-                OnBreakBlock(selectionX, selectionY, selectionZ);
-
-
                 return;
             }
+
+            blockBreakParticleSystem.GetComponent<Renderer>().material =
+                vEngine.materialList[(int) (voxel - 1)];
+            blockBreakParticleSystem.transform.position = selectionPosition;
+            blockBreakParticleSystem.Play();
+            //
+            //
+            OnBreakBlock(selectionX, selectionY, selectionZ);
+        
         }
 
         protected abstract void OnBreakBlock(ushort x, ushort y, ushort z);
@@ -454,16 +385,16 @@ namespace Client
                 ushort y = (ushort) (selectionY + selectionNormal.y);
                 ushort z = (ushort) (selectionZ + selectionNormal.z);
 
-                byte placeSpotTag = currentWorld.GetVoxel(x, y, z);
+                Voxel placeSpotTag = currentWorld.GetVoxel(x, y, z);
 
-                if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
+                if (placeSpotTag.isNonsolid())
                 {
                     OnPlaceBlock(x, y, z, placeBlockTag);
                 }
             }
         }
 
-        protected abstract void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag);
+        protected abstract void OnPlaceBlock(ushort x, ushort y, ushort z, Voxel blockTag);
 
         void SelectBlock()
         {
@@ -475,11 +406,11 @@ namespace Client
 
                 if (x < vEngine.Length && y < vEngine.Height && z < vEngine.Width)
                 {
-                    byte selectTag = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
+                    Voxel voxel = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
 
-                    if (selectTag != 7 && selectTag != 0 && selectTag != 9 && selectTag != 11)
+                    if (!voxel.isNonplaceable())
                     {
-                        placeBlockTag = selectTag;
+                        placeBlockTag = voxel;
                     }
                 }
             }

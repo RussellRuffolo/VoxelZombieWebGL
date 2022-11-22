@@ -90,62 +90,11 @@ public class ClientChunk : Chunk
 
     public void ProcessChunkChange(RtcMessageReader reader)
     {
-        // vertices.Clear();
-        // uvList.Clear();
-        //
-        // for (int i = 0; i < 55; i++)
-        // {
-        //     TriangleLists[i].Clear();
-        // }
-        //
-        // normals.Clear();
-        //
-        // mesh.Clear();
-        // mesh.subMeshCount = 55;
-
         for (int i = 0; i < voxels.Length; i++)
         {
-            voxels[i] = reader.ReadByte();
+            voxels[i] = reader.ReadVoxel();
         }
-
         Debug.Log("PROCESSED CHUNK CHANGE" + ID.X + " " + ID.Y + " " + ID.Z);
         dirty = true;
-        //
-        // int vertexCount = reader.ReadInt();
-        //
-        // for (int i = 0; i < vertexCount; i++)
-        // {
-        //     vertices.Add(new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat()));
-        // }
-        //
-        // for (int i = 0; i < 55; i++)
-        // {
-        //     int triangleCount = reader.ReadInt();
-        //
-        //     for (int j = 0; j < triangleCount; j++)
-        //     {
-        //         TriangleLists[i].Add(reader.ReadInt());
-        //     }
-        // }
-        //
-        // mesh.SetVertices(vertices);
-        //
-        // for (int i = 0; i < 55; i++)
-        // {
-        //     mesh.SetTriangles(TriangleLists[i].ToArray(), i);
-        // }
-        //
-        // for (int i = 0; i < vertexCount; i++)
-        // {
-        //     normals.Add(Vector3.up);
-        // }
-        //
-        //
-        // mesh.SetNormals(normals);
-        // mesh.SetUVs(0, GreedyChunk.UvCalculator.CalculateUVs(vertices.ToArray(), 1).ToList());
-        //
-        //
-        // meshFilter.mesh = mesh;
-        // meshCollider.sharedMesh = mesh;
     }
 }

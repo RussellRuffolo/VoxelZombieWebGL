@@ -8,7 +8,7 @@ public static class PlayerUtils
 {
     private static Vector3 FootOffset = new Vector3(0, -.08f - (1.76f / 2), 0);
 
-
+    // Todo? (Russell): Standardize "Check" helper functions' signatures
     public static bool CheckGrounded(Rigidbody playerRb)
     {
         // foreach (ContactPoint contactPoint in contactPoints)
@@ -66,7 +66,7 @@ public static class PlayerUtils
                 ushort y = (ushort) Mathf.FloorToInt(testPoint.y);
                 ushort z = (ushort) Mathf.FloorToInt(testPoint.z);
 
-                if (IsSolidBlock(world.GetVoxel(x, y, z)) && IsSolidBlock(world.GetVoxel(x, y + 1, z)))
+                if (world.GetVoxel(x, y, z).isSolid() && world.GetVoxel(x, y + 1, z).isSolid())
                 {
                     return true;
                 }
@@ -97,7 +97,7 @@ public static class PlayerUtils
         ushort y = (ushort) Mathf.FloorToInt(playerPosition.y);
         ushort z = (ushort) Mathf.FloorToInt(playerPosition.z);
 
-        if (world.GetVoxel(x, y, z) == 9)
+        if (world.GetVoxel(x, y, z) == Voxel.StationaryWater)
         {
             return true;
         }
@@ -116,11 +116,7 @@ public static class PlayerUtils
         ushort y = (ushort) Mathf.FloorToInt(blockPosition.y);
         ushort z = (ushort) Mathf.FloorToInt(blockPosition.z);
 
-        if (!IsSolidBlock(world.GetVoxel(blockPosition.x, blockPosition.y, blockPosition.z)))
-        {
-            return false;
-        }
-
+        if (world.GetVoxel(blockPosition.x, blockPosition.y, blockPosition.z).isSolid()) return false;
         return CheckHalfBlock(playerRb, playerInputs, contactPoints, world);
     }
 
@@ -137,7 +133,6 @@ public static class PlayerUtils
                     //                        playerInputs.MoveVector.normalized * .01f;
                     Vector3 testPosition = playerRb.transform.position + Vector3.up * .51f +
                                          -contactPoint.normal * .05f;
-                    
 
                     Collider[] colliders = Physics.OverlapBox(testPosition, PlayerStats.StandingHalfExtents,
                         Quaternion.LookRotation(playerInputs.PlayerForward),
@@ -151,57 +146,17 @@ public static class PlayerUtils
                             hitGround = true;
                         }
                     }
-
-                    if (!hitGround)
-                    {
-                        return true;
-                    }
-                   
-
-                    // Vector3 footPosition = playerRb.transform.position + FootOffset;
-                    // Vector3 blockPosition = new Vector3(contactPoint.point.x, footPosition.y, contactPoint.point.z) +
-                    //                         playerInputs.MoveVector.normalized * .1f;
-                    //
-                    // Vector3 floorPosition = footPosition - .5f * Vector3.up;
-                    //
-                    // ushort floorX = (ushort) Mathf.FloorToInt(floorPosition.x);
-                    // ushort floorY = (ushort) Mathf.FloorToInt(floorPosition.y);
-                    // ushort floorZ = (ushort) Mathf.FloorToInt(floorPosition.z);
-                    //
-                    //
-                    // ushort x = (ushort) Mathf.FloorToInt(blockPosition.x);
-                    // ushort y = (ushort) Mathf.FloorToInt(blockPosition.y);
-                    // ushort z = (ushort) Mathf.FloorToInt(blockPosition.z);
-                    //
-                    // if (world[x, y, z] == 44)
-                    // {
-                    //     if (world[x, y + 1, z] == 0 && world[x, y + 2, z] == 0)
-                    //     {
-                    //         return true;
-                    //     }
-                    // }
-                    //
-                    // if (world[floorX, floorY, floorZ] == 44)
-                    // {
-                    //     if (IsSolidBlock(world[x, y, z]) && world[x, y + 1, z] == 0 && world[x, y + 2, z] == 0)
-                    //     {
-                    //         return true;
-                    //     }
-                    // }
+                    if (!hitGround) return true;
                 }
             }
         }
-
         return false;
     }
 
-    public static bool IsSolidBlock(ulong blockTag)
-    {
-        return blockTag != 0 && blockTag != 9 && blockTag != 11;
-    }
+    // TODO (Snapper): Remove all references to these helper functions.
 
-    public static bool IsBreakableBlock(byte blockTag)
+    public static bool IsBreakableBlock(Voxel blockTag)
     {
-        return blockTag != 0 && blockTag != 7 && blockTag != 9 && blockTag != 11;
+        return blockTag.isBreakable();
     }
 }

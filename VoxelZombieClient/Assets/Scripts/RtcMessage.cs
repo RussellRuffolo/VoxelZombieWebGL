@@ -109,7 +109,7 @@ public class RtcMessage
 
         messageString += ushortString;
     }
-
+    
 
     public string GetMessage()
     {

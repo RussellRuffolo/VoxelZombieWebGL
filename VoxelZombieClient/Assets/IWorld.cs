@@ -8,6 +8,7 @@ public interface IWorld
   //  UInt16 this[int x, int y, int z] { get; set; }
   Voxel GetVoxel(float x, float y, float z);
   void SetVoxel(float x, float y, float z, Voxel value);
+  // Todo (Russell): Explain to me why this takes a UShort and IChunk takes an int.
   Voxel GetVoxel(ushort x, ushort y, ushort z);
   void SetVoxel(ushort x, ushort y, ushort z, Voxel value);
 

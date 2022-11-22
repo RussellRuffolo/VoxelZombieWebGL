@@ -16,7 +16,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
 
     public ChunkID ID;
     
-    protected byte[] voxels = new byte[16 * 16 * 16];
+    protected Voxel[] voxels = new Voxel[16 * 16 * 16];
 
     public Voxel GetVoxel(int x, int y, int z)
     {
@@ -31,7 +31,8 @@ public abstract class Chunk : MonoBehaviour, IChunk
     protected MeshFilter meshFilter;
     protected MeshCollider meshCollider;
     protected Mesh mesh;
-
+    
+    // Todo (Russell): Refactor (or explain to Snapper how to refactor) this obtuse nonsense.
     protected List<int>[] TriangleLists = new List<int>[55];
 
     protected List<Vector3> vertices = new List<Vector3>();
@@ -107,9 +108,9 @@ public abstract class Chunk : MonoBehaviour, IChunk
     {
         Vector3 pos;
         int verticesPos;
-        byte voxelType;
-
-        byte blockCheck;
+        Voxel voxelType;
+        Voxel blockCheck;
+        
         Debug.LogError(" quickmesh 1");
         for (var x = 0; x < 16; x++)
         {
@@ -150,7 +151,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x, y, z - 1);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (blockCheck.isTransparent() && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._frontVertices)
                             vertices.Add(pos + vert);
@@ -186,7 +187,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                     }
 
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (blockCheck.isTransparent() && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._topVertices)
                             vertices.Add(pos + vert);
@@ -221,7 +222,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x + 1, y, z);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (blockCheck.isTransparent() && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._rightVertices)
                             vertices.Add(pos + vert);
@@ -257,7 +258,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x - 1, y, z);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (blockCheck.isTransparent() && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._leftVertices)
                             vertices.Add(pos + vert);
@@ -294,7 +295,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x, y, z + 1);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (blockCheck.isTransparent() && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._backVertices)
                             vertices.Add(pos + vert);
@@ -331,7 +332,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x, y - 1, z);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (blockCheck.isTransparent() && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._bottomVertices)
                             vertices.Add(pos + vert);
@@ -349,18 +350,14 @@ public abstract class Chunk : MonoBehaviour, IChunk
     }
 
 
-    private void AddTriangles(int vType, int vPos, int[] triangles)
+    private void AddTriangles(Voxel vType, int vPos, int[] triangles)
+    // Todo (Snapper): This function has a lot of reputation. Fix
     {
         Debug.LogError(" add triangles 1");
-        //0-48 are default MC ids offset back by 1 because 0 was air
-        //49 is grass top
-        //50 is wood top
-        //51 is slabs top
-        //52 is tnt top
-        //53 is bookshelf top
+        // back by 1 because 0 was air
         switch (vType)
         {
-            case (2):
+            case (Voxel.Grass):
                 if (triangles == ChunkInfo._topTriangles)
                 {
                     foreach (var tri in triangles)
@@ -376,11 +373,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[(byte) vType - 1].Add(vPos + tri);
                 }
 
                 break;
-            case (17):
+            case (Voxel.Wood):
                 if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
@@ -389,11 +386,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[(int) vType - 1].Add(vPos + tri);
                 }
 
                 break;
-            case (43):
+            case (Voxel.DoubleSlab):
                 if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
@@ -402,11 +399,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[(int) vType - 1].Add(vPos + tri);
                 }
 
                 break;
-            case (44): //half slabs             
+            case (Voxel.Slab):      
                 if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
@@ -415,11 +412,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[(int) vType - 1].Add(vPos + tri);
                 }
 
                 break;
-            case (46):
+            case (Voxel.TNT):
                 if (triangles == ChunkInfo._topTriangles)
                 {
                     foreach (var tri in triangles)
@@ -433,11 +430,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[(int) vType - 1].Add(vPos + tri);
                 }
 
                 break;
-            case 47:
+            case Voxel.Bookshelf:
                 if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
@@ -446,23 +443,23 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[(int) vType - 1].Add(vPos + tri);
                 }
 
                 break;
             default:
                 foreach (var tri in triangles)
-                    TriangleLists[vType - 1].Add(vPos + tri);
+                    TriangleLists[(int) vType - 1].Add(vPos + tri);
                 break;
         }
     }
 
-    protected byte GetBlock(int x, int y, int z)
+    protected Voxel GetBlock(int x, int y, int z)
     {
         return GetVoxel(x, y, z);
     }
 
-    protected byte GetOutsideBlock(int x, int y, int z)
+    protected Voxel GetOutsideBlock(int x, int y, int z)
     {
         ushort xVal = (ushort)(ID.X * 16 + x);
         ushort yVal = (ushort)(ID.Y * 16 + y);

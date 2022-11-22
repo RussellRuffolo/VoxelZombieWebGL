@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 public enum Voxel: byte
 {
@@ -56,27 +57,36 @@ public enum Voxel: byte
 
 public static class VoxelExtensions
 {
+    // Todo (Snapper): Ensure arrays are actually faster than Hashmaps in this usecase (or go back to Hashmaps)
+    public static Voxel[] gasBlocks = { Voxel.Air };
+    public static Voxel[] liquidBlocks = { Voxel.StationaryWater, Voxel.StationaryLava };
+    // Todo (Russell): In Python we'd say `nonsolidBlocks = [*gasBlocks, *liquidBlocks]`. Make this idiomatic CSharp
     public static Voxel[] nonsolidBlocks = { Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava };
 
     public static Voxel[] nonbreakableBlocks =
         { Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Bedrock };
-    public static bool isNonsolid(this Voxel v)
+    // Adding a new vegetation block? Don't forget to make it transparent! (If applicable)
+    // Todo (Russell): We have the names transparent and nonsolid. I don't like that. Neither are perfect names
+    //  Nonsolid means that they are liquid, gas, plasma, etc.
+    //  Transparent means that we need to render things on the other side.
+    public static Voxel[] vegetationBlocks =
+        { Voxel.Dandelion, Voxel.Rose, Voxel.BrownMushroom, Voxel.RedMushroom };
+    public static Voxel[] transparentBlocks =
     {
-        return Array.Exists(nonsolidBlocks, elem => elem == v);
-    }
-
-    public static bool isNonbreakable(this Voxel v)
-    {
-        return Array.Exists(nonbreakableBlocks, elem => elem == v);
-    }
-
-    public static bool isSolid(this Voxel v)
-    {
-        return !isNonsolid(v);
-    }
-
-    public static bool isBreakable(this Voxel v)
-    {
-        return !isNonbreakable(v);
-    }
+        Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose,
+        Voxel.BrownMushroom, Voxel.RedMushroom, Voxel.Slab,
+        // Todo (Russell): What are these two about?
+        (Voxel) 57, (Voxel) 61
+    };
+    // Todo: If a block is placeable is game dependant and not an inherent property of the block. Refactor to elsewhere.
+    public static Voxel[] nonplaceableBlocks = { Voxel.Air, Voxel.Bedrock, Voxel.StationaryWater, Voxel.StationaryLava };
+    public static bool isNonsolid(this Voxel v) => nonsolidBlocks.Contains(v);
+    public static bool isNonbreakable(this Voxel v) => nonbreakableBlocks.Contains(v);
+    public static bool isNonplaceable(this Voxel v) => nonplaceableBlocks.Contains(v);
+    public static bool isVegetation(this Voxel v) => vegetationBlocks.Contains(v);
+    public static bool isTransparent(this Voxel v) => transparentBlocks.Contains(v);
+    public static bool isLiquid(this Voxel v) => liquidBlocks.Contains(v);
+    public static bool isGas(this Voxel v) => gasBlocks.Contains(v);
+    public static bool isSolid(this Voxel v) => !isNonsolid(v);
+    public static bool isBreakable(this Voxel v) => !isNonbreakable(v);
 }

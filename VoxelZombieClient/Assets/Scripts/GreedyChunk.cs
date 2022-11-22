@@ -93,8 +93,8 @@ public class GreedyChunk : Chunk
             var x = new int[3];
             var q = new int[3];
 
-            var mask = new byte[CHUNK_SIZE * CHUNK_SIZE];
-            var mask2 = new byte[CHUNK_SIZE * CHUNK_SIZE];
+            var mask = new Voxel[CHUNK_SIZE * CHUNK_SIZE];
+            var mask2 = new Voxel[CHUNK_SIZE * CHUNK_SIZE];
 
             q[d] = 1;
 
@@ -112,10 +112,10 @@ public class GreedyChunk : Chunk
                         // m.IsEmptyBlock(x,y,z) takes global map positions and returns true if no block exists there
 
 
-                        byte compareValue = GetBlock(x[0] + q[0], x[1] + q[1], x[2] + q[2]);
-                        byte currentValue = GetBlock(x[0], x[1], x[2]);
+                        Voxel compareValue = GetBlock(x[0] + q[0], x[1] + q[1], x[2] + q[2]);
+                        Voxel currentValue = GetBlock(x[0], x[1], x[2]);
 
-                        if ( /*x[d] >= CHUNK_SIZE - 1 ||*/ (ChunkInfo._transparentBlocks.Contains(compareValue) &&
+                        if ( /*x[d] >= CHUNK_SIZE - 1 ||*/ (compareValue.isTransparent() &&
                                                             compareValue != currentValue))
                         {
                             mask[n++] = currentValue;
@@ -125,8 +125,7 @@ public class GreedyChunk : Chunk
                             mask[n++] = 0;
                         }
 
-                        if ( /*0 > x[d] ||*/ (ChunkInfo._transparentBlocks.Contains(currentValue) &&
-                                              compareValue != currentValue))
+                        if ( currentValue.isTransparent() && compareValue != currentValue)
                         {
                             mask2[m++] = compareValue;
                         }
@@ -150,8 +149,8 @@ public class GreedyChunk : Chunk
                     {
                         if (mask[n] != 0)
                         {
-                            ushort blockTag = mask[n];
-
+                            // Todo (Russell): Double check that I (Snapper) didn't break this section
+                            Voxel blockTag = mask[n];
                             // Compute the width of this quad and store it in w                        
                             //   This is done by searching along the current axis until mask[n + w] is false
                             for (w = 1; i + w < CHUNK_SIZE && mask[n + w] == blockTag; w++)
@@ -226,7 +225,7 @@ public class GreedyChunk : Chunk
                     {
                         if (mask2[m] != 0)
                         {
-                            ushort blockTag = mask2[m];
+                            Voxel blockTag = mask2[m];
 
                             // Compute the width of this quad and store it in w                        
                             //   This is done by searching along the current axis until mask[n + w] is false
@@ -299,12 +298,12 @@ public class GreedyChunk : Chunk
 
 
     public void AppendQuad(Vector3 tl, Vector3 tr, Vector3 bl, Vector3 br,
-        ushort blockTag, bool wind)
+        Voxel blockTag, bool wind)
     {
         BlockFace face = tl.y.Equals(tr.y) ? BlockFace.Top : BlockFace.Side;
 
-
-        ushort adjustedTag = GetAdjustedTag(blockTag, face);
+        // Todo: This function originally took a UShort as a block tag. Can we get rid of that legacy behavior?
+        ushort adjustedTag = GetAdjustedTag((ushort)blockTag, face);
 
 
         for (int i = 0; i < 6; i++)
@@ -374,7 +373,7 @@ public class GreedyChunk : Chunk
     }
 
 
-    private byte GetBlock(int x, int y, int z)
+    private Voxel GetBlock(int x, int y, int z)
     {
         
         return GetVoxel(x, y, z);

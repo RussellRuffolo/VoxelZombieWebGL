@@ -167,23 +167,6 @@ public static class ChunkInfo
         37, 38, 39, 40, 57, 61
     };
 
-    public static HashSet<int> _transparentBlocks = new HashSet<int>()
-    {
-        0, 9, 11, 18,
-        20, 37, 38, 39, 40, 44, 57, 61
-    };
-
-    // public static List<int> _transparentBlockIDs = new List<int>
-    // {
-    //     0, 9, 11, 18,
-    //     20, 37, 38, 39, 40, 44, 57, 61
-    // };
-
-    public static HashSet<int> _transparentBlockSet = new HashSet<int>()
-    {
-        0, 9, 11, 18,
-        20, 37, 38, 39, 40, 44, 57, 61
-    };
 
     public static Vector3[] _cubeNormals = new[]
     {

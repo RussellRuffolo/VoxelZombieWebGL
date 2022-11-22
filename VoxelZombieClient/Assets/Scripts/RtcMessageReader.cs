@@ -29,6 +29,11 @@ public class RtcMessageReader
         return byteArray[0];
     }
 
+    public Voxel ReadVoxel()
+    {
+        return (Voxel) ReadByte();
+    }
+
     public int GetMessageLength()
     {
         return Message.Length - 1;

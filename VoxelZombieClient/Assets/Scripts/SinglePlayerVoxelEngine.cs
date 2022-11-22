@@ -96,8 +96,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
     private void ApplyMapData(byte[] mapBytes, Vector3 spawnPosition)
     {
         bController.SetMapBoundaries(Length, Width, Height);
-
-
+        
         string namePrefix = "Chunk ";
 
         for (int z = 0; z < Width / 8; z++)
@@ -109,8 +108,7 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
                     var newChunkObj =
                         new GameObject(namePrefix + x + "," + y + "," + z);
                     newChunkObj.transform.position = new Vector3(x * 8, y * 8, z * 8);
-
-
+                    
                     GreedyChunk chunk = newChunkObj.AddComponent<GreedyChunk>();
                     ChunkID newID = new ChunkID(x, y, z);
                     World.Chunks.Add(newID, chunk);
@@ -123,43 +121,32 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
             }
         }
 
-
         int blockCount = 6;
-
-
         for (ushort y = 0; y < Height; y++)
         {
             for (ushort x = 0; x < Length; x++)
             {
                 for (ushort z = 0; z < Width; z++)
                 {
-                    byte blockId = mapBytes[blockCount];
-
-
+                    Voxel voxel = (Voxel)mapBytes[blockCount];
+                    
                     //halfblock nonsense
-                    if (blockId != 44)
+                    if (voxel == Voxel.Slab)
                     {
-                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)blockId);
-                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)blockId);
-                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)blockId);
-                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)blockId);
+                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)voxel);
+                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)voxel);
+                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)voxel);
+                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)voxel);
                     }
-
-                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2), (Voxel)blockId);
-
-                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2), (Voxel)blockId);
-
-
-                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1), (Voxel)blockId);
-
-                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1), (Voxel)blockId);
-
-
+                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2), voxel);
+                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2), voxel);
+                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1), voxel);
+                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1), voxel);
+                    
                     blockCount++;
                 }
             }
         }
-
         SinglePlayerMenuController.OnMapLoaded(spawnPosition);
     }
 

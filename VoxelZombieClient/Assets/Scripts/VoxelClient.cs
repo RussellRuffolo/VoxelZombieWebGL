@@ -286,13 +286,13 @@ namespace Client
             SendUnreliableMessage(inputMessage.GetMessage());
         }
 
-        public void SendBlockEdit(ushort x, ushort y, ushort z, byte blockTag)
+        public void SendBlockEdit(ushort x, ushort y, ushort z, Voxel blockTag)
         {
             RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
             blockEditMessage.WriteUShort(x);
             blockEditMessage.WriteUShort(y);
             blockEditMessage.WriteUShort(z);
-            blockEditMessage.WriteUShort(blockTag);
+            blockEditMessage.WriteUShort((ushort) blockTag);  // Todo (Russell): yuck. Why are voxels being sent as UShorts and not bytes?
             SendReliableMessage(blockEditMessage.GetMessage());
         }
 
