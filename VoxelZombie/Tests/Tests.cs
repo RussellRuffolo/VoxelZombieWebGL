@@ -11,6 +11,6 @@ public class Tests
     [Test]
     public void Test1()
     {
-        Assert.Pass();
+        Assert.That((byte)Voxel.Air, Is.EqualTo((byte)0));
     }
 }
