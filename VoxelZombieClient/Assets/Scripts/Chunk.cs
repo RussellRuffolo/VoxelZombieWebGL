@@ -332,6 +332,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
         //51 is slabs top
         //52 is tnt top
         //53 is bookshelf top
+        int vTypeTriangleIndex = (byte)vType - 1;
         switch (vType)
         {
             case (Voxel.Grass):
@@ -350,11 +351,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[vTypeTriangleIndex].Add(vPos + tri);
                 }
 
                 break;
-            case (17):
+            case (Voxel.Wood):
                 if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
@@ -363,11 +364,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[vTypeTriangleIndex].Add(vPos + tri);
                 }
 
                 break;
-            case (43):
+            case (Voxel.DoubleSlab):
                 if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
@@ -376,11 +377,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[vTypeTriangleIndex].Add(vPos + tri);
                 }
 
                 break;
-            case (44): //half slabs             
+            case (Voxel.Slab): //half slabs             
                 if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
@@ -389,11 +390,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[vTypeTriangleIndex].Add(vPos + tri);
                 }
 
                 break;
-            case (46):
+            case (Voxel.TNT):
                 if (triangles == ChunkInfo._topTriangles)
                 {
                     foreach (var tri in triangles)
@@ -407,11 +408,11 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[vTypeTriangleIndex].Add(vPos + tri);
                 }
 
                 break;
-            case 47:
+            case Voxel.Bookshelf:
                 if (triangles == ChunkInfo._topTriangles || triangles == ChunkInfo._bottomTriangles)
                 {
                     foreach (var tri in triangles)
@@ -420,13 +421,13 @@ public abstract class Chunk : MonoBehaviour, IChunk
                 else
                 {
                     foreach (var tri in triangles)
-                        TriangleLists[vType - 1].Add(vPos + tri);
+                        TriangleLists[vTypeTriangleIndex].Add(vPos + tri);
                 }
 
                 break;
             default:
                 foreach (var tri in triangles)
-                    TriangleLists[vType - 1].Add(vPos + tri);
+                    TriangleLists[vTypeTriangleIndex].Add(vPos + tri);
                 break;
         }
     }

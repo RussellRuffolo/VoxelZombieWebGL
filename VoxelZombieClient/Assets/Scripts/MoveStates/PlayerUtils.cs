@@ -97,7 +97,7 @@ public static class PlayerUtils
         ushort y = (ushort) Mathf.FloorToInt(playerPosition.y);
         ushort z = (ushort) Mathf.FloorToInt(playerPosition.z);
 
-        if (world.GetVoxel(x, y, z) == 9)
+        if (world.GetVoxel(x, y, z) == Voxel.StationaryWater)
         {
             return true;
         }
@@ -200,8 +200,8 @@ public static class PlayerUtils
         return blockTag != Voxel.Air && blockTag != Voxel.StationaryWater && blockTag != Voxel.StationaryLava;
     }
 
-    public static bool IsBreakableBlock(byte blockTag)
+    public static bool IsBreakableBlock(Voxel blockTag)
     {
-        return blockTag != 0 && blockTag != 7 && blockTag != 9 && blockTag != 11;
+        return blockTag != Voxel.Air && blockTag != Voxel.Bedrock && blockTag != Voxel.StationaryWater && blockTag != Voxel.StationaryLava;
     }
 }

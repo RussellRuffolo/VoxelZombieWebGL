@@ -87,7 +87,7 @@ public class ClientChunk : Chunk
     public void ProcessChunkChange(RtcMessageReader reader)
     { for (int i = 0; i < voxels.Length; i++)
         {
-            voxels[i] = reader.ReadByte();
+            voxels[i] = (Voxel)reader.ReadByte();
         }
 
 

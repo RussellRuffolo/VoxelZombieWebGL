@@ -80,222 +80,222 @@ public class GreedyChunk : Chunk
     public int CHUNK_SIZE = 16;
 
 
-    public void GreedyMesh()
-    {
-        // Sweep over each axis (X, Y and Z)
-        for (var d = 0; d < 3; ++d)
-        {
-            //for-loop counters
-            int i, j, k, l, w, h;
-
-            int u = (d + 1) % 3;
-            int v = (d + 2) % 3;
-            var x = new int[3];
-            var q = new int[3];
-
-            var mask = new byte[CHUNK_SIZE * CHUNK_SIZE];
-            var mask2 = new byte[CHUNK_SIZE * CHUNK_SIZE];
-
-            q[d] = 1;
-
-            // Check each slice of the chunk one at a time
-            for (x[d] = -1; x[d] < CHUNK_SIZE;)
-            {
-                // Compute the mask
-                var n = 0;
-                var m = 0;
-                for (x[v] = 0; x[v] < CHUNK_SIZE; ++x[v])
-                {
-                    for (x[u] = 0; x[u] < CHUNK_SIZE; ++x[u])
-                    {
-                        // q determines the direction (X, Y or Z) that we are searching
-                        // m.IsEmptyBlock(x,y,z) takes global map positions and returns true if no block exists there
-
-
-                        byte compareValue = GetBlock(x[0] + q[0], x[1] + q[1], x[2] + q[2]);
-                        byte currentValue = GetBlock(x[0], x[1], x[2]);
-
-                        if ( /*x[d] >= CHUNK_SIZE - 1 ||*/ (ChunkInfo._transparentBlocks.Contains(compareValue) &&
-                                                            compareValue != currentValue))
-                        {
-                            mask[n++] = currentValue;
-                        }
-                        else
-                        {
-                            mask[n++] = 0;
-                        }
-
-                        if ( /*0 > x[d] ||*/ (ChunkInfo._transparentBlocks.Contains(currentValue) &&
-                                              compareValue != currentValue))
-                        {
-                            mask2[m++] = compareValue;
-                        }
-                        else
-                        {
-                            mask2[m++] = 0;
-                        }
-                    }
-                }
-
-                ++x[d];
-
-                n = 0;
-                m = 0;
-
-                // Generate a mesh from the mask using lexicographic ordering,      
-                //   by looping over each block in this slice of the chunk
-                for (j = 0; j < CHUNK_SIZE; ++j)
-                {
-                    for (i = 0; i < CHUNK_SIZE;)
-                    {
-                        if (mask[n] != 0)
-                        {
-                            ushort blockTag = mask[n];
-
-                            // Compute the width of this quad and store it in w                        
-                            //   This is done by searching along the current axis until mask[n + w] is false
-                            for (w = 1; i + w < CHUNK_SIZE && mask[n + w] == blockTag; w++)
-                            {
-                            }
-
-                            // Compute the height of this quad and store it in h                        
-                            //   This is done by checking if every block next to this row (range 0 to w) is also part of the mask.
-                            //   For example, if w is 5 we currently have a quad of dimensions 1 x 5. To reduce triangle count,
-                            //   greedy meshing will attempt to expand this quad out to CHUNK_SIZE x 5, but will stop if it reaches a hole in the mask
-
-                            var done = false;
-                            for (h = 1; j + h < CHUNK_SIZE; h++)
-                            {
-                                // Check each block next to this quad
-                                for (k = 0; k < w; ++k)
-                                {
-                                    // If there's a hole in the mask, exit
-                                    if (mask[n + k + h * CHUNK_SIZE] != blockTag)
-                                    {
-                                        done = true;
-                                        break;
-                                    }
-                                }
-
-                                if (done)
-                                    break;
-                            }
-
-                            x[u] = i;
-                            x[v] = j;
-
-                            // du and dv determine the size and orientation of this face
-                            var du = new int[3];
-                            du[u] = w;
-
-                            var dv = new int[3];
-                            dv[v] = h;
-
-                            // Create a quad for this face. Colour, normal or textures are not stored in this block vertex format.
-                            AppendQuad(new Vector3(x[0] * .5f, x[1] * .5f, x[2] * .5f), // Top-left vertice position
-                                new Vector3((x[0] + du[0]) * .5f, (x[1] + du[1]) * .5f,
-                                    (x[2] + du[2]) * .5f), // Top right vertice position
-                                new Vector3((x[0] + dv[0]) * .5f, (x[1] + dv[1]) * .5f,
-                                    (x[2] + dv[2]) * .5f), // Bottom left vertice position
-                                new Vector3((x[0] + du[0] + dv[0]) * .5f, (x[1] + du[1] + dv[1]) * .5f,
-                                    (x[2] + du[2] + dv[2]) * .5f), blockTag, true // Bottom right vertice position
-                            );
-
-                            // Clear this part of the mask, so we don't add duplicate faces
-                            for (l = 0; l < h; ++l)
-                            for (k = 0; k < w; ++k)
-                                mask[n + k + l * CHUNK_SIZE] = 0;
-
-                            // Increment counters and continue
-                            i += w;
-                            n += w;
-                        }
-                        else
-                        {
-                            i++;
-                            n++;
-                        }
-                    }
-                }
-
-                // Generate a mesh from the mask using lexicographic ordering,      
-                //   by looping over each block in this slice of the chunk
-                for (j = 0; j < CHUNK_SIZE; ++j)
-                {
-                    for (i = 0; i < CHUNK_SIZE;)
-                    {
-                        if (mask2[m] != 0)
-                        {
-                            ushort blockTag = mask2[m];
-
-                            // Compute the width of this quad and store it in w                        
-                            //   This is done by searching along the current axis until mask[n + w] is false
-                            for (w = 1; i + w < CHUNK_SIZE && mask2[m + w] == blockTag; w++)
-                            {
-                            }
-
-                            // Compute the height of this quad and store it in h                        
-                            //   This is done by checking if every block next to this row (range 0 to w) is also part of the mask.
-                            //   For example, if w is 5 we currently have a quad of dimensions 1 x 5. To reduce triangle count,
-                            //   greedy meshing will attempt to expand this quad out to CHUNK_SIZE x 5, but will stop if it reaches a hole in the mask
-
-                            var done = false;
-                            for (h = 1; j + h < CHUNK_SIZE; h++)
-                            {
-                                // Check each block next to this quad
-                                for (k = 0; k < w; ++k)
-                                {
-                                    // If there's a hole in the mask, exit
-                                    if (mask2[m + k + h * CHUNK_SIZE] != blockTag)
-                                    {
-                                        done = true;
-                                        break;
-                                    }
-                                }
-
-                                if (done)
-                                    break;
-                            }
-
-                            x[u] = i;
-                            x[v] = j;
-
-                            // du and dv determine the size and orientation of this face
-                            var du = new int[3];
-                            du[u] = w;
-
-                            var dv = new int[3];
-                            dv[v] = h;
-
-                            // Create a quad for this face. Colour, normal or textures are not stored in this block vertex format.
-                            AppendQuad(new Vector3(x[0] * .5f, x[1] * .5f, x[2] * .5f), // Top-left vertice position
-                                new Vector3((x[0] + du[0]) * .5f, (x[1] + du[1]) * .5f,
-                                    (x[2] + du[2]) * .5f), // Top right vertice position
-                                new Vector3((x[0] + dv[0]) * .5f, (x[1] + dv[1]) * .5f,
-                                    (x[2] + dv[2]) * .5f), // Bottom left vertice position
-                                new Vector3((x[0] + du[0] + dv[0]) * .5f, (x[1] + du[1] + dv[1]) * .5f,
-                                    (x[2] + du[2] + dv[2]) * .5f), blockTag, false // Bottom right vertice position
-                            );
-
-                            // Clear this part of the mask, so we don't add duplicate faces
-                            for (l = 0; l < h; ++l)
-                            for (k = 0; k < w; ++k)
-                                mask2[m + k + l * CHUNK_SIZE] = 0;
-
-                            // Increment counters and continue
-                            i += w;
-                            m += w;
-                        }
-                        else
-                        {
-                            i++;
-                            m++;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    // public void GreedyMesh()
+    // {
+    //     // Sweep over each axis (X, Y and Z)
+    //     for (var d = 0; d < 3; ++d)
+    //     {
+    //         //for-loop counters
+    //         int i, j, k, l, w, h;
+    //
+    //         int u = (d + 1) % 3;
+    //         int v = (d + 2) % 3;
+    //         var x = new int[3];
+    //         var q = new int[3];
+    //
+    //         var mask = new byte[CHUNK_SIZE * CHUNK_SIZE];
+    //         var mask2 = new byte[CHUNK_SIZE * CHUNK_SIZE];
+    //
+    //         q[d] = 1;
+    //
+    //         // Check each slice of the chunk one at a time
+    //         for (x[d] = -1; x[d] < CHUNK_SIZE;)
+    //         {
+    //             // Compute the mask
+    //             var n = 0;
+    //             var m = 0;
+    //             for (x[v] = 0; x[v] < CHUNK_SIZE; ++x[v])
+    //             {
+    //                 for (x[u] = 0; x[u] < CHUNK_SIZE; ++x[u])
+    //                 {
+    //                     // q determines the direction (X, Y or Z) that we are searching
+    //                     // m.IsEmptyBlock(x,y,z) takes global map positions and returns true if no block exists there
+    //
+    //
+    //                     byte compareValue = GetBlock(x[0] + q[0], x[1] + q[1], x[2] + q[2]);
+    //                     byte currentValue = GetBlock(x[0], x[1], x[2]);
+    //
+    //                     if ( /*x[d] >= CHUNK_SIZE - 1 ||*/ (ChunkInfo._transparentBlocks.Contains(compareValue) &&
+    //                                                         compareValue != currentValue))
+    //                     {
+    //                         mask[n++] = currentValue;
+    //                     }
+    //                     else
+    //                     {
+    //                         mask[n++] = 0;
+    //                     }
+    //
+    //                     if ( /*0 > x[d] ||*/ (ChunkInfo._transparentBlocks.Contains(currentValue) &&
+    //                                           compareValue != currentValue))
+    //                     {
+    //                         mask2[m++] = compareValue;
+    //                     }
+    //                     else
+    //                     {
+    //                         mask2[m++] = 0;
+    //                     }
+    //                 }
+    //             }
+    //
+    //             ++x[d];
+    //
+    //             n = 0;
+    //             m = 0;
+    //
+    //             // Generate a mesh from the mask using lexicographic ordering,      
+    //             //   by looping over each block in this slice of the chunk
+    //             for (j = 0; j < CHUNK_SIZE; ++j)
+    //             {
+    //                 for (i = 0; i < CHUNK_SIZE;)
+    //                 {
+    //                     if (mask[n] != 0)
+    //                     {
+    //                         ushort blockTag = mask[n];
+    //
+    //                         // Compute the width of this quad and store it in w                        
+    //                         //   This is done by searching along the current axis until mask[n + w] is false
+    //                         for (w = 1; i + w < CHUNK_SIZE && mask[n + w] == blockTag; w++)
+    //                         {
+    //                         }
+    //
+    //                         // Compute the height of this quad and store it in h                        
+    //                         //   This is done by checking if every block next to this row (range 0 to w) is also part of the mask.
+    //                         //   For example, if w is 5 we currently have a quad of dimensions 1 x 5. To reduce triangle count,
+    //                         //   greedy meshing will attempt to expand this quad out to CHUNK_SIZE x 5, but will stop if it reaches a hole in the mask
+    //
+    //                         var done = false;
+    //                         for (h = 1; j + h < CHUNK_SIZE; h++)
+    //                         {
+    //                             // Check each block next to this quad
+    //                             for (k = 0; k < w; ++k)
+    //                             {
+    //                                 // If there's a hole in the mask, exit
+    //                                 if (mask[n + k + h * CHUNK_SIZE] != blockTag)
+    //                                 {
+    //                                     done = true;
+    //                                     break;
+    //                                 }
+    //                             }
+    //
+    //                             if (done)
+    //                                 break;
+    //                         }
+    //
+    //                         x[u] = i;
+    //                         x[v] = j;
+    //
+    //                         // du and dv determine the size and orientation of this face
+    //                         var du = new int[3];
+    //                         du[u] = w;
+    //
+    //                         var dv = new int[3];
+    //                         dv[v] = h;
+    //
+    //                         // Create a quad for this face. Colour, normal or textures are not stored in this block vertex format.
+    //                         AppendQuad(new Vector3(x[0] * .5f, x[1] * .5f, x[2] * .5f), // Top-left vertice position
+    //                             new Vector3((x[0] + du[0]) * .5f, (x[1] + du[1]) * .5f,
+    //                                 (x[2] + du[2]) * .5f), // Top right vertice position
+    //                             new Vector3((x[0] + dv[0]) * .5f, (x[1] + dv[1]) * .5f,
+    //                                 (x[2] + dv[2]) * .5f), // Bottom left vertice position
+    //                             new Vector3((x[0] + du[0] + dv[0]) * .5f, (x[1] + du[1] + dv[1]) * .5f,
+    //                                 (x[2] + du[2] + dv[2]) * .5f), blockTag, true // Bottom right vertice position
+    //                         );
+    //
+    //                         // Clear this part of the mask, so we don't add duplicate faces
+    //                         for (l = 0; l < h; ++l)
+    //                         for (k = 0; k < w; ++k)
+    //                             mask[n + k + l * CHUNK_SIZE] = 0;
+    //
+    //                         // Increment counters and continue
+    //                         i += w;
+    //                         n += w;
+    //                     }
+    //                     else
+    //                     {
+    //                         i++;
+    //                         n++;
+    //                     }
+    //                 }
+    //             }
+    //
+    //             // Generate a mesh from the mask using lexicographic ordering,      
+    //             //   by looping over each block in this slice of the chunk
+    //             for (j = 0; j < CHUNK_SIZE; ++j)
+    //             {
+    //                 for (i = 0; i < CHUNK_SIZE;)
+    //                 {
+    //                     if (mask2[m] != 0)
+    //                     {
+    //                         ushort blockTag = mask2[m];
+    //
+    //                         // Compute the width of this quad and store it in w                        
+    //                         //   This is done by searching along the current axis until mask[n + w] is false
+    //                         for (w = 1; i + w < CHUNK_SIZE && mask2[m + w] == blockTag; w++)
+    //                         {
+    //                         }
+    //
+    //                         // Compute the height of this quad and store it in h                        
+    //                         //   This is done by checking if every block next to this row (range 0 to w) is also part of the mask.
+    //                         //   For example, if w is 5 we currently have a quad of dimensions 1 x 5. To reduce triangle count,
+    //                         //   greedy meshing will attempt to expand this quad out to CHUNK_SIZE x 5, but will stop if it reaches a hole in the mask
+    //
+    //                         var done = false;
+    //                         for (h = 1; j + h < CHUNK_SIZE; h++)
+    //                         {
+    //                             // Check each block next to this quad
+    //                             for (k = 0; k < w; ++k)
+    //                             {
+    //                                 // If there's a hole in the mask, exit
+    //                                 if (mask2[m + k + h * CHUNK_SIZE] != blockTag)
+    //                                 {
+    //                                     done = true;
+    //                                     break;
+    //                                 }
+    //                             }
+    //
+    //                             if (done)
+    //                                 break;
+    //                         }
+    //
+    //                         x[u] = i;
+    //                         x[v] = j;
+    //
+    //                         // du and dv determine the size and orientation of this face
+    //                         var du = new int[3];
+    //                         du[u] = w;
+    //
+    //                         var dv = new int[3];
+    //                         dv[v] = h;
+    //
+    //                         // Create a quad for this face. Colour, normal or textures are not stored in this block vertex format.
+    //                         AppendQuad(new Vector3(x[0] * .5f, x[1] * .5f, x[2] * .5f), // Top-left vertice position
+    //                             new Vector3((x[0] + du[0]) * .5f, (x[1] + du[1]) * .5f,
+    //                                 (x[2] + du[2]) * .5f), // Top right vertice position
+    //                             new Vector3((x[0] + dv[0]) * .5f, (x[1] + dv[1]) * .5f,
+    //                                 (x[2] + dv[2]) * .5f), // Bottom left vertice position
+    //                             new Vector3((x[0] + du[0] + dv[0]) * .5f, (x[1] + du[1] + dv[1]) * .5f,
+    //                                 (x[2] + du[2] + dv[2]) * .5f), blockTag, false // Bottom right vertice position
+    //                         );
+    //
+    //                         // Clear this part of the mask, so we don't add duplicate faces
+    //                         for (l = 0; l < h; ++l)
+    //                         for (k = 0; k < w; ++k)
+    //                             mask2[m + k + l * CHUNK_SIZE] = 0;
+    //
+    //                         // Increment counters and continue
+    //                         i += w;
+    //                         m += w;
+    //                     }
+    //                     else
+    //                     {
+    //                         i++;
+    //                         m++;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
 
     public void AppendQuad(Vector3 tl, Vector3 tr, Vector3 bl, Vector3 br,
@@ -374,7 +374,7 @@ public class GreedyChunk : Chunk
     }
 
 
-    private byte GetBlock(int x, int y, int z)
+    private Voxel GetBlock(int x, int y, int z)
     {
         
         return GetVoxel(x, y, z);

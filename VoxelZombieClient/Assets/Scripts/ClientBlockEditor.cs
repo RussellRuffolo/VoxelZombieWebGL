@@ -68,9 +68,9 @@ namespace Client
 
         protected override void OnPlaceBlock(ushort x, ushort y, ushort z, Voxel blockTag)
         {
-            vClient.SendBlockEdit(x, y, z, blockTag);
+            vClient.SendBlockEdit(x, y, z, (byte)blockTag);
 
-            currentWorld.SetVoxel(x, y, z, (Voxel)blockTag);
+            currentWorld.SetVoxel(x, y, z, blockTag);
             currentWorld.CheckChunks(x, y, z);
         }
     }
