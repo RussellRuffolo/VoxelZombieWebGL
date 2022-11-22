@@ -21,7 +21,6 @@ public class ClientChunk : Chunk
     {
         if (!ActiveRendering)
         {
-            Debug.LogError("Set Active Rendering: " + ID);
             ActiveRendering = true;
 
             RtcMessage chunkActiveMessage = new RtcMessage(Tags.CHUNK_ACTIVE_TAG);
