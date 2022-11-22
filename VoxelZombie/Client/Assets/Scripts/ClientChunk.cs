@@ -63,7 +63,7 @@ public class ClientChunk : Chunk
 
 
         centerPosition = new Vector3(4 + ID.X * 8, 4 + ID.Y * 8, 4 + ID.Z * 8);
-        
+
     }
 
     private void Update()
@@ -86,7 +86,8 @@ public class ClientChunk : Chunk
 
 
     public void ProcessChunkChange(RtcMessageReader reader)
-    { for (int i = 0; i < voxels.Length; i++)
+    {
+        for (int i = 0; i < voxels.Length; i++)
         {
             voxels[i] = (Voxel)reader.ReadByte();
         }

@@ -83,9 +83,9 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
 
             var test = request.downloadHandler.data;
 
-            short length = (short) (test[1] << 8 | test[0]);
-            short width = (short) (test[3] << 8 | test[2]);
-            short height = (short) (test[5] << 8 | test[4]);
+            short length = (short)(test[1] << 8 | test[0]);
+            short width = (short)(test[3] << 8 | test[2]);
+            short height = (short)(test[5] << 8 | test[4]);
 
             Length = length;
             Width = width;
@@ -140,20 +140,20 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
                     //halfblock nonsense
                     if (blockId != 44)
                     {
-                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)blockId);
-                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)blockId);
-                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)blockId);
-                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)blockId);
+                        World.SetVoxel((ushort)(x * 2), (ushort)(y * 2 + 1), (ushort)(z * 2), (Voxel)blockId);
+                        World.SetVoxel((ushort)(x * 2 + 1), (ushort)(y * 2 + 1), (ushort)(z * 2), (Voxel)blockId);
+                        World.SetVoxel((ushort)(x * 2), (ushort)(y * 2 + 1), (ushort)(z * 2 + 1), (Voxel)blockId);
+                        World.SetVoxel((ushort)(x * 2 + 1), (ushort)(y * 2 + 1), (ushort)(z * 2 + 1), (Voxel)blockId);
                     }
 
-                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2), (Voxel)blockId);
+                    World.SetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2), (Voxel)blockId);
 
-                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2), (Voxel)blockId);
+                    World.SetVoxel((ushort)(x * 2 + 1), (ushort)(y * 2), (ushort)(z * 2), (Voxel)blockId);
 
 
-                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1), (Voxel)blockId);
+                    World.SetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2 + 1), (Voxel)blockId);
 
-                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1), (Voxel)blockId);
+                    World.SetVoxel((ushort)(x * 2 + 1), (ushort)(y * 2), (ushort)(z * 2 + 1), (Voxel)blockId);
 
 
                     blockCount++;

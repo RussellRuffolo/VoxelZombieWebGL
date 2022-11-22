@@ -16,17 +16,17 @@ public class NetworkMotionSmoother : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(transform.position != targetPosition)
+        if (transform.position != targetPosition)
         {
-            if(Vector3.Distance(transform.position, targetPosition) > .01)
+            if (Vector3.Distance(transform.position, targetPosition) > .01)
             {
                 transform.position = Vector3.Lerp(transform.position, targetPosition, .4f);
-           }
+            }
             else
             {
                 transform.position = targetPosition;
-            }                 
-        }        
+            }
+        }
     }
 
     public void SetValues(Vector3 newTarget, float yRotation, bool inWater, bool moving)

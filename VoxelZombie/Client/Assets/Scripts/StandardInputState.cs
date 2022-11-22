@@ -7,7 +7,7 @@ public class StandardInputState : IInputState
 {
     public void Enter()
     {
-        
+
     }
 
     public void Exit()

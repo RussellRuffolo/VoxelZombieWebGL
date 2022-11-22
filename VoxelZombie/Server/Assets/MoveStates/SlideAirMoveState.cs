@@ -9,13 +9,13 @@ public class SlideAirMoveState : CrouchingMoveState
         Vector3 lastVelocity, Vector3 lastPosition)
     {
         Vector3 velocity = (playerRb.transform.position - lastPosition) / Time.fixedDeltaTime;
-        
+
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
         float ySpeed = velocity.y;
-        
+
         ySpeed -= PlayerStats.gravAcceleration * Time.fixedDeltaTime;
 
-       return horizontalVelocity + ySpeed * Vector3.up;
+        return horizontalVelocity + ySpeed * Vector3.up;
     }
 
 
@@ -54,10 +54,10 @@ public class PostWallJumpSlideAirMoveState : CrouchingMoveState
         Vector3 lastVelocity, Vector3 lastPosition)
     {
         Vector3 velocity = (playerRb.transform.position - lastPosition) / Time.fixedDeltaTime;
-        
+
         Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
         float ySpeed = velocity.y;
-        
+
         ySpeed -= PlayerStats.gravAcceleration * Time.fixedDeltaTime;
 
         return horizontalVelocity + ySpeed * Vector3.up;

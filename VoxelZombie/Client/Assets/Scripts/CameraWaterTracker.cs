@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class CameraWaterTracker : MonoBehaviour
 {
-    
+
     private IWorld world;
 
     private Image waterEffect;
@@ -34,7 +34,7 @@ public class CameraWaterTracker : MonoBehaviour
 
         ushort blockTag = (ushort)world.GetVoxel(x, y, z);
 
-        if(blockTag == 9)
+        if (blockTag == 9)
         {
             waterEffect.enabled = true;
         }
@@ -44,7 +44,7 @@ public class CameraWaterTracker : MonoBehaviour
 
         }
 
-        if(blockTag == 11)
+        if (blockTag == 11)
         {
             lavaEffect.enabled = true;
         }
@@ -53,5 +53,5 @@ public class CameraWaterTracker : MonoBehaviour
             lavaEffect.enabled = false;
         }
     }
-    
+
 }

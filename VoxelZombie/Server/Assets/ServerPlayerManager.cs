@@ -70,7 +70,7 @@ public class ServerPlayerManager : MonoBehaviour
         int deaths = PlayerDictionary[PlayerID].deaths;
         int roundsWon = PlayerDictionary[PlayerID].roundsWon;
         int timeOnline = PlayerDictionary[PlayerID].timeOnline +
-                         (int) (Time.time - PlayerDictionary[PlayerID].timeJoined);
+                         (int)(Time.time - PlayerDictionary[PlayerID].timeJoined);
 
 
         GameObject toDestroy = PlayerDictionary[PlayerID].transform.gameObject;
@@ -88,10 +88,10 @@ public class ServerPlayerManager : MonoBehaviour
             reader.ReadUShort() == 1, reader.ReadUShort() == 1, reader.ReadUShort() == 1, reader.ReadUShort() == 1,
             reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat(),
             reader.ReadFloat());
-        
+
         ApplyActions(clientId, inputs, playerRB);
-        
-        
+
+
 
     }
     public void ReceiveInputs(ushort clientId, RtcClient client, RtcMessageReader reader)
@@ -136,7 +136,7 @@ public class ServerPlayerManager : MonoBehaviour
 
 
                 //apply the actions to edit blocks and spawn grenades etc
-            
+
 
 
                 //apply the clients inputs to change the player velocity

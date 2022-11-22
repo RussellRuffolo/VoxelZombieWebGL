@@ -44,27 +44,27 @@ public class ServerPositionTracker : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {    
+    {
 
-          if (Vector3.Distance(lastPosition, transform.position) > minMoveDelta || pManager.PlayerDictionary[ID].yRotation != lastRotation)
-          {            
-             vServer.SendPositionUpdate(ID, transform.position, pManager.PlayerDictionary[ID].yRotation);
-             lastPosition = transform.position;
+        if (Vector3.Distance(lastPosition, transform.position) > minMoveDelta || pManager.PlayerDictionary[ID].yRotation != lastRotation)
+        {
+            vServer.SendPositionUpdate(ID, transform.position, pManager.PlayerDictionary[ID].yRotation);
+            lastPosition = transform.position;
             lastRotation = pManager.PlayerDictionary[ID].yRotation;
-          }
+        }
 
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.transform.CompareTag("Player"))
+        if (collision.transform.CompareTag("Player"))
         {
             ServerPositionTracker otherTracker = collision.transform.GetComponent<ServerPositionTracker>();
             if (pManager.PlayerDictionary[ID].stateTag == 1)
             {
-            
-                if(pManager.PlayerDictionary[otherTracker.ID].stateTag == 0)
-                {                
+
+                if (pManager.PlayerDictionary[otherTracker.ID].stateTag == 0)
+                {
                     vServer.UpdatePlayerState(otherTracker.ID, 1);
                     vServer.SendPublicChat(vServer.playerNames[otherTracker.ID] + " was infected by " + vServer.playerNames[ID] + "!", 2);
                     gManager.CheckZombieWin();
@@ -76,8 +76,8 @@ public class ServerPositionTracker : MonoBehaviour
 
 
                 }
-            }     
-        }     
+            }
+        }
     }
 
     //state changes are being handled at initialization/disconnect now
@@ -152,8 +152,8 @@ public class ServerPositionTracker : MonoBehaviour
 
     public bool CheckWaterJump()
     {
-        if(hasWaterJump)
-        {           
+        if (hasWaterJump)
+        {
             return true;
         }
 

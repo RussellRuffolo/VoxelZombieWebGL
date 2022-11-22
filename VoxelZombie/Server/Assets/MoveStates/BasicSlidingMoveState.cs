@@ -25,7 +25,7 @@ public class BasicSlidingMoveState : CrouchingMoveState
             {
                 return MoveState.slideJump;
             }
-        
+
             if (playerInputs.Slide || !PlayerUtils.CheckStandable(playerRb))
             {
                 if (lastVelocity.magnitude > PlayerStats.crawlSpeed)

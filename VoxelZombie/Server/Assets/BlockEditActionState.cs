@@ -59,9 +59,9 @@ public class BlockEditActionState : IActionState
     {
         if (selectionInfo.SelectionNormal != Vector3.zero)
         {
-            int x = (int) selectionInfo.SelectionPosition.x;
-            int y = (int) selectionInfo.SelectionPosition.y;
-            int z = (int) selectionInfo.SelectionPosition.z;
+            int x = (int)selectionInfo.SelectionPosition.x;
+            int y = (int)selectionInfo.SelectionPosition.y;
+            int z = (int)selectionInfo.SelectionPosition.z;
 
 
             byte selectTag = world[selectionInfo.SelectionPosition.x, selectionInfo.SelectionPosition.y,
@@ -79,9 +79,9 @@ public class BlockEditActionState : IActionState
         Debug.Log("Place Block");
         if (selectionInfo.SelectionNormal != Vector3.zero)
         {
-            ushort x = (ushort) (selectionInfo.X + selectionInfo.SelectionNormal.x);
-            ushort y = (ushort) (selectionInfo.Y + selectionInfo.SelectionNormal.y);
-            ushort z = (ushort) (selectionInfo.Z + selectionInfo.SelectionNormal.z);
+            ushort x = (ushort)(selectionInfo.X + selectionInfo.SelectionNormal.x);
+            ushort y = (ushort)(selectionInfo.Y + selectionInfo.SelectionNormal.y);
+            ushort z = (ushort)(selectionInfo.Z + selectionInfo.SelectionNormal.z);
 
             byte placeSpotTag = world[x, y, z];
 
@@ -144,9 +144,9 @@ public class BlockEditActionState : IActionState
             {
                 Vector3 testPosition = raycastHit.point + (raycastHit.point - startPosition).normalized * .01f;
 
-                ushort selectionX = (ushort) (testPosition.x * 2);
-                ushort selectionY = (ushort) (testPosition.y * 2);
-                ushort selectionZ = (ushort) (testPosition.z * 2);
+                ushort selectionX = (ushort)(testPosition.x * 2);
+                ushort selectionY = (ushort)(testPosition.y * 2);
+                ushort selectionZ = (ushort)(testPosition.z * 2);
                 testPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
                 if (PlayerUtils.IsSolidBlock(world[testPosition.x, testPosition.y,
                         testPosition.z]))

@@ -96,7 +96,7 @@ namespace Client
                 LoggedStates[i] = new PlayerState();
             }
 
-            ((MenuInputState) InputStates[InputState.Menu]).MenuCanvas =
+            ((MenuInputState)InputStates[InputState.Menu]).MenuCanvas =
                 GameObject.FindGameObjectWithTag("MenuCanvas").GetComponent<Canvas>();
 
             InputState = InputState.Standard;
@@ -105,13 +105,13 @@ namespace Client
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            renderDistance = (int) rDistance / 8;
+            renderDistance = (int)rDistance / 8;
             OnAwake();
         }
 
         private void Start()
         {
-            BaseChatInputState chatInputState = (BaseChatInputState) InputStates[InputState.Chat];
+            BaseChatInputState chatInputState = (BaseChatInputState)InputStates[InputState.Chat];
 
 
             chatInputState.inputPanel = InputPanel;

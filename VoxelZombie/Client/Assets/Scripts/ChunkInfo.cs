@@ -170,13 +170,13 @@ public static class ChunkInfo
 
     public static HashSet<Voxel> _transparentBlocks = new HashSet<Voxel>()
     {
-        Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose, 
+        Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose,
         Voxel.BrownMushroom, Voxel.RedMushroom, Voxel.Slab, (Voxel) 57, (Voxel) 61
     };
 
     public static HashSet<Voxel> _transparentBlockSet = new HashSet<Voxel>()
     {
-        Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose, 
+        Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose,
         Voxel.BrownMushroom, Voxel.RedMushroom, Voxel.Slab, (Voxel) 57, (Voxel) 61
     };
 
@@ -246,7 +246,7 @@ public static class ChunkInfo
             uvList.Add(vector3);
         }
     }
-    
+
     public static List<Vector3> backUVs = new List<Vector3>()
     {
         new Vector2(1, 1),
@@ -265,7 +265,7 @@ public static class ChunkInfo
         }
     }
 
-        
+
     public static List<Vector3> leftUVs = new List<Vector3>()
     {
         new Vector2(0, 0),

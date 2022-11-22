@@ -251,7 +251,7 @@ public static class ChunkInfo
             uvList.Add(vector3);
         }
     }
-    
+
     public static List<Vector3> backUVs = new List<Vector3>()
     {
         new Vector2(1, 1),
@@ -270,7 +270,7 @@ public static class ChunkInfo
         }
     }
 
-        
+
     public static List<Vector3> leftUVs = new List<Vector3>()
     {
         new Vector2(0, 0),

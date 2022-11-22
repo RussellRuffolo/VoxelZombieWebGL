@@ -33,8 +33,8 @@ public class GrenadeActionState : IActionState
             grenade.transform.position = playerRb.transform.position;
             grenade.GetComponent<GrenadeController>().Throw(new Vector3(inputs.ForwardX, inputs.ForwardY, inputs.ForwardZ),
                 world, vServer, bEditor);
-            
-           
+
+
         }
     }
 }

@@ -136,7 +136,7 @@ namespace Client
             );
         }
 
-        
+
 
         public void ProcessActionInputs(Rigidbody playerRb)
         {
@@ -212,7 +212,7 @@ namespace Client
 
 
             Vector3 blockOffset = selectionPosition;
-//            Debug.Log("Block offset is: " + blockOffset);
+            //            Debug.Log("Block offset is: " + blockOffset);
             blockOutline.positionCount = 5;
             if (selectionNormal == Vector3.up)
             {
@@ -267,9 +267,9 @@ namespace Client
                 {
                     Vector3 testPosition = raycastHit.point + (raycastHit.point - startPosition).normalized * .01f;
 
-                    selectionX = (ushort) (testPosition.x * 2);
-                    selectionY = (ushort) (testPosition.y * 2);
-                    selectionZ = (ushort) (testPosition.z * 2);
+                    selectionX = (ushort)(testPosition.x * 2);
+                    selectionY = (ushort)(testPosition.y * 2);
+                    selectionZ = (ushort)(testPosition.z * 2);
                     testPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
                     if (PlayerUtils.IsSolidBlock(currentWorld.GetVoxel(testPosition.x, testPosition.y, testPosition.z)))
                     {
@@ -299,9 +299,9 @@ namespace Client
                 if (CheckBlock(currentPosition))
                 {
                     // selectionPosition = new Vector3(x, y, z);
-                    selectionX = (ushort) (currentPosition.x * 2);
-                    selectionY = (ushort) (currentPosition.y * 2);
-                    selectionZ = (ushort) (currentPosition.z * 2);
+                    selectionX = (ushort)(currentPosition.x * 2);
+                    selectionY = (ushort)(currentPosition.y * 2);
+                    selectionZ = (ushort)(currentPosition.z * 2);
                     selectionPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
                     FindNormal(currentPosition, -direction);
 
@@ -347,9 +347,9 @@ namespace Client
 
                 if (!CheckBlock(currentPosition))
                 {
-                    float x = (int) (currentPosition.x * 2) / 2f;
-                    float y = (int) (currentPosition.y * 2) / 2f;
-                    float z = (int) (currentPosition.z * 2) / 2f;
+                    float x = (int)(currentPosition.x * 2) / 2f;
+                    float y = (int)(currentPosition.y * 2) / 2f;
+                    float z = (int)(currentPosition.z * 2) / 2f;
 
                     //  Debug.Log("Normal x: " + x + " Y: " + y + " Z: " + z);
                     if (x != selectionPosition.x)
@@ -415,9 +415,9 @@ namespace Client
         {
             if (selectionNormal != Vector3.zero)
             {
-                int x = (int) selectionPosition.x;
-                int y = (int) selectionPosition.y;
-                int z = (int) selectionPosition.z;
+                int x = (int)selectionPosition.x;
+                int y = (int)selectionPosition.y;
+                int z = (int)selectionPosition.z;
 
                 Voxel breakSpotTag = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
                 if (breakSpotTag == 0)
@@ -432,7 +432,7 @@ namespace Client
                 }
 
                 blockBreakParticleSystem.GetComponent<Renderer>().material =
-                    vEngine.materialList[(int) (breakSpotTag - 1)];
+                    vEngine.materialList[(int)(breakSpotTag - 1)];
                 blockBreakParticleSystem.transform.position = selectionPosition;
                 blockBreakParticleSystem.Play();
                 //
@@ -450,9 +450,9 @@ namespace Client
         {
             if (selectionNormal != Vector3.zero)
             {
-                ushort x = (ushort) (selectionX + selectionNormal.x);
-                ushort y = (ushort) (selectionY + selectionNormal.y);
-                ushort z = (ushort) (selectionZ + selectionNormal.z);
+                ushort x = (ushort)(selectionX + selectionNormal.x);
+                ushort y = (ushort)(selectionY + selectionNormal.y);
+                ushort z = (ushort)(selectionZ + selectionNormal.z);
 
                 Voxel placeSpotTag = currentWorld.GetVoxel(x, y, z);
 
@@ -469,9 +469,9 @@ namespace Client
         {
             if (selectionNormal != Vector3.zero)
             {
-                int x = (int) selectionPosition.x;
-                int y = (int) selectionPosition.y;
-                int z = (int) selectionPosition.z;
+                int x = (int)selectionPosition.x;
+                int y = (int)selectionPosition.y;
+                int z = (int)selectionPosition.z;
 
                 if (x < vEngine.Length && y < vEngine.Height && z < vEngine.Width)
                 {

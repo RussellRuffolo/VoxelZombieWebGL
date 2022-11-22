@@ -12,13 +12,13 @@ public class NameTagManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(localPlayer != null)
+        if (localPlayer != null)
             tagTransform.transform.LookAt(localPlayer);
     }
 

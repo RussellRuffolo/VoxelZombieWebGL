@@ -78,7 +78,7 @@ namespace Client
                 vEngine.CreateChunk(id);
             }
 
-            ((ClientChunk) vEngine.World.Chunks[id])
+            ((ClientChunk)vEngine.World.Chunks[id])
                 .ProcessChunkChange(reader);
         }
 
@@ -278,7 +278,7 @@ namespace Client
                 inputMessage.WriteFloat(inputsArray[i].MoveVector.y);
                 inputMessage.WriteFloat(inputsArray[i].MoveVector.z);
 
-                ushort jump = inputsArray[i].Jump ? (ushort) 1 : (ushort) 0;
+                ushort jump = inputsArray[i].Jump ? (ushort)1 : (ushort)0;
                 inputMessage.WriteUShort(jump);
 
                 inputMessage.WriteInt(inputsArray[i].TickNumber);
@@ -316,7 +316,7 @@ namespace Client
                 ushort y = reader.ReadUShort();
                 ushort z = reader.ReadUShort();
 
-                byte blockTag = (byte) reader.ReadUShort();
+                byte blockTag = (byte)reader.ReadUShort();
                 world.SetVoxel(x, y, z, (Voxel)blockTag);
 
                 dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, z));
@@ -326,14 +326,14 @@ namespace Client
                 {
                     if (x != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x - 1), y, z));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos((ushort)(x - 1), y, z));
                     }
                 }
                 else if (x % 16 == 15)
                 {
                     if ((x + 1) / 2 != vEngine.Length)
                     {
-                        dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x + 1), y, z));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos((ushort)(x + 1), y, z));
                     }
                 }
 
@@ -341,14 +341,14 @@ namespace Client
                 {
                     if (y != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y - 1), z));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort)(y - 1), z));
                     }
                 }
                 else if (y % 16 == 15)
                 {
                     if ((y + 1) / 2 != vEngine.Height)
                     {
-                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y + 1), z));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort)(y + 1), z));
                     }
                 }
 
@@ -356,14 +356,14 @@ namespace Client
                 {
                     if (z != 0)
                     {
-                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z - 1)));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort)(z - 1)));
                     }
                 }
                 else if (z % 16 == 15)
                 {
                     if ((z + 1) / 2 != vEngine.Width)
                     {
-                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z + 1)));
+                        dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort)(z + 1)));
                     }
                 }
 

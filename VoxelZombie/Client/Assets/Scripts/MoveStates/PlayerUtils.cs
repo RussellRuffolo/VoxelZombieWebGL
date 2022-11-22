@@ -63,9 +63,9 @@ public static class PlayerUtils
                 Vector3 testPoint = contactPoint.point +
                                     (contactPoint.point - playerRb.transform.position).normalized * .05f;
 
-                ushort x = (ushort) Mathf.FloorToInt(testPoint.x);
-                ushort y = (ushort) Mathf.FloorToInt(testPoint.y);
-                ushort z = (ushort) Mathf.FloorToInt(testPoint.z);
+                ushort x = (ushort)Mathf.FloorToInt(testPoint.x);
+                ushort y = (ushort)Mathf.FloorToInt(testPoint.y);
+                ushort z = (ushort)Mathf.FloorToInt(testPoint.z);
 
                 if (IsSolidBlock(world.GetVoxel(x, y, z)) && IsSolidBlock(world.GetVoxel(x, y + 1, z)))
                 {
@@ -94,9 +94,9 @@ public static class PlayerUtils
         }
 
         Vector3 playerPosition = playerRb.transform.position;
-        ushort x = (ushort) Mathf.FloorToInt(playerPosition.x);
-        ushort y = (ushort) Mathf.FloorToInt(playerPosition.y);
-        ushort z = (ushort) Mathf.FloorToInt(playerPosition.z);
+        ushort x = (ushort)Mathf.FloorToInt(playerPosition.x);
+        ushort y = (ushort)Mathf.FloorToInt(playerPosition.y);
+        ushort z = (ushort)Mathf.FloorToInt(playerPosition.z);
 
         if (world.GetVoxel(x, y, z) == Voxel.StationaryWater)
         {
@@ -113,9 +113,9 @@ public static class PlayerUtils
         IWorld world)
     {
         Vector3 blockPosition = playerRb.transform.position + FootOffset - Vector3.up * .4f;
-        ushort x = (ushort) Mathf.FloorToInt(blockPosition.x);
-        ushort y = (ushort) Mathf.FloorToInt(blockPosition.y);
-        ushort z = (ushort) Mathf.FloorToInt(blockPosition.z);
+        ushort x = (ushort)Mathf.FloorToInt(blockPosition.x);
+        ushort y = (ushort)Mathf.FloorToInt(blockPosition.y);
+        ushort z = (ushort)Mathf.FloorToInt(blockPosition.z);
 
         if (!IsSolidBlock(world.GetVoxel(blockPosition.x, blockPosition.y, blockPosition.z)))
         {
@@ -138,7 +138,7 @@ public static class PlayerUtils
                     //                        playerInputs.MoveVector.normalized * .01f;
                     Vector3 testPosition = playerRb.transform.position + Vector3.up * .51f +
                                          -contactPoint.normal * .05f;
-                    
+
 
                     Collider[] colliders = Physics.OverlapBox(testPosition, PlayerStats.StandingHalfExtents,
                         Quaternion.LookRotation(playerInputs.PlayerForward),
@@ -157,7 +157,7 @@ public static class PlayerUtils
                     {
                         return true;
                     }
-                   
+
 
                     // Vector3 footPosition = playerRb.transform.position + FootOffset;
                     // Vector3 blockPosition = new Vector3(contactPoint.point.x, footPosition.y, contactPoint.point.z) +

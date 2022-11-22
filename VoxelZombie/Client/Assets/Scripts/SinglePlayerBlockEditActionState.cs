@@ -16,7 +16,7 @@ public class SinglePlayerBlockEditActionState : IActionState
     }
 
     public BaseBlockEditor bEditor;
-    
+
 
     public ActionState CheckActionState(ActionInputs inputs)
     {

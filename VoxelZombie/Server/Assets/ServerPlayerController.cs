@@ -52,12 +52,12 @@ public class ServerPlayerController : MonoBehaviour
         vServer = network.GetComponent<VoxelServer>();
         bEditor = network.GetComponent<ServerBlockEditor>();
 
-        GrenadeActionState grenadeState = (GrenadeActionState) ActionStates[ActionState.Grenade];
+        GrenadeActionState grenadeState = (GrenadeActionState)ActionStates[ActionState.Grenade];
         grenadeState.world = world;
         grenadeState.vServer = vServer;
         grenadeState.bEditor = bEditor;
 
-        BlockEditActionState bEditState = (BlockEditActionState) ActionStates[ActionState.BlockEdit];
+        BlockEditActionState bEditState = (BlockEditActionState)ActionStates[ActionState.BlockEdit];
         bEditState.world = world;
         bEditState.bEditor = bEditor;
         bEditState.vServer = vServer;

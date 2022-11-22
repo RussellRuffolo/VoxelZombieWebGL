@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class MenuInputState : IInputState
 {
-   public Canvas MenuCanvas;
+    public Canvas MenuCanvas;
     public void Enter()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         MenuCanvas.enabled = true;
-       
+
     }
 
     public void Exit()
@@ -19,7 +19,7 @@ public class MenuInputState : IInputState
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         MenuCanvas.enabled = false;
-       
+
     }
 
     public InputState CheckInputState(ClientInputs clientInputs)

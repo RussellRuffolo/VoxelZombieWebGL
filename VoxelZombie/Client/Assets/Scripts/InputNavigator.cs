@@ -17,7 +17,7 @@ public class InputNavigator : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if(system.currentSelectedGameObject != null)
+            if (system.currentSelectedGameObject != null)
             {
                 Selectable next = system.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown();
 

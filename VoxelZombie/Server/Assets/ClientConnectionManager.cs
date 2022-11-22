@@ -85,7 +85,7 @@ public class ClientConnectionManager : MonoBehaviour
     private IEnumerator HandleGetOffer(HttpListenerRequest req, HttpListenerResponse resp)
     {
         ushort clientId = nextClientId;
-        
+
         Debug.Log("Added player with clientID: " + clientId);
         nextClientId++;
 
@@ -195,7 +195,7 @@ public class ClientConnectionManager : MonoBehaviour
         string jsonResponse = JsonUtility.ToJson(respObject);
         byte[] respBytes = Encoding.UTF8.GetBytes(jsonResponse);
 
-        
+
         Debug.Log("Closing Response");
         resp.Close(respBytes, false);
 
@@ -243,7 +243,7 @@ public class ClientConnectionManager : MonoBehaviour
 
     private IEnumerator HandleSendAnswer(HttpListenerRequest req, HttpListenerResponse resp)
     {
-       
+
         Debug.Log("Handle Send Answer");
         using (var reader = new StreamReader(req.InputStream,
                    req.ContentEncoding))

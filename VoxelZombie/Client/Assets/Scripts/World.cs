@@ -19,7 +19,7 @@ public class World : IWorld
     {
         bool test = id.Z < VoxelEngine.Width / 8 && id.X < VoxelEngine.Length / 8 && id.Y < VoxelEngine.Height / 8 &&
                     id.Z >= 0 && id.X >= 0 && id.Y >= 0;
-        return test ;
+        return test;
     }
 
     public IVoxelEngine VoxelEngine { get; set; }
@@ -27,7 +27,7 @@ public class World : IWorld
     public Voxel GetVoxel(float x, float y, float z) => GetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2));
 
     public void SetVoxel(float x, float y, float z, Voxel value) =>
-        SetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort) (z * 2), (Voxel)value);
+        SetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2), (Voxel)value);
 
     public Voxel GetVoxel(ushort x, ushort y, ushort z)
     {
@@ -54,7 +54,7 @@ public class World : IWorld
 
     public void CheckChunks(float x, float y, float z)
     {
-        CheckChunks((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2));
+        CheckChunks((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2));
     }
 
     public void CheckChunks(ushort x, ushort y, ushort z)
@@ -65,14 +65,14 @@ public class World : IWorld
         {
             if (x != 0)
             {
-                dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x - 1), y, z));
+                dirtiedChunks.Add(ChunkID.FromBlockPos((ushort)(x - 1), y, z));
             }
         }
         else if (x % 16 == 15)
         {
             if ((x + 1) / 2 != VoxelEngine.Length)
             {
-                dirtiedChunks.Add(ChunkID.FromBlockPos((ushort) (x + 1), y, z));
+                dirtiedChunks.Add(ChunkID.FromBlockPos((ushort)(x + 1), y, z));
             }
         }
 
@@ -80,14 +80,14 @@ public class World : IWorld
         {
             if (y != 0)
             {
-                dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y - 1), z));
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort)(y - 1), z));
             }
         }
         else if (y % 16 == 15)
         {
             if ((y + 1) / 2 != VoxelEngine.Height)
             {
-                dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort) (y + 1), z));
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, (ushort)(y + 1), z));
             }
         }
 
@@ -95,14 +95,14 @@ public class World : IWorld
         {
             if (z != 0)
             {
-                dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z - 1)));
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort)(z - 1)));
             }
         }
         else if (z % 16 == 15)
         {
             if ((z + 1) / 2 != VoxelEngine.Width)
             {
-                dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort) (z + 1)));
+                dirtiedChunks.Add(ChunkID.FromBlockPos(x, y, (ushort)(z + 1)));
             }
         }
 

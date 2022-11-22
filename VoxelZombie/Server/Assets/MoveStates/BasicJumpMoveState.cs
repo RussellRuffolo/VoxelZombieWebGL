@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class BasicJumpMoveState : IMoveState
 {
- //   private bool Jumped;
+    //   private bool Jumped;
 
- public Animator PlayerAnimator { get; set; }
+    public Animator PlayerAnimator { get; set; }
 
- public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
-        Vector3 lastVelocity, Vector3 lastPosition)
+    public Vector3 GetVelocity(Rigidbody playerRb, ClientInputs currentInputs, List<ContactPoint> contactPoints,
+           Vector3 lastVelocity, Vector3 lastPosition)
     {
         Vector3 horizontalVelocity = currentInputs.MoveVector.normalized * PlayerStats.playerSpeed;
 
- //       Jumped = true;
+        //       Jumped = true;
         return horizontalVelocity + PlayerStats.jumpSpeed * Vector3.up;
     }
 
@@ -23,7 +23,7 @@ public class BasicJumpMoveState : IMoveState
 
     public void Exit()
     {
-  //      Jumped = false;
+        //      Jumped = false;
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,

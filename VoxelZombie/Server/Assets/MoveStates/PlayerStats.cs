@@ -22,7 +22,7 @@ public static class PlayerStats
     public static float horizontalLavaSpeed = 0.75f;
 
     public static float waterExitSpeed = 5;
-    
+
     public static Vector3 StandingHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
     public static Vector3 SmallerHalfExtents = new Vector3(.6f / 2, 1.76f / 2, .6f / 2);
 

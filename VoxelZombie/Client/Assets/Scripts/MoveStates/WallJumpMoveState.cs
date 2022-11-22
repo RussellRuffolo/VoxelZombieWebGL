@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WallJumpMoveState : IMoveState
 {
-    
+
     public Animator PlayerAnimator { get; set; }
 
     private bool Jumped;
@@ -27,7 +27,7 @@ public class WallJumpMoveState : IMoveState
 
 
         float directionMod = Mathf.Clamp(Vector3.Dot(-currentInputs.PlayerForward.normalized, currentInputs.MoveVector.normalized), .3f, 1);
-        
+
         Vector3 horizontalVelocity = -currentInputs.PlayerForward.normalized * PlayerStats.playerSpeed * directionMod;
 
 

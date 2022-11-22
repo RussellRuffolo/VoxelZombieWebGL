@@ -22,10 +22,10 @@ public class RtcMessage
     {
         byte[] buffer = new byte[4];
 
-        buffer[0] = (byte) (i >> 24);
-        buffer[1] = (byte) (i >> 16);
-        buffer[2] = (byte) (i >> 8);
-        buffer[3] = (byte) i;
+        buffer[0] = (byte)(i >> 24);
+        buffer[1] = (byte)(i >> 16);
+        buffer[2] = (byte)(i >> 8);
+        buffer[3] = (byte)i;
 
         string intString = Convert.ToBase64String(buffer);
 
@@ -55,14 +55,14 @@ public class RtcMessage
     public void WriteUlong(ulong u)
     {
         byte[] buffer = new byte[8];
-        buffer[0] = (byte) (u >> 56);
-        buffer[1] = (byte) (u >> 48);
-        buffer[2] = (byte) (u >> 40);
-        buffer[3] = (byte) (u >> 32);
-        buffer[4] = (byte) (u >> 24);
-        buffer[5] = (byte) (u >> 16);
-        buffer[6] = (byte) (u >> 8);
-        buffer[7] = (byte) u;
+        buffer[0] = (byte)(u >> 56);
+        buffer[1] = (byte)(u >> 48);
+        buffer[2] = (byte)(u >> 40);
+        buffer[3] = (byte)(u >> 32);
+        buffer[4] = (byte)(u >> 24);
+        buffer[5] = (byte)(u >> 16);
+        buffer[6] = (byte)(u >> 8);
+        buffer[7] = (byte)u;
 
         string ulongString = Convert.ToBase64String(buffer);
         messageString += ulongString;
@@ -70,14 +70,14 @@ public class RtcMessage
 
     public unsafe void WriteFloat(float f)
     {
-        uint u = *(uint*) &f;
+        uint u = *(uint*)&f;
 
         byte[] buffer = new byte[4];
 
-        buffer[0] = (byte) (u >> 24);
-        buffer[1] = (byte) (u >> 16);
-        buffer[2] = (byte) (u >> 8);
-        buffer[3] = (byte) u;
+        buffer[0] = (byte)(u >> 24);
+        buffer[1] = (byte)(u >> 16);
+        buffer[2] = (byte)(u >> 8);
+        buffer[3] = (byte)u;
 
         string uInt32String = Convert.ToBase64String(buffer);
 
@@ -88,10 +88,10 @@ public class RtcMessage
     {
         byte[] buffer = new byte[4];
 
-        buffer[0] = (byte) (u >> 24);
-        buffer[1] = (byte) (u >> 16);
-        buffer[2] = (byte) (u >> 8);
-        buffer[3] = (byte) u;
+        buffer[0] = (byte)(u >> 24);
+        buffer[1] = (byte)(u >> 16);
+        buffer[2] = (byte)(u >> 8);
+        buffer[3] = (byte)u;
 
         string uInt32String = Convert.ToBase64String(buffer);
 
@@ -102,8 +102,8 @@ public class RtcMessage
     {
         byte[] buffer = new byte[2];
 
-        buffer[0] = (byte) ((uint) u >> 8);
-        buffer[1] = (byte) u;
+        buffer[0] = (byte)((uint)u >> 8);
+        buffer[1] = (byte)u;
 
         string ushortString = Convert.ToBase64String(buffer);
 

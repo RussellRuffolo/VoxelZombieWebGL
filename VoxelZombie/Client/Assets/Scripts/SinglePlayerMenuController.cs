@@ -60,7 +60,7 @@ public class SinglePlayerMenuController : MonoBehaviour
 
         vEngine.LoadMap(mapName);
 
-        
+
     }
 
     public void OnMapLoaded(Vector3 spawnPosition)

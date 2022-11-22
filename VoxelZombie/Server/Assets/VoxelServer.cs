@@ -140,7 +140,7 @@ public class VoxelServer : MonoBehaviour
         {
             ChunkID id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
             vEngine.world.Chunks[id].AddActivePlayer(clientId);
-            
+
             client.SendByteMessage(vEngine.world.Chunks[id].GetVoxelMessage());
         }
         else if (messageTag == Tags.BLOCK_EDIT_TAG)
@@ -154,7 +154,7 @@ public class VoxelServer : MonoBehaviour
         }
     }
 
-    char[] chatParams = {' '};
+    char[] chatParams = { ' ' };
 
     private void HandlePlayerChat(RtcClient client, RtcMessageReader reader)
     {
@@ -232,7 +232,7 @@ public class VoxelServer : MonoBehaviour
                         int deaths = PlayerManager.PlayerDictionary[client.ID].deaths;
                         int roundsWon = PlayerManager.PlayerDictionary[client.ID].roundsWon;
                         int timeOnline = PlayerManager.PlayerDictionary[client.ID].timeOnline +
-                                         (int) (Time.time - PlayerManager.PlayerDictionary[client.ID].timeJoined);
+                                         (int)(Time.time - PlayerManager.PlayerDictionary[client.ID].timeJoined);
                         int hours = timeOnline / 3600;
                         int minutes = (timeOnline - hours * 3600) / 60;
                         int seconds = timeOnline % 60;
@@ -252,7 +252,7 @@ public class VoxelServer : MonoBehaviour
                             int deaths = PlayerManager.PlayerDictionary[ID].deaths;
                             int roundsWon = PlayerManager.PlayerDictionary[ID].roundsWon;
                             int timeOnline = PlayerManager.PlayerDictionary[ID].timeOnline +
-                                             (int) (Time.time - PlayerManager.PlayerDictionary[client.ID]
+                                             (int)(Time.time - PlayerManager.PlayerDictionary[client.ID]
                                                  .timeJoined);
                             int hours = timeOnline / 3600;
                             int minutes = (timeOnline - hours * 3600) / 60;
@@ -494,7 +494,7 @@ public class VoxelServer : MonoBehaviour
         ushort z = reader.ReadUShort();
 
         //the new blockTag the client requested
-        byte blockTag = (byte) reader.ReadUShort();
+        byte blockTag = (byte)reader.ReadUShort();
 
         if (bEditor.TryApplyEdit(x, y, z, blockTag))
         {
@@ -534,7 +534,7 @@ public class VoxelServer : MonoBehaviour
         string username = null;
         try
         {
-            username = (string) responseObject["username"];
+            username = (string)responseObject["username"];
         }
         catch (Exception e)
         {
@@ -561,7 +561,7 @@ public class VoxelServer : MonoBehaviour
         string returnName = null;
         try
         {
-            returnName = (string) responseObject["username"];
+            returnName = (string)responseObject["username"];
         }
         catch (Exception e)
         {
@@ -751,8 +751,8 @@ public class VoxelServer : MonoBehaviour
 
         positionMessage.WriteFloat(yRot);
 
-        positionMessage.WriteUShort(PlayerManager.PlayerDictionary[id].inWater ? (ushort) 1 : (ushort) 0);
-        positionMessage.WriteUShort(PlayerManager.PlayerDictionary[id].moving ? (ushort) 1 : (ushort) 0);
+        positionMessage.WriteUShort(PlayerManager.PlayerDictionary[id].inWater ? (ushort)1 : (ushort)0);
+        positionMessage.WriteUShort(PlayerManager.PlayerDictionary[id].moving ? (ushort)1 : (ushort)0);
 
         foreach (RtcClient c in ConnectionManager.GetAllClients())
         {

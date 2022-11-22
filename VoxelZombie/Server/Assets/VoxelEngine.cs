@@ -167,7 +167,7 @@ public class VoxelEngine : MonoBehaviour
             {
                 world.Chunks[spawnChunk].SetActiveRendering();
             }
-           
+
         }
 
         int blockCount = 0;
@@ -183,20 +183,20 @@ public class VoxelEngine : MonoBehaviour
                     //halfblock nonsense
                     if (blockId != 44)
                     {
-                        world[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
-                        world[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
-                        world[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
-                        world[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
+                        world[(ushort)(x * 2), (ushort)(y * 2 + 1), (ushort)(z * 2)] = blockId;
+                        world[(ushort)(x * 2 + 1), (ushort)(y * 2 + 1), (ushort)(z * 2)] = blockId;
+                        world[(ushort)(x * 2), (ushort)(y * 2 + 1), (ushort)(z * 2 + 1)] = blockId;
+                        world[(ushort)(x * 2 + 1), (ushort)(y * 2 + 1), (ushort)(z * 2 + 1)] = blockId;
                     }
 
-                    world[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+                    world[(ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2)] = blockId;
 
-                    world[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+                    world[(ushort)(x * 2 + 1), (ushort)(y * 2), (ushort)(z * 2)] = blockId;
 
 
-                    world[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+                    world[(ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2 + 1)] = blockId;
 
-                    world[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+                    world[(ushort)(x * 2 + 1), (ushort)(y * 2), (ushort)(z * 2 + 1)] = blockId;
 
 
                     blockCount++;
@@ -269,7 +269,7 @@ public class VoxelEngine : MonoBehaviour
 public struct MapData : IEquatable<MapData>
 {
     public string Name;
-    
+
     public float SpawnX;
     public float SpawnY;
     public float SpawnZ;
@@ -326,7 +326,7 @@ public class VoxelCoordinate
     {
         if (obj is VoxelCoordinate)
         {
-            VoxelCoordinate testObj = (VoxelCoordinate) obj;
+            VoxelCoordinate testObj = (VoxelCoordinate)obj;
             if (testObj.x == x && testObj.y == y && testObj.z == z)
             {
                 return true;

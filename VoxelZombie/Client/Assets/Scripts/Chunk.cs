@@ -440,9 +440,9 @@ public abstract class Chunk : MonoBehaviour, IChunk
 
     protected Voxel GetOutsideBlock(int x, int y, int z)
     {
-        ushort xVal = (ushort) (ID.X * 16 + x);
-        ushort yVal = (ushort) (ID.Y * 16 + y);
-        ushort zVal = (ushort) (ID.Z * 16 + z);
+        ushort xVal = (ushort)(ID.X * 16 + x);
+        ushort yVal = (ushort)(ID.Y * 16 + y);
+        ushort zVal = (ushort)(ID.Z * 16 + z);
         return world.GetVoxel(xVal, yVal, zVal);
     }
 }

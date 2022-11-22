@@ -10,10 +10,10 @@ public interface IChunk
     bool dirty { get; set; }
 
     Vector3 centerPosition { get; set; }
-    
+
     void SetActiveRendering();
-    
+
     void SetInactiveRendering();
-    
+
     IWorld world { get; set; }
 }

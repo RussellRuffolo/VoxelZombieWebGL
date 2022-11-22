@@ -122,7 +122,7 @@ public class WaterEngine : MonoBehaviour
     }
 
 
-    
+
 
     public void RenderWater()
     {
@@ -131,13 +131,13 @@ public class WaterEngine : MonoBehaviour
         uvList.Clear();
         var normals = new List<Vector3>();
 
-        foreach(VoxelCoordinate waterCoord in LiquidDict.Keys)
+        foreach (VoxelCoordinate waterCoord in LiquidDict.Keys)
         {
             Vector3 pos = waterCoord.WorldPosition();
             var verticesPos = vertices.Count;
 
             //RENDER FRONT 
-            if(!IsWater(new VoxelCoordinate(waterCoord.x, waterCoord.y, waterCoord.z - 1)))
+            if (!IsWater(new VoxelCoordinate(waterCoord.x, waterCoord.y, waterCoord.z - 1)))
             {
                 foreach (var vert in _frontVertices)
                     vertices.Add(pos + vert);
@@ -157,7 +157,7 @@ public class WaterEngine : MonoBehaviour
             }
 
             //RENDER TOP
-            if (!IsWater(new VoxelCoordinate(waterCoord.x, waterCoord.y + 1, waterCoord.z )))
+            if (!IsWater(new VoxelCoordinate(waterCoord.x, waterCoord.y + 1, waterCoord.z)))
             {
                 foreach (var vert in _topVertices)
                     vertices.Add(pos + vert);
@@ -254,7 +254,7 @@ public class WaterEngine : MonoBehaviour
 
         }
 
-        var mesh = new Mesh();     
+        var mesh = new Mesh();
         mesh.SetVertices(vertices);
 
         mesh.SetTriangles(TriangleList.ToArray(), 0);
@@ -263,14 +263,14 @@ public class WaterEngine : MonoBehaviour
         mesh.SetUVs(0, uvList);
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
- 
+
     }
 
     private bool IsWater(VoxelCoordinate testCoord)
     {
-        foreach(VoxelCoordinate key in LiquidDict.Keys)
+        foreach (VoxelCoordinate key in LiquidDict.Keys)
         {
-            if(testCoord.Equals(key))
+            if (testCoord.Equals(key))
             {
                 return true;
             }

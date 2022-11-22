@@ -14,8 +14,8 @@ public static class UInt64Extensions
     public static void Pack(ref this UInt64 value, byte _000, byte _001, byte _101, byte _100, byte _010, byte _011,
         byte _111, byte _110)
     {
-        value = ((ulong) _000 | (ulong) _001 << 8 | (ulong) _101 << 16 | (ulong) _100 << 24 | (ulong) _010 << 32 |
-                 (ulong) _011 << 40 | (ulong) _111 << 48 | (ulong) _110 << 56);
+        value = ((ulong)_000 | (ulong)_001 << 8 | (ulong)_101 << 16 | (ulong)_100 << 24 | (ulong)_010 << 32 |
+                 (ulong)_011 << 40 | (ulong)_111 << 48 | (ulong)_110 << 56);
         // value = (ulong) (_000 << 56 | _001 << 48 | _101 << 40 | _100 << 32 | _010 << 24 | _011 << 16 | _111 << 8 |
         //                  _110);
     }
@@ -28,9 +28,9 @@ public static class UInt64Extensions
 
     public static byte GetByte(ref this UInt64 value, float x, float y, float z)
     {
-        bool xUp = x % (int) x >= .5f;
-        bool yUp = y % (int) y >= .5f;
-        bool zUp = z % (int) z >= .5f;
+        bool xUp = x % (int)x >= .5f;
+        bool yUp = y % (int)y >= .5f;
+        bool zUp = z % (int)z >= .5f;
 
         if (!xUp)
         {
@@ -69,7 +69,7 @@ public static class UInt64Extensions
 
         return value._111();
     }
-    
+
     public static byte GetByte(ref this UInt64 value, ushort x, ushort y, ushort z)
     {
         bool xUp = x % 2 >= 1f;
@@ -116,9 +116,9 @@ public static class UInt64Extensions
 
     public static void SetByte(ref this UInt64 value, float x, float y, float z, byte newValue)
     {
-        bool xUp = x % (int) x >= .5f;
-        bool yUp = y % (int) y >= .5f;
-        bool zUp = z % (int) z >= .5f;
+        bool xUp = x % (int)x >= .5f;
+        bool yUp = y % (int)y >= .5f;
+        bool zUp = z % (int)z >= .5f;
 
         if (!xUp)
         {
@@ -250,41 +250,41 @@ public static class UInt64Extensions
 
     public static byte _000(this UInt64 value)
     {
-        return (byte) ((value) & 0xFF);
+        return (byte)((value) & 0xFF);
     }
 
     public static byte _001(this UInt64 value)
     {
-        return (byte) ((value >> 8) & 0xFF);
+        return (byte)((value >> 8) & 0xFF);
     }
 
     public static byte _101(this UInt64 value)
     {
-        return (byte) ((value >> 16) & 0xFF);
+        return (byte)((value >> 16) & 0xFF);
     }
 
     public static byte _100(this UInt64 value)
     {
-        return (byte) ((value >> 24) & 0xFF);
+        return (byte)((value >> 24) & 0xFF);
     }
 
     public static byte _010(this UInt64 value)
     {
-        return (byte) ((value >> 32) & 0xFF);
+        return (byte)((value >> 32) & 0xFF);
     }
 
     public static byte _011(this UInt64 value)
     {
-        return (byte) ((value >> 40) & 0xFF);
+        return (byte)((value >> 40) & 0xFF);
     }
 
     public static byte _111(this UInt64 value)
     {
-        return (byte) ((value >> 48) & 0xFF);
+        return (byte)((value >> 48) & 0xFF);
     }
 
     public static byte _110(this UInt64 value)
     {
-        return (byte) ((value >> 56) & 0xFF);
+        return (byte)((value >> 56) & 0xFF);
     }
 }

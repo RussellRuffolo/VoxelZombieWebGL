@@ -377,7 +377,7 @@ public class GreedyChunk : Chunk
 
     private Voxel GetBlock(int x, int y, int z)
     {
-        
+
         return GetVoxel(x, y, z);
         // return voxels[x * 16 * 16 + y * 16 + z];
         // float xPos = chunkPosX + x / 2f;
@@ -475,7 +475,7 @@ public class GreedyChunk : Chunk
                 return 46;
         }
 
-        return (ushort) (blockTag - 1);
+        return (ushort)(blockTag - 1);
     }
 
 
@@ -485,21 +485,21 @@ public class GreedyChunk : Chunk
         Side,
         Bottom
     }
-//
-//
-// // public struct Int3
-// // {
-// //     public int X;
-// //     public int Y;
-// //     public int Z;
-// //
-// //     public Int3(int x, int y, int z)
-// //     {
-// //         X = x;
-// //         Y = y;
-// //         Z = z;
-// //     }
-// // }
+    //
+    //
+    // // public struct Int3
+    // // {
+    // //     public int X;
+    // //     public int Y;
+    // //     public int Z;
+    // //
+    // //     public Int3(int x, int y, int z)
+    // //     {
+    // //         X = x;
+    // //         Y = y;
+    // //         Z = z;
+    // //     }
+    // // }
 
     public class UvCalculator
     {

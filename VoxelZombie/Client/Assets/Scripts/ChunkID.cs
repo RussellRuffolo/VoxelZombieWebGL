@@ -56,12 +56,12 @@ public struct ChunkID : IEquatable<ChunkID>
     //
     public static ChunkID FromWorldPos(float x, float y, float z)
     {
-        return FromBlockPos((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2));
+        return FromBlockPos((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2));
     }
-    
+
     public static ChunkID FromBlockPos(ushort x, ushort y, ushort z)
     {
-        return new ChunkID((x ) >> 4, (y ) >> 4, (z ) >> 4);
+        return new ChunkID((x) >> 4, (y) >> 4, (z) >> 4);
     }
 
     public override string ToString()

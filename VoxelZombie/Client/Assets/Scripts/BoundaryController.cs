@@ -20,7 +20,7 @@ public class BoundaryController : MonoBehaviour
         floor.gameObject.GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(length, width);
         float h = height;
 
- 
+
 
         Vector3 ceilingPosition = new Vector3(l / 2, h + 3.5f, w / 2);
         ceiling.position = ceilingPosition;

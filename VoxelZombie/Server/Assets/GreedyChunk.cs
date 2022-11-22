@@ -38,7 +38,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
         set { voxels[x * 16 * 16 + y * 16 + z + 3] = value; }
     }
 
-   // public RtcMessage CurrentChunkData { get; set; }
+    // public RtcMessage CurrentChunkData { get; set; }
 
     private VoxelServer vServer;
     private bool ActiveRendering { get; set; }
@@ -159,7 +159,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
             var q = new int[3];
 
             var mask = new byte[CHUNK_SIZE * CHUNK_SIZE];
-            var mask2 = new byte[CHUNK_SIZE * CHUNK_SIZE]; 
+            var mask2 = new byte[CHUNK_SIZE * CHUNK_SIZE];
 
             q[d] = 1;
 
@@ -268,8 +268,8 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
                             // Clear this part of the mask, so we don't add duplicate faces
                             for (l = 0; l < h; ++l)
-                            for (k = 0; k < w; ++k)
-                                mask[n + k + l * CHUNK_SIZE] = 0;
+                                for (k = 0; k < w; ++k)
+                                    mask[n + k + l * CHUNK_SIZE] = 0;
 
                             // Increment counters and continue
                             i += w;
@@ -344,8 +344,8 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
                             // Clear this part of the mask, so we don't add duplicate faces
                             for (l = 0; l < h; ++l)
-                            for (k = 0; k < w; ++k)
-                                mask2[m + k + l * CHUNK_SIZE] = 0;
+                                for (k = 0; k < w; ++k)
+                                    mask2[m + k + l * CHUNK_SIZE] = 0;
 
                             // Increment counters and continue
                             i += w;
@@ -686,7 +686,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
         }
 
 
-     //   CurrentChunkData = chunkDataMessage;
+        //   CurrentChunkData = chunkDataMessage;
     }
 
     public byte[] GetVoxelMessage()
@@ -854,7 +854,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
                 return 46;
         }
 
-        return (ushort) (blockTag - 1);
+        return (ushort)(blockTag - 1);
     }
 }
 

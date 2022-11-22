@@ -28,17 +28,17 @@ public class MessageReceiver : MonoBehaviour
 
     public void SetClientId(int clientId)
     {
-        ClientId = (ushort) clientId;
+        ClientId = (ushort)clientId;
     }
 
     public void ReceiveReliableMessage(string message)
     {
         ReceiveMessage(message);
     }
-    
+
     public void ReceiveReliableMessage(byte[] message)
     {
-       Debug.LogError("RECEIVED BYTE MESSAGE");
+        Debug.LogError("RECEIVED BYTE MESSAGE");
     }
 
     public void ReceiveUnreliableMessage(string message)

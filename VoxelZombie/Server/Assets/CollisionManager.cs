@@ -7,7 +7,7 @@ public class CollisionManager : MonoBehaviour
 
     public ServerPositionTracker pTracker;
 
- 
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

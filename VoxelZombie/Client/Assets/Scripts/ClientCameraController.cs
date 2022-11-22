@@ -67,7 +67,7 @@ namespace Client
             // else
             //{
             transform.position = Vector3.Lerp(transform.position, positionTarget, .5f);
-            playerCam.transform.position = Vector3.Lerp(  playerCam.transform.position, cameraTarget , .5f);
+            playerCam.transform.position = Vector3.Lerp(playerCam.transform.position, cameraTarget, .5f);
             //  }
         }
 
@@ -83,7 +83,7 @@ namespace Client
             playerModel.transform.rotation = Quaternion.Euler(0, rotationY, 0);
         }
 
-        
+
         private float scrollDistance;
         void CameraScroll()
         {

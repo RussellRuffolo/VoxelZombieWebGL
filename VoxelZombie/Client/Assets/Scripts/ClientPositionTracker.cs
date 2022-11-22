@@ -11,7 +11,7 @@ namespace Client
 
 
         private IWorld world;
-       // private ClientPlayerController pController;
+        // private ClientPlayerController pController;
 
         private ushort lastMoveState = 0;
 
@@ -22,7 +22,7 @@ namespace Client
         private bool hasWaterJump = false;
 
         private bool hasWallJump = false;
-        
+
         [SerializeField] public BoxCollider standingCollider;
 
         [SerializeField] public BoxCollider slidingCollider;
@@ -38,7 +38,7 @@ namespace Client
         void Awake()
         {
             world = GameObject.FindGameObjectWithTag("Network").GetComponent<ClientVoxelEngine>().World;
-         //   pController = GetComponent<ClientPlayerController>();
+            //   pController = GetComponent<ClientPlayerController>();
 
             colliderHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
         }
@@ -48,10 +48,10 @@ namespace Client
             allCPs.Clear();
         }
 
-     
 
 
-    
+
+
 
         public bool CheckWaterJump()
         {
@@ -124,7 +124,7 @@ namespace Client
             return found;
         }
 
-       
+
 
         // void FixedUpdate()
         // {
@@ -134,13 +134,13 @@ namespace Client
 
         private void OnCollisionEnter(Collision collision)
         {
-     //       Debug.Log("Adding " + collision.contacts.Length);
+            //       Debug.Log("Adding " + collision.contacts.Length);
             allCPs.AddRange(collision.contacts);
         }
 
         void OnCollisionStay(Collision col)
         {
-//            Debug.Log("Adding " + col.contacts.Length);
+            //            Debug.Log("Adding " + col.contacts.Length);
             allCPs.AddRange(col.contacts);
         }
 

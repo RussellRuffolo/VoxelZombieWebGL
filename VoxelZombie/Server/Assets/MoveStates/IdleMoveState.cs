@@ -16,7 +16,7 @@ public class IdleMoveState : IMoveState
 
     public void Enter()
     {
-   
+
     }
 
     public void Exit()

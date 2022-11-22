@@ -19,13 +19,13 @@ public struct ClientInputs
         PlayerForward = playerForward;
         Jump = jump;
         Slide = slide;
-       
+
         moveState = 0;
-      
+
 
         ClientTickNumber = 0;
         ServerTickNumber = 0;
     }
-    
-    
+
+
 }

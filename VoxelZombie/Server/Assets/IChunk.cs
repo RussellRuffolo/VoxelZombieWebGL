@@ -14,7 +14,7 @@ public interface IChunk
     List<ushort> ActiveIds { get; }
 
 
-   // RtcMessage CurrentChunkData { get; set; }
+    // RtcMessage CurrentChunkData { get; set; }
 
     void SetActiveRendering();
 

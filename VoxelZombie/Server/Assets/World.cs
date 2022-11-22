@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class World : IWorld
 {
-    public Dictionary<ChunkID, IChunk> Chunks { get; }= new Dictionary<ChunkID, IChunk>();
+    public Dictionary<ChunkID, IChunk> Chunks { get; } = new Dictionary<ChunkID, IChunk>();
 
     public byte this[float x, float y, float z]
     {
-        get => this[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)];
-        set => this[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)] = value;
+        get => this[(ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2)];
+        set => this[(ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2)] = value;
     }
 
     public byte this[ushort x, ushort y, ushort z]

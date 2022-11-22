@@ -17,20 +17,20 @@ namespace Client
         private bool hasWallJump = false;
         Vector3 colliderHalfExtents;
 
-      
-        
-        
+
+
+
 
         protected override void OnAwake()
         {
             world = GameObject.FindGameObjectWithTag("Network").GetComponent<IVoxelEngine>().World;
 
-          
-            
+
+
             colliderHalfExtents = new Vector3(.708f / 2, 1.76f / 2, .708f / 2);
 
             InputStates.Add(InputState.Chat, new SinglePlayerChatInputState());
-            
+
             MoveState = MoveState.basicAir;
             CurrentMoveState = MoveStates[MoveState];
             lastPosition = transform.position;

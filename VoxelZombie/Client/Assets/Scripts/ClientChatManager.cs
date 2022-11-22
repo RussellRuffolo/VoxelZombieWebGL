@@ -7,7 +7,7 @@ namespace Client
 {
     public class ClientChatManager : MonoBehaviour
     {
-       
+
         public Text inputText;
 
 
@@ -26,7 +26,7 @@ namespace Client
         private int chatsDisplayed = 0;
 
         private string inputMessage = "";
-        
+
         private float whMatch = 0f;
 
         void Awake()

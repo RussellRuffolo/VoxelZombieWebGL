@@ -21,7 +21,7 @@ public class WaterSwimmingMoveState : IMoveState
         }
 
 
-       return currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
+        return currentInputs.MoveVector * PlayerStats.horizontalWaterSpeed + yVel * Vector3.up;
     }
 
     public void Enter()

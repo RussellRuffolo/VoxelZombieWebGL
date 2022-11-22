@@ -20,7 +20,7 @@ public class BasicAirMoveState : IMoveState
 
         ySpeed -= PlayerStats.gravAcceleration * Time.fixedDeltaTime;
 
-       return horizontalVelocity + ySpeed * Vector3.up;
+        return horizontalVelocity + ySpeed * Vector3.up;
     }
 
     public virtual void Enter()

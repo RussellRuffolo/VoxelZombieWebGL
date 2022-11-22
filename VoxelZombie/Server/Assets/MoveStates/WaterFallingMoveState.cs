@@ -34,12 +34,12 @@ public class WaterFallingMoveState : IMoveState
 
     public void Enter()
     {
-  
+
     }
 
     public void Exit()
     {
-     
+
     }
 
     public MoveState CheckMoveState(Rigidbody playerRb, ClientInputs playerInputs, List<ContactPoint> contactPoints,

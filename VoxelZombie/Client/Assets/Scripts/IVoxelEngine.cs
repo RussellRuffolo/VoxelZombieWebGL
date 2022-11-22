@@ -5,9 +5,9 @@ public interface IVoxelEngine
 {
     IWorld World { get; }
     int Length { get; set; }
-    
+
     int Width { get; set; }
-    
+
     int Height { get; set; }
     List<Material> materialList { get; }
 
