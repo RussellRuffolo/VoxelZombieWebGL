@@ -1,0 +1,5 @@
+﻿*/Assets/Dependencies
+!*/Assets/Dependencies/README.md
+*/bin/
+*/obj/
+packages/
