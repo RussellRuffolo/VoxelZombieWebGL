@@ -46,9 +46,9 @@ namespace Client
             currentWorld.CheckChunks(x , y , z);
         }
 
-        protected override void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag)
+        protected override void OnPlaceBlock(ushort x, ushort y, ushort z, Voxel blockTag)
         {
-            currentWorld.SetVoxel(x, y, z, blockTag);
+            currentWorld.SetVoxel(x, y, z, (Voxel)blockTag);
             currentWorld.CheckChunks(x , y , z);
         }
 

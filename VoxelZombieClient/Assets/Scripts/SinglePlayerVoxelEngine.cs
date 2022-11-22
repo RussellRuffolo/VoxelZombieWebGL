@@ -139,20 +139,20 @@ public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine
                     //halfblock nonsense
                     if (blockId != 44)
                     {
-                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2), blockId);
-                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2), blockId);
-                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), blockId);
-                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), blockId);
+                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)blockId);
+                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)blockId);
+                        World.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)blockId);
+                        World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)blockId);
                     }
 
-                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2), blockId);
+                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2), (Voxel)blockId);
 
-                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2), blockId);
+                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2), (Voxel)blockId);
 
 
-                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1), blockId);
+                    World.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1), (Voxel)blockId);
 
-                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1), blockId);
+                    World.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1), (Voxel)blockId);
 
 
                     blockCount++;

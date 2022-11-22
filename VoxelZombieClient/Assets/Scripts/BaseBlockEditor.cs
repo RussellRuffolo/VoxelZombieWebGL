@@ -12,7 +12,7 @@ namespace Client
         protected IWorld currentWorld;
         private IVoxelEngine vEngine;
 
-        private byte placeBlockTag = 1;
+        private Voxel placeBlockTag = Voxel.Stone;
 
         public LineRenderer blockOutline;
 
@@ -390,18 +390,18 @@ namespace Client
 
         bool CheckBlock(Vector3 checkPosition)
         {
-            byte blockTag = currentWorld.GetVoxel(checkPosition.x, checkPosition.y, checkPosition.z);
+            Voxel blockTag = currentWorld.GetVoxel(checkPosition.x, checkPosition.y, checkPosition.z);
 
 
-            //untargetable blocks: air, water, lava, outside of map
-            if (blockTag == 0 || blockTag == 9 || blockTag == 11 || blockTag == 100)
+            //untargetable blocks
+            if (blockTag == Voxel.Air || blockTag == Voxel.StationaryWater || blockTag == Voxel.StationaryLava)
             {
                 return false;
             }
 
 
-            //modeled blocks: flowers, mushorooms
-            if (blockTag == 37 || blockTag == 38 || blockTag == 39 || blockTag == 40)
+            //modeled blocks
+            if (blockTag == Voxel.Dandelion || blockTag == Voxel.Rose || blockTag == Voxel.BrownMushroom || blockTag == Voxel.RedMushroom)
             {
                 return false;
             }
@@ -418,15 +418,14 @@ namespace Client
                 int y = (int) selectionPosition.y;
                 int z = (int) selectionPosition.z;
 
-                //    ulong breakSpotTag = currentWorld[x, y, z];
-                byte breakSpotTag = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
+                Voxel breakSpotTag = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
                 if (breakSpotTag == 0)
                 {
                     return;
                 }
 
                 //bedrock, water, and lava can not be broken
-                if (breakSpotTag == 7 || breakSpotTag == 9 || breakSpotTag == 11)
+                if (breakSpotTag == Voxel.Bedrock || breakSpotTag == Voxel.StationaryWater || breakSpotTag == Voxel.StationaryLava)
                 {
                     return;
                 }
@@ -454,16 +453,16 @@ namespace Client
                 ushort y = (ushort) (selectionY + selectionNormal.y);
                 ushort z = (ushort) (selectionZ + selectionNormal.z);
 
-                byte placeSpotTag = currentWorld.GetVoxel(x, y, z);
+                Voxel placeSpotTag = currentWorld.GetVoxel(x, y, z);
 
-                if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
+                if (placeSpotTag == Voxel.Air || placeSpotTag == Voxel.StationaryWater || placeSpotTag == Voxel.StationaryLava)
                 {
                     OnPlaceBlock(x, y, z, placeBlockTag);
                 }
             }
         }
 
-        protected abstract void OnPlaceBlock(ushort x, ushort y, ushort z, byte blockTag);
+        protected abstract void OnPlaceBlock(ushort x, ushort y, ushort z, Voxel blockTag);
 
         void SelectBlock()
         {
@@ -475,9 +474,9 @@ namespace Client
 
                 if (x < vEngine.Length && y < vEngine.Height && z < vEngine.Width)
                 {
-                    byte selectTag = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
+                    Voxel selectTag = currentWorld.GetVoxel(selectionPosition.x, selectionPosition.y, selectionPosition.z);
 
-                    if (selectTag != 7 && selectTag != 0 && selectTag != 9 && selectTag != 11)
+                    if (selectTag != Voxel.Bedrock && selectTag != Voxel.Air && selectTag != Voxel.StationaryWater && selectTag != Voxel.StationaryLava)
                     {
                         placeBlockTag = selectTag;
                     }

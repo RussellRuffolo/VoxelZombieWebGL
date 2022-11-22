@@ -11,14 +11,14 @@ public abstract class Chunk : MonoBehaviour, IChunk
 
     public ChunkID ID;
 
-    protected byte[] voxels = new byte[16 * 16 * 16];
+    protected Voxel[] voxels = new Voxel[16 * 16 * 16];
 
-    public byte GetVoxel(int x, int y, int z)
+    public Voxel GetVoxel(int x, int y, int z)
     {
         return voxels[x * 16 * 16 + y * 16 + z];
     }
 
-    public void SetVoxel(int x, int y, int z, byte value)
+    public void SetVoxel(int x, int y, int z, Voxel value)
     {
         voxels[x * 16 * 16 + y * 16 + z] = value;
     }
@@ -87,9 +87,8 @@ public abstract class Chunk : MonoBehaviour, IChunk
     {
         Vector3 pos;
         int verticesPos;
-        byte voxelType;
-
-        byte blockCheck;
+        Voxel voxelType;
+        Voxel blockCheck;
 
         for (var x = 0; x < 16; x++)
         {
@@ -325,7 +324,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
     }
 
 
-    private void AddTriangles(int vType, int vPos, int[] triangles)
+    private void AddTriangles(Voxel vType, int vPos, int[] triangles)
     {
         //0-48 are default MC ids offset back by 1 because 0 was air
         //49 is grass top
@@ -335,7 +334,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
         //53 is bookshelf top
         switch (vType)
         {
-            case (2):
+            case (Voxel.Grass):
                 if (triangles == ChunkInfo._topTriangles)
                 {
                     foreach (var tri in triangles)
@@ -432,12 +431,12 @@ public abstract class Chunk : MonoBehaviour, IChunk
         }
     }
 
-    protected byte GetBlock(int x, int y, int z)
+    protected Voxel GetBlock(int x, int y, int z)
     {
         return GetVoxel(x, y, z);
     }
 
-    protected byte GetOutsideBlock(int x, int y, int z)
+    protected Voxel GetOutsideBlock(int x, int y, int z)
     {
         ushort xVal = (ushort) (ID.X * 16 + x);
         ushort yVal = (ushort) (ID.Y * 16 + y);

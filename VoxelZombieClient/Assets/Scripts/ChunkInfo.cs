@@ -167,22 +167,16 @@ public static class ChunkInfo
         37, 38, 39, 40, 57, 61
     };
 
-    public static HashSet<int> _transparentBlocks = new HashSet<int>()
+    public static HashSet<Voxel> _transparentBlocks = new HashSet<Voxel>()
     {
-        0, 9, 11, 18,
-        20, 37, 38, 39, 40, 44, 57, 61
+        Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose, 
+        Voxel.BrownMushroom, Voxel.RedMushroom, Voxel.Slab, (Voxel) 57, (Voxel) 61
     };
 
-    // public static List<int> _transparentBlockIDs = new List<int>
-    // {
-    //     0, 9, 11, 18,
-    //     20, 37, 38, 39, 40, 44, 57, 61
-    // };
-
-    public static HashSet<int> _transparentBlockSet = new HashSet<int>()
+    public static HashSet<Voxel> _transparentBlockSet = new HashSet<Voxel>()
     {
-        0, 9, 11, 18,
-        20, 37, 38, 39, 40, 44, 57, 61
+        Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose, 
+        Voxel.BrownMushroom, Voxel.RedMushroom, Voxel.Slab, (Voxel) 57, (Voxel) 61
     };
 
     public static Vector3[] _cubeNormals = new[]

@@ -195,9 +195,9 @@ public static class PlayerUtils
         return false;
     }
 
-    public static bool IsSolidBlock(ulong blockTag)
+    public static bool IsSolidBlock(Voxel blockTag)
     {
-        return blockTag != 0 && blockTag != 9 && blockTag != 11;
+        return blockTag != Voxel.Air && blockTag != Voxel.StationaryWater && blockTag != Voxel.StationaryLava;
     }
 
     public static bool IsBreakableBlock(byte blockTag)

@@ -55,38 +55,38 @@ public enum Voxel: byte
     Obsidian = 49
 }
 
-public static class VoxelExtensions
-{
-    // Todo (Snapper): Ensure arrays are actually faster than Hashmaps in this usecase (or go back to Hashmaps)
-    public static Voxel[] gasBlocks = { Voxel.Air };
-    public static Voxel[] liquidBlocks = { Voxel.StationaryWater, Voxel.StationaryLava };
-    public static Voxel[] nonsolidBlocks = { Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava };
-
-    public static Voxel[] nonbreakableBlocks =
-        { Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Bedrock };
-    // Adding a new vegetation block? Don't forget to make it transparent! (If applicable)
-    // Todo (Russell): We have the names transparent and nonsolid. I don't like that. Neither are perfect names
-    //  Nonsolid means that they are liquid, gas, plasma, etc.
-    //  Transparent means that we need to render things on the other side.
-    public static Voxel[] vegetationBlocks =
-        { Voxel.Dandelion, Voxel.Rose, Voxel.BrownMushroom, Voxel.RedMushroom };
-    public static Voxel[] transparentBlocks =
-    {
-        Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose,
-        Voxel.BrownMushroom, Voxel.RedMushroom, Voxel.Slab,
-        // Todo: What are these two about?
-        (Voxel) 57, (Voxel) 61
-    };
-    // Todo: If a block is placeable is game dependant and not an inherent property of the block. Refactor to elsewhere.
-    // Actually, most (if not all) of these belong elsewhere
-    public static Voxel[] nonplaceableBlocks = { Voxel.Air, Voxel.Bedrock, Voxel.StationaryWater, Voxel.StationaryLava };
-    public static bool isNonsolid(this Voxel v) => nonsolidBlocks.Contains(v);
-    public static bool isNonbreakable(this Voxel v) => nonbreakableBlocks.Contains(v);
-    public static bool isNonplaceable(this Voxel v) => nonplaceableBlocks.Contains(v);
-    public static bool isVegetation(this Voxel v) => vegetationBlocks.Contains(v);
-    public static bool isTransparent(this Voxel v) => transparentBlocks.Contains(v);
-    public static bool isLiquid(this Voxel v) => liquidBlocks.Contains(v);
-    public static bool isGas(this Voxel v) => gasBlocks.Contains(v);
-    public static bool isSolid(this Voxel v) => !isNonsolid(v);
-    public static bool isBreakable(this Voxel v) => !isNonbreakable(v);
-}
+// public static class VoxelExtensions
+// {
+//     // Todo (Snapper): Ensure arrays are actually faster than Hashmaps in this usecase (or go back to Hashmaps)
+//     public static Voxel[] gasBlocks = { Voxel.Air };
+//     public static Voxel[] liquidBlocks = { Voxel.StationaryWater, Voxel.StationaryLava };
+//     public static Voxel[] nonsolidBlocks = { Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava };
+//
+//     public static Voxel[] nonbreakableBlocks =
+//         { Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Bedrock };
+//     // Adding a new vegetation block? Don't forget to make it transparent! (If applicable)
+//     // Todo (Russell): We have the names transparent and nonsolid. I don't like that. Neither are perfect names
+//     //  Nonsolid means that they are liquid, gas, plasma, etc.
+//     //  Transparent means that we need to render things on the other side.
+//     public static Voxel[] vegetationBlocks =
+//         { Voxel.Dandelion, Voxel.Rose, Voxel.BrownMushroom, Voxel.RedMushroom };
+//     public static Voxel[] transparentBlocks =
+//     {
+//         Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose,
+//         Voxel.BrownMushroom, Voxel.RedMushroom, Voxel.Slab,
+//         // Todo: What are these two about?
+//         (Voxel) 57, (Voxel) 61
+//     };
+//     // Todo: If a block is placeable is game dependant and not an inherent property of the block. Refactor to elsewhere.
+//     // Actually, most (if not all) of these belong elsewhere
+//     public static Voxel[] nonplaceableBlocks = { Voxel.Air, Voxel.Bedrock, Voxel.StationaryWater, Voxel.StationaryLava };
+//     public static bool isNonsolid(this Voxel v) => nonsolidBlocks.Contains(v);
+//     public static bool isNonbreakable(this Voxel v) => nonbreakableBlocks.Contains(v);
+//     public static bool isNonplaceable(this Voxel v) => nonplaceableBlocks.Contains(v);
+//     public static bool isVegetation(this Voxel v) => vegetationBlocks.Contains(v);
+//     public static bool isTransparent(this Voxel v) => transparentBlocks.Contains(v);
+//     public static bool isLiquid(this Voxel v) => liquidBlocks.Contains(v);
+//     public static bool isGas(this Voxel v) => gasBlocks.Contains(v);
+//     public static bool isSolid(this Voxel v) => !isNonsolid(v);
+//     public static bool isBreakable(this Voxel v) => !isNonbreakable(v);
+// }
