@@ -32,7 +32,7 @@ public class CameraWaterTracker : MonoBehaviour
         int y = Mathf.FloorToInt(transform.position.y);
         int z = Mathf.FloorToInt(transform.position.z);
 
-        ushort blockTag = (ushort)world[x, y, z];
+        ushort blockTag = (ushort)world.GetVoxel(x, y, z);
 
         if(blockTag == 9)
         {
