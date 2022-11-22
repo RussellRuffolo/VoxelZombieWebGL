@@ -1,2 +1,4 @@
 # Moved project from VoxelZombieClient and VoxelZombieServer to VoxelZombie/Client and VoxelZombie/Server
 cbae9703680c7e3ce2849e019963b52dd1f406ad
+# Ran `dotnet reformat` on codebase
+07e03572f433d6f95fb8e50e4c89b0c3bc207476
