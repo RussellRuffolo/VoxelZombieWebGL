@@ -476,6 +476,9 @@ public class VoxelServer : MonoBehaviour
             loginMessage.WriteInt(succesfulLogin);
 
             client.SendReliableMessage(loginMessage);
+
+            byte[] testMessage = new[] {(byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5};
+            client.SendByteMessage(testMessage);
         }
         catch (Exception e)
         {

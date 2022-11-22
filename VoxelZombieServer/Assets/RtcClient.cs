@@ -56,6 +56,10 @@ public class RtcClient
         return false;
     }
 
+    public void SendByteMessage(byte[] message)
+    {
+        ReliableDataChannel.Send(message);
+    }
 
     public RtcClient(RTCPeerConnection peerConnection, RTCDataChannel unreliableDataChannel,
         RTCDataChannel reliableDataChannel, ushort clientId)
