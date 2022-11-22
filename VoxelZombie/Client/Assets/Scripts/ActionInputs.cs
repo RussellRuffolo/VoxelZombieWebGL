@@ -1,4 +1,6 @@
+
 namespace Client
+
 {
     public struct ActionInputs
     {

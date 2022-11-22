@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using ZombieLib;
 
 
 public class GreedyChunk : Chunk

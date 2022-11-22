@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using ZombieLib;
 
 public interface IChunk
 {

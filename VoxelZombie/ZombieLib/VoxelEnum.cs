@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-public enum Voxel: byte
+namespace ZombieLib
+{
+    public enum Voxel: byte
 {
     Air = 0,
     Stone = 1,
@@ -90,3 +92,4 @@ public enum Voxel: byte
 //     public static bool isSolid(this Voxel v) => !isNonsolid(v);
 //     public static bool isBreakable(this Voxel v) => !isNonbreakable(v);
 // }
+}

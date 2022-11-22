@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Client;
 using UnityEngine;
+using ZombieLib;
 
 public static class PlayerUtils
 {

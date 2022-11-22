@@ -5,6 +5,7 @@ using System.Linq;
 using Client;
 using UnityEngine;
 using UnityEngine.Networking;
+using ZombieLib;
 using Random = UnityEngine.Random;
 
 public class SinglePlayerVoxelEngine : MonoBehaviour, IVoxelEngine

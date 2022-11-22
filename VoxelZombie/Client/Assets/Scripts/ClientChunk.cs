@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Client;
 using UnityEngine;
+using ZombieLib;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
