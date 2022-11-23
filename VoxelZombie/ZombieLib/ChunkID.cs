@@ -3,7 +3,7 @@
 namespace ZombieLib
 {
 
-    public struct ChunkID : IEquatable<ChunkID>
+    public readonly struct ChunkID : IEquatable<ChunkID>
     {
         public readonly int X;
         public readonly int Y;
