@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZombieLib;
 
 public interface IActionState 
 {

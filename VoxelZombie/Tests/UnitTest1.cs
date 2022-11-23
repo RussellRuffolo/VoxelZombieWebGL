@@ -9,8 +9,8 @@ public class Tests
     }
 
     [Test]
-    public void Test1()
+    public void As()
     {
-        Assert.Pass();
+        Assert.That((byte)0, Is.EqualTo((byte)Voxel.Air));
     }
 }

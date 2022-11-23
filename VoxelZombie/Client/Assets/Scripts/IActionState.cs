@@ -1,5 +1,6 @@
 ﻿using Client;
 using UnityEngine;
+using ZombieLib;
 
 public interface IActionState : IState
 {

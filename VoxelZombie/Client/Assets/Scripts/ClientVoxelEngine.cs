@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 using UnityEngine.Networking;
+using ZombieLib;
 
 
 public delegate void MapLoadedDelegate(Vector3 spawnPosition);

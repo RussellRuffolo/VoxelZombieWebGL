@@ -1,6 +1,4 @@
-
-namespace Client
-
+﻿namespace ZombieLib
 {
     public struct ActionInputs
     {
@@ -14,7 +12,6 @@ namespace Client
         public float PosX;
         public float PosY;
         public float PosZ;
-
 
         public float ForwardX;
         public float ForwardY;

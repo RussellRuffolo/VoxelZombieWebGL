@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using ZombieLib;
 
 public class ServerPlayerManager : MonoBehaviour
 {

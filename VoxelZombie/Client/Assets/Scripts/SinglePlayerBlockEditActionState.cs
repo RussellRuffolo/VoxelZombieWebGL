@@ -1,5 +1,6 @@
 using Client;
 using UnityEngine;
+using ZombieLib;
 
 //laser? blocks pop as you beam them
 //satisfying sound when you materialize a block
