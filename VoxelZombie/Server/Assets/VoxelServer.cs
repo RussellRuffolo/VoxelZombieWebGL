@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using ZombieLib;
 using Random = UnityEngine.Random;
 
 

@@ -6,6 +6,7 @@ using fNbt;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine.UIElements;
+using ZombieLib;
 using Random = UnityEngine.Random;
 
 public class VoxelEngine : MonoBehaviour

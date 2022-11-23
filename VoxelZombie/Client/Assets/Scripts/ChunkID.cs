@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using System;
 
 public struct ChunkID : IEquatable<ChunkID>
 {
@@ -49,11 +46,6 @@ public struct ChunkID : IEquatable<ChunkID>
         return !left.Equals(right);
     }
 
-    // public static ChunkID FromWorldPos(int x, int y, int z)
-    // {
-    //     return new ChunkID(x >> 3, y >> 3, z >> 3);
-    // }
-    //
     public static ChunkID FromWorldPos(float x, float y, float z)
     {
         return FromBlockPos((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2));
