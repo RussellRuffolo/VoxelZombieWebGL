@@ -141,8 +141,8 @@ public class VoxelServer : MonoBehaviour
         {
             ChunkID id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
             vEngine.world.Chunks[id].AddActivePlayer(clientId);
-            
-            client.SendByteMessage(vEngine.world.Chunks[id].GetVoxelMessage());
+            var msg = vEngine.world.Chunks[id].GetVoxelMessage();
+            client.SendByteMessage(Cast.VoxelsAsBytes(ref msg));
         }
         else if (messageTag == Tags.BLOCK_EDIT_TAG)
         {
@@ -495,7 +495,7 @@ public class VoxelServer : MonoBehaviour
         ushort z = reader.ReadUShort();
 
         //the new blockTag the client requested
-        byte blockTag = (byte) reader.ReadUShort();
+        Voxel blockTag = (Voxel) reader.ReadUShort();
 
         if (bEditor.TryApplyEdit(x, y, z, blockTag))
         {
@@ -503,7 +503,7 @@ public class VoxelServer : MonoBehaviour
             blockEditMessage.WriteUShort(x);
             blockEditMessage.WriteUShort(y);
             blockEditMessage.WriteUShort(z);
-            blockEditMessage.WriteUShort(blockTag);
+            blockEditMessage.WriteUShort((ushort)blockTag);
 
             foreach (RtcClient c in ConnectionManager.GetAllClients())
             {
@@ -516,7 +516,7 @@ public class VoxelServer : MonoBehaviour
             blockEditMessage.WriteUShort(x);
             blockEditMessage.WriteUShort(y);
             blockEditMessage.WriteUShort(z);
-            blockEditMessage.WriteUShort(vEngine.world[x, y, z]);
+            blockEditMessage.WriteUShort((ushort)vEngine.world.GetVoxel(x, y, z));
 
             foreach (RtcClient c in ConnectionManager.GetAllClients())
             {
@@ -621,7 +621,8 @@ public class VoxelServer : MonoBehaviour
         client.SendReliableMessage(playerMessage);
         foreach (ChunkID id in vEngine.SpawnChunks)
         {
-            client.SendByteMessage(vEngine.world.Chunks[id].GetVoxelMessage());
+            Voxel[] msg = vEngine.world.Chunks[id].GetVoxelMessage();
+            client.SendByteMessage(Cast.VoxelsAsBytes(ref msg));
         }
 
 
@@ -727,13 +728,13 @@ public class VoxelServer : MonoBehaviour
         }
     }
 
-    public void SendBlockEdit(List<ushort> ids, ushort x, ushort y, ushort z, byte blockTag)
+    public void SendBlockEdit(List<ushort> ids, ushort x, ushort y, ushort z, Voxel blockTag)
     {
         RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
         blockEditMessage.WriteUShort(x);
         blockEditMessage.WriteUShort(y);
         blockEditMessage.WriteUShort(z);
-        blockEditMessage.WriteUShort(blockTag);
+        blockEditMessage.WriteUShort((ushort)blockTag);
 
         foreach (ushort id in ids)
         {

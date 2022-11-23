@@ -47,7 +47,7 @@ public class GrenadeController : MonoBehaviour
                     if (Vector3.Distance(position,
                             new Vector3(x, y, z)) <= ExplosionRadius)
                     {
-                        if (PlayerUtils.IsBreakableBlock(world[x, y, z]))
+                        if (PlayerUtils.IsBreakableBlock(world.GetVoxel(x, y, z)))
                         {
                             ushort blockX = (ushort) (x * 2);
                             ushort blockY = (ushort) (y * 2);

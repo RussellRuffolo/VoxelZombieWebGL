@@ -184,20 +184,20 @@ public class VoxelEngine : MonoBehaviour
                     //halfblock nonsense
                     if (blockId != 44)
                     {
-                        world[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
-                        world[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2)] = blockId;
-                        world[(ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
-                        world[(ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1)] = blockId;
+                        world.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)blockId);
+                        world.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2), (Voxel)blockId);
+                        world.SetVoxel((ushort) (x * 2), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)blockId);
+                        world.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2 + 1), (ushort) (z * 2 + 1), (Voxel)blockId);
                     }
 
-                    world[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+                    world.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2), (Voxel)blockId);
 
-                    world[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2)] = blockId;
+                    world.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2), (Voxel)blockId);
 
 
-                    world[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+                    world.SetVoxel((ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2 + 1), (Voxel)blockId);
 
-                    world[(ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1)] = blockId;
+                    world.SetVoxel((ushort) (x * 2 + 1), (ushort) (y * 2), (ushort) (z * 2 + 1), (Voxel)blockId);
 
 
                     blockCount++;

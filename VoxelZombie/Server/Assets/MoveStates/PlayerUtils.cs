@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
+using ZombieLib;
 
 public static class PlayerUtils
 {
@@ -66,7 +67,7 @@ public static class PlayerUtils
                 ushort y = (ushort) Mathf.FloorToInt(testPoint.y);
                 ushort z = (ushort) Mathf.FloorToInt(testPoint.z);
 
-                if (IsSolidBlock(world[x, y, z]) && IsSolidBlock(world[x, y + 1, z]))
+                if (IsSolidBlock(world.GetVoxel(x, y, z)) && IsSolidBlock(world.GetVoxel(x, y + 1, z)))
                 {
                     return true;
                 }
@@ -97,7 +98,7 @@ public static class PlayerUtils
         ushort y = (ushort) Mathf.FloorToInt(playerPosition.y);
         ushort z = (ushort) Mathf.FloorToInt(playerPosition.z);
 
-        if (world[x, y, z] == 9)
+        if (world.GetVoxel(x, y, z) == Voxel.StationaryWater)
         {
             return true;
         }
@@ -116,7 +117,7 @@ public static class PlayerUtils
         ushort y = (ushort) Mathf.FloorToInt(blockPosition.y);
         ushort z = (ushort) Mathf.FloorToInt(blockPosition.z);
 
-        if (!IsSolidBlock(world[blockPosition.x, blockPosition.y, blockPosition.z]))
+        if (!IsSolidBlock(world.GetVoxel(blockPosition.x, blockPosition.y, blockPosition.z)))
         {
             return false;
         }
@@ -196,13 +197,13 @@ public static class PlayerUtils
         return false;
     }
 
-    public static bool IsSolidBlock(ulong blockTag)
+    public static bool IsSolidBlock(Voxel blockTag)
     {
-        return blockTag != 0 && blockTag != 9 && blockTag != 11;
+        return blockTag != Voxel.Air && blockTag != Voxel.StationaryWater && blockTag != Voxel.StationaryLava;
     }
     
-    public static bool IsBreakableBlock(byte blockTag)
+    public static bool IsBreakableBlock(Voxel blockTag)
     {
-        return blockTag != 0 && blockTag != 7 && blockTag != 9 && blockTag != 11;
+        return blockTag != Voxel.Air && blockTag != Voxel.Bedrock && blockTag != Voxel.StationaryWater && blockTag != Voxel.StationaryLava;
     }
 }

@@ -11,7 +11,7 @@ public class ServerBlockEditor : MonoBehaviour
     //Cleared at the beginning of start round
     // public List<BlockEdit> EditedBlocks = new List<BlockEdit>();
 
-    public Dictionary<BlockLocation, byte> BlockEdits = new Dictionary<BlockLocation, byte>();
+    public Dictionary<BlockLocation, Voxel> BlockEdits = new Dictionary<BlockLocation, Voxel>();
 
     List<ChunkID> dirtiedChunks = new List<ChunkID>();
 
@@ -22,10 +22,10 @@ public class ServerBlockEditor : MonoBehaviour
         world = vEngine.world;
     }
 
-    public bool TryApplyEdit(ushort x, ushort y, ushort z, byte blockTag)
+    public bool TryApplyEdit(ushort x, ushort y, ushort z, Voxel blockTag)
     {
         if (x / 2 < vEngine.currentMap.Length && y / 2 < vEngine.currentMap.Height &&
-            z / 2 < vEngine.currentMap.Width && world[x, y, z] != blockTag)
+            z / 2 < vEngine.currentMap.Width && world.GetVoxel(x, y, z) != blockTag)
         {
             //check to see if block intersects players
             //a new block should not be allowed to placed inside a player
@@ -46,14 +46,14 @@ public class ServerBlockEditor : MonoBehaviour
             }
             else
             {
-                if (world[x, y, z] == 7)
+                if (world.GetVoxel(x, y, z) == Voxel.Bedrock)
                 {
                     return false;
                 }
             }
 
 
-            world[x, y, z] = blockTag;
+            world.SetVoxel(x, y, z, (Voxel)blockTag);
 
             //EditedBlocks.Add(new BlockEdit(x, y, z, blockTag));
             BlockEdits.Add(new BlockLocation(x, y, z), blockTag);

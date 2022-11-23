@@ -8,34 +8,31 @@ public class World : IWorld
 {
     public Dictionary<ChunkID, IChunk> Chunks { get; }= new Dictionary<ChunkID, IChunk>();
 
-    public byte this[float x, float y, float z]
+    public Voxel GetVoxel(float x, float y, float z) => GetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort)(z * 2));
+
+    public void SetVoxel(float x, float y, float z, Voxel value) =>
+        SetVoxel((ushort)(x * 2), (ushort)(y * 2), (ushort) (z * 2), (Voxel)value);
+
+    public Voxel GetVoxel(ushort x, ushort y, ushort z)
     {
-        get => this[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)];
-        set => this[(ushort) (x * 2), (ushort) (y * 2), (ushort) (z * 2)] = value;
+        ChunkID ID = ChunkID.FromBlockPos(x, y, z);
+
+        if (Chunks.TryGetValue(ID, out var chunk))
+        {
+            return chunk.GetVoxel(x & 0xF, y & 0xF, z & 0xF);
+        }
+
+        return 0;
     }
 
-    public byte this[ushort x, ushort y, ushort z]
+    public void SetVoxel(ushort x, ushort y, ushort z, Voxel value)
     {
-        get
+        ChunkID ID = ChunkID.FromBlockPos(x, y, z);
+
+        if (Chunks.TryGetValue(ID, out var chunk))
         {
-            ChunkID ID = ChunkID.FromBlockPos(x, y, z);
-
-            if (Chunks.TryGetValue(ID, out var chunk))
-            {
-                return chunk[x & 0xF, y & 0xF, z & 0xF];
-            }
-
-            return 0;
-        }
-        set
-        {
-            ChunkID ID = ChunkID.FromBlockPos(x, y, z);
-
-            if (Chunks.TryGetValue(ID, out var chunk))
-            {
-                chunk[x & 0xF, y & 0xF, z & 0xF] = value;
-                chunk.dirty = true;
-            }
+            chunk.SetVoxel(x & 0xF, y & 0xF, z & 0xF, value);
+            chunk.dirty = true;
         }
     }
 

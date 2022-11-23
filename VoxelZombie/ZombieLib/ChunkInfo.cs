@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using ZombieLib;
 
 public static class ChunkInfo
 {
@@ -162,27 +162,15 @@ public static class ChunkInfo
         0, 1, 6
     };
 
-    public static List<int> _modeledBlockIDs = new List<int>
+    public static HashSet<Voxel> _modeledBlockIDs = new HashSet<Voxel>()
     {
-        37, 38, 39, 40, 57, 61
+        Voxel.Dandelion, Voxel.Rose, Voxel.BrownMushroom, Voxel.RedMushroom, (Voxel)57, (Voxel)61
     };
 
-    public static HashSet<int> _transparentBlocks = new HashSet<int>()
+    public static HashSet<Voxel> _transparentBlocks = new HashSet<Voxel>()
     {
-        0, 9, 11, 18,
-        20, 37, 38, 39, 40, 44, 57, 61
-    };
-
-    // public static List<int> _transparentBlockIDs = new List<int>
-    // {
-    //     0, 9, 11, 18,
-    //     20, 37, 38, 39, 40, 44, 57, 61
-    // };
-
-    public static HashSet<int> _transparentBlockSet = new HashSet<int>()
-    {
-        0, 9, 11, 18,
-        20, 37, 38, 39, 40, 44, 57, 61
+        Voxel.Air, Voxel.StationaryWater, Voxel.StationaryLava, Voxel.Leaves, Voxel.Glass, Voxel.Dandelion, Voxel.Rose, 
+        Voxel.BrownMushroom, Voxel.RedMushroom, Voxel.Slab, (Voxel) 57, (Voxel) 61
     };
 
     public static Vector3[] _cubeNormals = new[]
@@ -194,8 +182,7 @@ public static class ChunkInfo
 
     public static Vector3[] _faceNormals = new[]
     {
-        Vector3.up, Vector3.up, Vector3.up,
-        Vector3.up
+        Vector3.up, Vector3.up, Vector3.up, Vector3.up
     };
 
     public static List<Vector3> frontUVs = new List<Vector3>()
@@ -223,8 +210,7 @@ public static class ChunkInfo
         new Vector2(1, 1),
         new Vector2(1, 0)
     };
-
-
+    
     public static void AddTopUVs(List<Vector3> uvList)
     {
         foreach (Vector3 vector3 in topUVs)
@@ -232,7 +218,6 @@ public static class ChunkInfo
             uvList.Add(vector3);
         }
     }
-
 
     public static List<Vector3> bottomUVs = new List<Vector3>()
     {
@@ -242,8 +227,7 @@ public static class ChunkInfo
         new Vector2(1, 1),
         new Vector2(1, 0)
     };
-
-
+    
     public static void AddBottomUVs(List<Vector3> uvList)
     {
         foreach (Vector3 vector3 in bottomUVs)
@@ -260,8 +244,7 @@ public static class ChunkInfo
         new Vector2(0, 0),
         new Vector2(1, 0)
     };
-
-
+    
     public static void AddBackUVs(List<Vector3> uvList)
     {
         foreach (Vector3 vector3 in backUVs)
@@ -269,8 +252,7 @@ public static class ChunkInfo
             uvList.Add(vector3);
         }
     }
-
-        
+    
     public static List<Vector3> leftUVs = new List<Vector3>()
     {
         new Vector2(0, 0),
@@ -279,8 +261,7 @@ public static class ChunkInfo
         new Vector2(1, 1),
         new Vector2(1, 0)
     };
-
-
+    
     public static void AddLeftUVs(List<Vector3> uvList)
     {
         foreach (Vector3 vector3 in leftUVs)
@@ -288,6 +269,7 @@ public static class ChunkInfo
             uvList.Add(vector3);
         }
     }
+    
     public static List<Vector3> rightUVs = new List<Vector3>()
     {
         new Vector2(0, 0),
@@ -296,8 +278,7 @@ public static class ChunkInfo
         new Vector2(1, 1),
         new Vector2(1, 0)
     };
-
-
+    
     public static void AddRightUVs(List<Vector3> uvList)
     {
         foreach (Vector3 vector3 in rightUVs)
@@ -305,5 +286,4 @@ public static class ChunkInfo
             uvList.Add(vector3);
         }
     }
-
 }

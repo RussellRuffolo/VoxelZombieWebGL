@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using ZombieLib;
 
 public interface IChunk
 {
-    byte this[int x, int y, int z] { get; set; }
+    Voxel GetVoxel(int x, int y, int z);
+    void SetVoxel(int x, int y, int z, Voxel value);
 
     bool dirty { get; set; }
 
@@ -18,7 +20,7 @@ public interface IChunk
 
     void SetActiveRendering();
 
-    byte[] GetVoxelMessage();
+    Voxel[] GetVoxelMessage();
 
     void CreateMessage();
 }

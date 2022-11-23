@@ -30,7 +30,7 @@ public class BlockEditActionState : IActionState
     private Vector3 camOffest = Vector3.up * .698f;
     private float editDistance = 7;
 
-    private byte blockTag = 1;
+    private Voxel blockTag = Voxel.Stone;
 
     public void ApplyInputs(ActionInputs inputs, Rigidbody playerRb)
     {
@@ -65,10 +65,9 @@ public class BlockEditActionState : IActionState
             int z = (int) selectionInfo.SelectionPosition.z;
 
 
-            byte selectTag = world[selectionInfo.SelectionPosition.x, selectionInfo.SelectionPosition.y,
-                selectionInfo.SelectionPosition.z];
+            Voxel selectTag = world.GetVoxel(selectionInfo.SelectionPosition.x, selectionInfo.SelectionPosition.y, selectionInfo.SelectionPosition.z);
 
-            if (selectTag != 7 && selectTag != 0 && selectTag != 9 && selectTag != 11)
+            if (selectTag != Voxel.Bedrock && selectTag != Voxel.Air && selectTag != Voxel.StationaryWater && selectTag != Voxel.StationaryLava)
             {
                 blockTag = selectTag;
             }
@@ -84,10 +83,10 @@ public class BlockEditActionState : IActionState
             ushort y = (ushort) (selectionInfo.Y + selectionInfo.SelectionNormal.y);
             ushort z = (ushort) (selectionInfo.Z + selectionInfo.SelectionNormal.z);
 
-            byte placeSpotTag = world[x, y, z];
+            Voxel placeSpotTag = world.GetVoxel(x, y, z);
 
             //can only place on air water and lava
-            if (placeSpotTag == 0 || placeSpotTag == 9 || placeSpotTag == 11)
+            if (placeSpotTag == Voxel.Air || placeSpotTag == Voxel.StationaryWater || placeSpotTag == Voxel.StationaryLava)
             {
                 if (bEditor.TryApplyEdit(x, y, z, blockTag))
                 {
@@ -107,15 +106,14 @@ public class BlockEditActionState : IActionState
             if (selectionInfo.SelectionNormal != Vector3.zero)
             {
                 //    ulong breakSpotTag = currentWorld[x, y, z];
-                byte breakSpotTag = world[selectionInfo.SelectionPosition.x, selectionInfo.SelectionPosition.y,
-                    selectionInfo.SelectionPosition.z];
+                Voxel breakSpotTag = world.GetVoxel(selectionInfo.SelectionPosition.x, selectionInfo.SelectionPosition.y, selectionInfo.SelectionPosition.z);
                 if (breakSpotTag == 0)
                 {
                     return;
                 }
 
                 //bedrock, water, and lava can not be broken
-                if (breakSpotTag == 7 || breakSpotTag == 9 || breakSpotTag == 11)
+                if (breakSpotTag == Voxel.Bedrock || breakSpotTag == Voxel.StationaryWater || breakSpotTag == Voxel.StationaryLava)
                 {
                     return;
                 }
@@ -149,8 +147,7 @@ public class BlockEditActionState : IActionState
                 ushort selectionY = (ushort) (testPosition.y * 2);
                 ushort selectionZ = (ushort) (testPosition.z * 2);
                 testPosition = new Vector3(selectionX / 2f, selectionY / 2f, selectionZ / 2f);
-                if (PlayerUtils.IsSolidBlock(world[testPosition.x, testPosition.y,
-                        testPosition.z]))
+                if (PlayerUtils.IsSolidBlock(world.GetVoxel(testPosition.x, testPosition.y, testPosition.z)))
                 {
                     selectionPosition = testPosition;
                     selectionNormal = raycastHit.normal;

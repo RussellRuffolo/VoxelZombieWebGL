@@ -126,7 +126,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x, y, z - 1);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (ChunkInfo._transparentBlocks.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._frontVertices)
                             vertices.Add(pos + vert);
@@ -162,7 +162,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                     }
 
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (ChunkInfo._transparentBlocks.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._topVertices)
                             vertices.Add(pos + vert);
@@ -197,7 +197,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x + 1, y, z);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (ChunkInfo._transparentBlocks.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._rightVertices)
                             vertices.Add(pos + vert);
@@ -233,7 +233,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x - 1, y, z);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (ChunkInfo._transparentBlocks.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._leftVertices)
                             vertices.Add(pos + vert);
@@ -270,7 +270,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x, y, z + 1);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (ChunkInfo._transparentBlocks.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._backVertices)
                             vertices.Add(pos + vert);
@@ -307,7 +307,7 @@ public abstract class Chunk : MonoBehaviour, IChunk
                         blockCheck = GetBlock(x, y - 1, z);
                     }
 
-                    if (ChunkInfo._transparentBlockSet.Contains(blockCheck) && blockCheck != voxelType)
+                    if (ChunkInfo._transparentBlocks.Contains(blockCheck) && blockCheck != voxelType)
                     {
                         foreach (var vert in ChunkInfo._bottomVertices)
                             vertices.Add(pos + vert);
