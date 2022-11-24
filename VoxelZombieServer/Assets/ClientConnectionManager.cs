@@ -196,7 +196,7 @@ public class ClientConnectionManager : MonoBehaviour
         resp.Headers["content-type"] = "application/json";
         string sdp = offerOp.Desc.sdp;
         Debug.Log("Sdp: " + sdp);
-        string newSdp = sdp.Replace("IN IP4 127.0.0.1", "IN IP4 98.50.67.155");
+        string newSdp = sdp.Replace("IN IP4 127.0.0.1", "IN IP4 76.131.179.78");
         Debug.Log("Sdp: " + newSdp);
         GetOfferResponse respObject = new GetOfferResponse(clientId, newSdp);
         string jsonResponse = JsonUtility.ToJson(respObject);
@@ -271,12 +271,12 @@ public class ClientConnectionManager : MonoBehaviour
             {
                 Debug.Log("Candidate: " + client.IceCandidate.Candidate);
                 string candidate = client.IceCandidate.Candidate;
-                string newCandidate = candidate.Replace("192.168.0.171", "98.50.67.155");
+                string newCandidate = candidate.Replace("192.168.0.171", "76.131.179.78");
 
 
                 JObject jObject = JObject.FromObject(new
                 {
-                    address = "98.50.67.155",
+                    address = "76.131.179.78",
                     candidate = newCandidate,
                     component = "rtp",
                     foundation = client.IceCandidate.Foundation,
