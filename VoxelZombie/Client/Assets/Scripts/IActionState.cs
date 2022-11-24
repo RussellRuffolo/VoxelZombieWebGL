@@ -1,6 +1,6 @@
-﻿using Client;
-using UnityEngine;
+﻿using UnityEngine;
 using ZombieLib;
+using ZombieLib.Interfaces;
 
 public interface IActionState : IState
 {

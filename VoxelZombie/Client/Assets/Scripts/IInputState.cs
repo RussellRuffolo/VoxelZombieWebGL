@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Client;
-using UnityEngine;
+﻿using Client;
+using ZombieLib.Interfaces;
 
 public interface IInputState : IState
 {
