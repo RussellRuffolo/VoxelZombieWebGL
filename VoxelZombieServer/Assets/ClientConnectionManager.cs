@@ -114,6 +114,8 @@ public class ClientConnectionManager : MonoBehaviour
 
         unreliableDataChannel.OnOpen += () =>
         {
+            Debug.Log("Unreliable Open");
+
             clients[clientId].UnreliableOpen = true;
             if (clients[clientId].ReliableOpen)
             {
@@ -142,6 +144,7 @@ public class ClientConnectionManager : MonoBehaviour
         reliableDataChannel.OnOpen += () =>
         {
             clients[clientId].ReliableOpen = true;
+            Debug.Log("Reliable Open");
             if (clients[clientId].UnreliableOpen)
             {
                 clients[clientId].ConnectionReady();
