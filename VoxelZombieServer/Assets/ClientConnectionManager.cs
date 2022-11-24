@@ -106,8 +106,10 @@ public class ClientConnectionManager : MonoBehaviour
 
         RTCDataChannel unreliableDataChannel = peerConnection.CreateDataChannel("Unreliable", new RTCDataChannelInit()
         {
+            negotiated = true,
             ordered = false,
-            maxRetransmits = 0
+            maxRetransmits = 0,
+            id = 777
         });
 
         unreliableDataChannel.OnOpen += () =>
@@ -132,8 +134,9 @@ public class ClientConnectionManager : MonoBehaviour
 
         RTCDataChannel reliableDataChannel = peerConnection.CreateDataChannel("Reliable", new RTCDataChannelInit()
         {
+            negotiated = true,
             ordered = true,
-            protocol = "raw"
+            id = 776
         });
 
         reliableDataChannel.OnOpen += () =>

@@ -54,31 +54,19 @@ mergeInto(LibraryManager.library, {
     })
   })
 
-  //set up data channel
-  peerConnection.ondatachannel = function (event) {
+//create data channel here
+const reliableStringChannel = peerConnection.createDataChannel("Reliable", {negotiated: true, ordered: true, id: 776})
 
-      const dataChannel = event.channel
+reliableStringChannel.onmessage = (event) => {
+ window.unityInstance.SendMessage('Network', 'ReceiveReliableMessage', event.data)
+}
 
-      if(dataChannel.label === 'Reliable'){
-        peerConnection.reliableChannel = dataChannel
+const unreliableStringChannel = peerConnection.createDataChannel("Unreliable", {negotiated: true, ordered: false, maxRetransmits: 0, id: 777})
 
-	window.unityInstance.SendMessage('Network', 'ReliableChannelOpen');
+unreliableStringChannel.onmessage = (event) => {
+ window.unityInstance.SendMessage('Network', 'ReceiveUnreliableMessage', event.data)
+}
 
-
-        dataChannel.onmessage = function(event) {            
-	  console.log(typeof event.data)
-          window.unityInstance.SendMessage('Network', 'ReceiveReliableMessage', event.data)
-        }
-      }
-      else if(dataChannel.label === 'Unreliable'){
-        peerConnection.unreliableChannel = dataChannel
-
-        dataChannel.onmessage = function(event) {
-          window.unityInstance.SendMessage('Network', 'ReceiveUnreliableMessage', event.data)
-        }
-      }
-   
-    }
 },
 
 
