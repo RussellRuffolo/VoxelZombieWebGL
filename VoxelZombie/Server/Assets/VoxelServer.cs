@@ -15,11 +15,9 @@ public class VoxelServer : MonoBehaviour
     ServerGameManager gManager;
     ServerBlockEditor bEditor;
     ClientConnectionManager ConnectionManager;
-
-
+    
     //players who have loaded the current map
     List<RtcClient> loadedPlayers = new List<RtcClient>();
-
 
     public Dictionary<ushort, string> playerNames = new Dictionary<ushort, string>();
     private GrenadeManager grenadeManager;
@@ -34,32 +32,23 @@ public class VoxelServer : MonoBehaviour
         bEditor = GetComponent<ServerBlockEditor>();
         ConnectionManager = GetComponent<ClientConnectionManager>();
 
-        ConnectionManager.ClientConnected += PlayerConnected;
-        ConnectionManager.ClientDisconnected += PlayerDisconnected;
-        ConnectionManager.MessageReceived += ClientMessageReceived;
+        ConnectionManager.OnClientConnect += PlayerConnected;
+        ConnectionManager.OnClientDisconnected += PlayerDisconnected;
+        ConnectionManager.OnMessageReceived += ClientMessageReceived;
     }
-
 
     //When a player connects they are sent the current map to load
     void PlayerConnected(RtcClient client)
     {
-        RtcMessage message = new RtcMessage(Tags.MAP_TAG);
-
+        RtcMessage message = new RtcMessage(MessageTag.MapTag);
         message.WriteStr(vEngine.currentMap.Name);
-
         message.WriteInt(vEngine.currentMap.Length);
-
         message.WriteInt(vEngine.currentMap.Width);
-
         message.WriteInt(vEngine.currentMap.Height);
-
         message.WriteFloat(vEngine.currentMap.SpawnX);
-
         message.WriteFloat(vEngine.currentMap.SpawnY);
-
         message.WriteFloat(vEngine.currentMap.SpawnZ);
-
-
+        
         Debug.Log("Sending message for map with dimensions: " + vEngine.currentMap.Length + " " +
                   vEngine.currentMap.Width + " " + vEngine.currentMap.Height);
         client.SendReliableMessage(message);
@@ -78,7 +67,7 @@ public class VoxelServer : MonoBehaviour
             loadedPlayers.Remove(client);
             playerNames.Remove(playerID);
 
-            RtcMessage removePlayerMessage = new RtcMessage(Tags.REMOVE_PLAYER_TAG);
+            RtcMessage removePlayerMessage = new RtcMessage(MessageTag.RemovePlayerTag);
             removePlayerMessage.WriteUShort(playerID);
 
             foreach (RtcClient c in ConnectionManager.GetAllClients())
@@ -97,6 +86,60 @@ public class VoxelServer : MonoBehaviour
             }
         }
     }
+    
+    delegate void MessageHandler(ushort x, RtcClient c, RtcMessageReader r);
+    MessageHandler GetMessageHandler(MessageTag messageTag) => messageTag switch
+    {
+        MessageTag.MapTag => HandleMap,
+        MessageTag.PlayerInitTag => HandlePlayerInit,
+        MessageTag.AddPlayerTag => HandleAddPlayer,
+        MessageTag.InputTag => HandleInput,
+        MessageTag.BlockEditTag => HandleBlockEdit,
+        MessageTag.OtherPositionTag => HandleOtherPosition,
+        MessageTag.PlayerStateTag => HandlePlayerState,
+        MessageTag.RemovePlayerTag => HandleRemovePlayer,
+        MessageTag.MapLoadedTag => HandleMapLoaded,
+        MessageTag.MapReloadedTag => HandleMapReloaded,
+        MessageTag.LoginAttemptTag => HandleLoginAttempt,
+        MessageTag.ChatTag => HandleChat,
+        MessageTag.ClientPositionTag => HandleClientPosition,
+        MessageTag.CreateAccountTag => HandleCreateAccount,
+        MessageTag.TokenTag => HandleToken,
+        MessageTag.UsernameTag => HandleUsername,
+        MessageTag.PatchUsernameTag => HandlePatchUsername,
+        MessageTag.ActionTag => HandleAction,
+        MessageTag.GrenadeCreationTag => HandleGrenadeCreation,
+        MessageTag.GrenadePositionTag => HandleGrenadePosition,
+        MessageTag.GrenadeDestructionTag => HandleGrenadeDestruction,
+        MessageTag.ChunkDataTag => HandleChunkData,
+        MessageTag.ChunkActiveTag => HandleChunkActive,
+        MessageTag.ChunkInactiveTag => HandleChunkInactive,
+    };
+    void HandleMap(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandlePlayerInit(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleAddPlayer(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleInput(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleBlockEdit(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleOtherPosition(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandlePlayerState(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleRemovePlayer(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleMapLoaded(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleMapReloaded(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleLoginAttempt(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleChat(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleClientPosition(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleCreateAccount(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleToken(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleUsername(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandlePatchUsername(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleAction(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleGrenadeCreation(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleGrenadePosition(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleGrenadeDestruction(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleChunkData(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleChunkActive(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}
+    void HandleChunkInactive(ushort clientId, RtcClient rtcClient, RtcMessageReader reader){}    
+
 
     void ClientMessageReceived(ushort clientId, RtcClient client, byte[] message)
     {
@@ -106,49 +149,50 @@ public class VoxelServer : MonoBehaviour
         // char messageTag = Encoding.ASCII.GetChars(message, 0, 1)[0];
         string messageStr = new string(Encoding.ASCII.GetChars(message));
         RtcMessageReader reader = new RtcMessageReader(messageStr);
-        char messageTag = reader.ReadTag();
+        MessageTag messageTag = (MessageTag)reader.ReadTag();
 
-
-        if (messageTag == Tags.INPUT_TAG)
+        var handler = GetMessageHandler(messageTag);
+        handler(clientId, client, reader);
+        if (messageTag == MessageTag.InputTag)
         {
             PlayerManager.ReceiveInputs(clientId, client, reader);
         }
-        else if (messageTag == Tags.MAP_RELOADED_TAG)
+        else if (messageTag == MessageTag.MapReloadedTag)
         {
             ReInitializePlayer(clientId, client, reader);
         }
-        else if (messageTag == Tags.LOGIN_ATTEMPT_TAG)
+        else if (messageTag == MessageTag.LoginAttemptTag)
         {
             HandleLoginAttempt(clientId, client, reader.ReadString());
         }
-        else if (messageTag == Tags.CHAT_TAG)
+        else if (messageTag == MessageTag.ChatTag)
         {
             HandlePlayerChat(client, reader);
         }
-        else if (messageTag == Tags.TOKEN_TAG)
+        else if (messageTag == MessageTag.TokenTag)
         {
             HandleToken(clientId, client, reader.ReadString());
         }
-        else if (messageTag == Tags.PATCH_USERNAME_TAG)
+        else if (messageTag == MessageTag.PatchUsernameTag)
         {
             HandlePatchUsername(clientId, client, reader.ReadString(), reader.ReadString());
         }
-        else if (messageTag == Tags.ACTION_TAG)
+        else if (messageTag == MessageTag.ActionTag)
         {
             PlayerManager.ReceiveActions(clientId, reader);
         }
-        else if (messageTag == Tags.CHUNK_ACTIVE_TAG)
+        else if (messageTag == MessageTag.ChunkActiveTag)
         {
             ChunkID id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
             vEngine.world.Chunks[id].AddActivePlayer(clientId);
             var msg = vEngine.world.Chunks[id].GetVoxelMessage();
             client.SendByteMessage(Cast.VoxelsAsBytes(ref msg));
         }
-        else if (messageTag == Tags.BLOCK_EDIT_TAG)
+        else if (messageTag == MessageTag.BlockEditTag)
         {
             ApplyBlockEdit(reader);
         }
-        else if (messageTag == Tags.CHUNK_INACTIVE_TAG)
+        else if (messageTag == MessageTag.ChunkInactiveTag)
         {
             ChunkID id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
             vEngine.world.Chunks[id].RemoveActivePlayer(clientId);
@@ -341,7 +385,7 @@ public class VoxelServer : MonoBehaviour
 
     public void SendPublicChat(string chatMessage, ushort colorTag)
     {
-        RtcMessage newChatMessage = new RtcMessage(Tags.CHAT_TAG);
+        RtcMessage newChatMessage = new RtcMessage(MessageTag.ChatTag);
         newChatMessage.WriteStr(chatMessage);
         newChatMessage.WriteUShort(colorTag);
         foreach (RtcClient c in loadedPlayers)
@@ -352,7 +396,7 @@ public class VoxelServer : MonoBehaviour
 
     public void SendPrivateChat(string chatMessage, ushort colorTag, ushort recipientID)
     {
-        RtcMessage newChatMessage = new RtcMessage(Tags.CHAT_TAG);
+        RtcMessage newChatMessage = new RtcMessage(MessageTag.ChatTag);
         newChatMessage.WriteStr(chatMessage);
         newChatMessage.WriteUShort(colorTag);
         foreach (RtcClient c in ConnectionManager.GetAllClients())
@@ -475,7 +519,7 @@ public class VoxelServer : MonoBehaviour
             succesfulLogin = 0;
 
 
-            RtcMessage loginMessage = new RtcMessage(Tags.LOGIN_ATTEMPT_TAG);
+            RtcMessage loginMessage = new RtcMessage(MessageTag.LoginAttemptTag);
             loginMessage.WriteInt(succesfulLogin);
 
             client.SendReliableMessage(loginMessage);
@@ -499,7 +543,7 @@ public class VoxelServer : MonoBehaviour
 
         if (bEditor.TryApplyEdit(x, y, z, blockTag))
         {
-            RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
+            RtcMessage blockEditMessage = new RtcMessage(MessageTag.BlockEditTag);
             blockEditMessage.WriteUShort(x);
             blockEditMessage.WriteUShort(y);
             blockEditMessage.WriteUShort(z);
@@ -512,7 +556,7 @@ public class VoxelServer : MonoBehaviour
         }
         else
         {
-            RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
+            RtcMessage blockEditMessage = new RtcMessage(MessageTag.BlockEditTag);
             blockEditMessage.WriteUShort(x);
             blockEditMessage.WriteUShort(y);
             blockEditMessage.WriteUShort(z);
@@ -542,7 +586,7 @@ public class VoxelServer : MonoBehaviour
             Debug.LogError("Caught exception parsing token response: " + e.Message);
         }
 
-        RtcMessage usernameMessage = new RtcMessage(Tags.USERNAME_TAG);
+        RtcMessage usernameMessage = new RtcMessage(MessageTag.UsernameTag);
 
         usernameMessage.WriteStr(username);
 
@@ -569,7 +613,7 @@ public class VoxelServer : MonoBehaviour
             Debug.LogError("Caught exception parsing patch response: " + e.Message);
         }
 
-        RtcMessage usernameMessage = new RtcMessage(Tags.USERNAME_TAG);
+        RtcMessage usernameMessage = new RtcMessage(MessageTag.UsernameTag);
 
         usernameMessage.WriteStr(returnName);
 
@@ -595,7 +639,7 @@ public class VoxelServer : MonoBehaviour
             vEngine.currentMap.SpawnZ, name);
 
         //This message is to the new player and tells them the ID, state, position, and name of every player
-        RtcMessage playerMessage = new RtcMessage(Tags.PLAYER_INIT_TAG);
+        RtcMessage playerMessage = new RtcMessage(MessageTag.PlayerInitTag);
 
         playerMessage.WriteInt(PlayerManager.PlayerDictionary.Count);
 
@@ -626,7 +670,7 @@ public class VoxelServer : MonoBehaviour
         }
 
 
-        RtcMessage newPlayerMessage = new RtcMessage(Tags.ADD_PLAYER_TAG);
+        RtcMessage newPlayerMessage = new RtcMessage(MessageTag.AddPlayerTag);
 
 
         Transform newPlayerTransform = PlayerManager.PlayerDictionary[clientId].transform;
@@ -708,7 +752,7 @@ public class VoxelServer : MonoBehaviour
         }
         else
         {
-            RtcMessage message = new RtcMessage(Tags.MAP_TAG);
+            RtcMessage message = new RtcMessage(MessageTag.MapTag);
 
             message.WriteStr(vEngine.currentMap.Name);
 
@@ -730,7 +774,7 @@ public class VoxelServer : MonoBehaviour
 
     public void SendBlockEdit(List<ushort> ids, ushort x, ushort y, ushort z, Voxel blockTag)
     {
-        RtcMessage blockEditMessage = new RtcMessage(Tags.BLOCK_EDIT_TAG);
+        RtcMessage blockEditMessage = new RtcMessage(MessageTag.BlockEditTag);
         blockEditMessage.WriteUShort(x);
         blockEditMessage.WriteUShort(y);
         blockEditMessage.WriteUShort(z);
@@ -744,7 +788,7 @@ public class VoxelServer : MonoBehaviour
 
     public void SendPositionUpdate(ushort id, Vector3 newPosition, float yRot)
     {
-        RtcMessage positionMessage = new RtcMessage(Tags.OTHER_POSITION_TAG);
+        RtcMessage positionMessage = new RtcMessage(MessageTag.OtherPositionTag);
         positionMessage.WriteUShort(id);
 
         positionMessage.WriteFloat(newPosition.x);
@@ -768,7 +812,7 @@ public class VoxelServer : MonoBehaviour
     public void SendGrenadeCreation(int throwId, GrenadeController grenadeController)
     {
         Vector3 grenadePosition = grenadeController.transform.position;
-        RtcMessage grenadeCreationMessage = new RtcMessage(Tags.GRENADE_CREATION_TAG);
+        RtcMessage grenadeCreationMessage = new RtcMessage(MessageTag.GrenadeCreationTag);
         grenadeCreationMessage.WriteInt(throwId);
         grenadeCreationMessage.WriteFloat(grenadePosition.x);
         grenadeCreationMessage.WriteFloat(grenadePosition.y);
@@ -784,7 +828,7 @@ public class VoxelServer : MonoBehaviour
 
     public void SendGrenadeDestruction(int throwId)
     {
-        RtcMessage grenadeDestructionMessage = new RtcMessage(Tags.GRENADE_DESTRUCTION_TAG);
+        RtcMessage grenadeDestructionMessage = new RtcMessage(MessageTag.GrenadeDestructionTag);
         grenadeDestructionMessage.WriteInt(throwId);
 
         foreach (RtcClient c in ConnectionManager.GetAllClients())
@@ -814,7 +858,7 @@ public class VoxelServer : MonoBehaviour
     public void SendPositionUpdate(ushort id, RtcClient client, Vector3 newPosition, int ClientTickNumber,
         Vector3 velocity)
     {
-        RtcMessage positionMessage = new RtcMessage(Tags.CLIENT_POSITION_TAG);
+        RtcMessage positionMessage = new RtcMessage(MessageTag.ClientPositionTag);
 
         positionMessage.WriteUShort(id);
         positionMessage.WriteFloat(newPosition.x);
@@ -848,7 +892,7 @@ public class VoxelServer : MonoBehaviour
 
             PlayerManager.PlayerDictionary[ID].transform.GetComponent<MeshRenderer>().material.color = newColor;
 
-            RtcMessage stateMessage = new RtcMessage(Tags.PLAYER_STATE_TAG);
+            RtcMessage stateMessage = new RtcMessage(MessageTag.PlayerStateTag);
             stateMessage.WriteUShort(ID);
             stateMessage.WriteUShort(stateTag);
 
@@ -875,7 +919,7 @@ public class VoxelServer : MonoBehaviour
         Vector3 spawnPosition =
             new Vector3(vEngine.currentMap.SpawnX, vEngine.currentMap.SpawnY, vEngine.currentMap.SpawnZ);
 
-        RtcMessage mapMessage = new RtcMessage(Tags.MAP_TAG);
+        RtcMessage mapMessage = new RtcMessage(MessageTag.MapTag);
         mapMessage.WriteStr(vEngine.currentMap.Name);
         mapMessage.WriteInt(vEngine.currentMap.Length);
 
@@ -916,4 +960,6 @@ public class VoxelServer : MonoBehaviour
             return 1000;
         }
     }
+    
+
 }

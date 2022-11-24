@@ -687,7 +687,7 @@ public class GreedyChunk : MonoBehaviour, IChunk
 
     public void CreateMessage()
     {
-        RtcMessage chunkDataMessage = new RtcMessage(Tags.CHUNK_DATA_TAG);
+        RtcMessage chunkDataMessage = new RtcMessage(MessageTag.ChunkDataTag);
         chunkDataMessage.WriteInt(ID.X);
         chunkDataMessage.WriteInt(ID.Y);
         chunkDataMessage.WriteInt(ID.Z);

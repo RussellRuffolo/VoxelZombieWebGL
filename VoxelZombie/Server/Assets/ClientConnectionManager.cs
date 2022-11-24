@@ -34,17 +34,12 @@ public class ClientConnectionManager : MonoBehaviour
     private HttpListener HttpListener { get; set; }
     static X509Certificate2 serverCertificate = null;
 
-    public ClientConnectedDelegate ClientConnected;
-    public ClientDisconnectedDelegate ClientDisconnected;
+    public ClientConnectedDelegate OnClientConnect;
+    public ClientDisconnectedDelegate OnClientDisconnected;
+    public MessageReceivedDelegate OnMessageReceived;
 
-    public MessageReceivedDelegate MessageReceived;
-
-    public IEnumerable<RtcClient> GetAllClients()
-    {
-        return clients.Values.AsEnumerable();
-    }
-
-
+    public IEnumerable<RtcClient> GetAllClients() => clients.Values.AsEnumerable();
+    
     private void Awake()
     {
         WebRTC.Initialize();
@@ -60,7 +55,6 @@ public class ClientConnectionManager : MonoBehaviour
     {
         listener.Start();
 
-
         while (true)
         {
             HttpListenerContext ctx = await listener.GetContextAsync();
@@ -69,19 +63,18 @@ public class ClientConnectionManager : MonoBehaviour
             HttpListenerRequest req = ctx.Request;
             HttpListenerResponse resp = ctx.Response;
 
-            if (req.Url.AbsolutePath == "/get-offer")
+            switch (req.Url.AbsolutePath)
             {
-                StartCoroutine(HandleGetOffer(req, resp));
-            }
-
-            if (req.Url.AbsolutePath == "/send-answer-get-candidate")
-            {
-                StartCoroutine(HandleSendAnswer(req, resp));
+                case "/get-offer":
+                    StartCoroutine(HandleGetOffer(req, resp));
+                    break;
+                case "/send-answer-get-candidate":
+                    StartCoroutine(HandleSendAnswer(req, resp));
+                    break;
             }
         }
     }
-
-
+    
     private IEnumerator HandleGetOffer(HttpListenerRequest req, HttpListenerResponse resp)
     {
         ushort clientId = nextClientId;
@@ -90,7 +83,6 @@ public class ClientConnectionManager : MonoBehaviour
         nextClientId++;
 
         RTCPeerConnection peerConnection = new RTCPeerConnection();
-
 
         peerConnection.OnIceConnectionChange += state =>
         {
@@ -128,7 +120,7 @@ public class ClientConnectionManager : MonoBehaviour
             }
         };
 
-        unreliableDataChannel.OnMessage += bytes => { MessageReceived(clientId, clients[clientId], bytes); };
+        unreliableDataChannel.OnMessage += bytes => { OnMessageReceived(clientId, clients[clientId], bytes); };
 
         RTCDataChannel reliableDataChannel = peerConnection.CreateDataChannel("Reliable", new RTCDataChannelInit()
         {
@@ -153,26 +145,23 @@ public class ClientConnectionManager : MonoBehaviour
             }
         };
 
-
         //ClientId 
-        reliableDataChannel.OnMessage += bytes => { MessageReceived(clientId, clients[clientId], bytes); };
-
+        reliableDataChannel.OnMessage += bytes => { OnMessageReceived(clientId, clients[clientId], bytes); };
         RtcClient client = new RtcClient(peerConnection, unreliableDataChannel, reliableDataChannel, clientId);
 
         client.ConnectionReady += () =>
         {
             Debug.Log("Connection Ready");
-            ClientConnected(client);
+            OnClientConnect(client);
         };
 
         client.ConnectionClosed += () =>
         {
             //CLIENT REMOVED ON CONNECTION CLOSED
             clients.Remove(client.ID);
-            ClientDisconnected(client);
+            OnClientDisconnected(client);
         };
-
-
+        
         clients.Add(clientId, client);
 
         RTCOfferAnswerOptions options = new RTCOfferAnswerOptions();
@@ -194,7 +183,6 @@ public class ClientConnectionManager : MonoBehaviour
         GetOfferResponse respObject = new GetOfferResponse(clientId, newSdp);
         string jsonResponse = JsonUtility.ToJson(respObject);
         byte[] respBytes = Encoding.UTF8.GetBytes(jsonResponse);
-
         
         Debug.Log("Closing Response");
         resp.Close(respBytes, false);

@@ -11,7 +11,7 @@ public class RtcMessage
 
     private int writePosition = 1;
 
-    public RtcMessage(char tag)
+    public RtcMessage(MessageTag tag)
     {
         messageString = "";
         messageString += tag;

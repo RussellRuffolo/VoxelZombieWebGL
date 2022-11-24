@@ -27,7 +27,7 @@ public class GrenadeManager : MonoBehaviour
         if (Grenades.Count > 0)
         {
             int numGrenades = Grenades.Count;
-            RtcMessage grenadePositionMessage = new RtcMessage(Tags.GRENADE_POSITION_TAG);
+            RtcMessage grenadePositionMessage = new RtcMessage(MessageTag.GrenadePositionTag);
             grenadePositionMessage.WriteInt(numGrenades);
             foreach (int throwId in Grenades.Keys)
             {
