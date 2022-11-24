@@ -3,13 +3,8 @@ using ZombieLib;
 
 public class BlockEditActionState : IActionState
 {
-    public void Enter()
-    {
-    }
-
-    public void Exit()
-    {
-    }
+    public void Enter() {}
+    public void Exit(){}
 
 
     public IWorld world;
