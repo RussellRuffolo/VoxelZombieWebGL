@@ -85,7 +85,7 @@ public class ClientConnectionManager : MonoBehaviour
     private IEnumerator HandleGetOffer(HttpListenerRequest req, HttpListenerResponse resp)
     {
         ushort clientId = nextClientId;
-        
+
         Debug.Log("Added player with clientID: " + clientId);
         nextClientId++;
 
@@ -132,7 +132,8 @@ public class ClientConnectionManager : MonoBehaviour
 
         RTCDataChannel reliableDataChannel = peerConnection.CreateDataChannel("Reliable", new RTCDataChannelInit()
         {
-            ordered = true
+            ordered = true,
+            protocol = "raw"
         });
 
         reliableDataChannel.OnOpen += () =>
@@ -162,6 +163,7 @@ public class ClientConnectionManager : MonoBehaviour
         client.ConnectionReady += () =>
         {
             Debug.Log("Connection Ready");
+            client.SendByteMessage(new byte[] {15, 2, 35, 4});
             ClientConnected(client);
         };
 
@@ -195,7 +197,7 @@ public class ClientConnectionManager : MonoBehaviour
         string jsonResponse = JsonUtility.ToJson(respObject);
         byte[] respBytes = Encoding.UTF8.GetBytes(jsonResponse);
 
-        
+
         Debug.Log("Closing Response");
         resp.Close(respBytes, false);
 
@@ -243,7 +245,6 @@ public class ClientConnectionManager : MonoBehaviour
 
     private IEnumerator HandleSendAnswer(HttpListenerRequest req, HttpListenerResponse resp)
     {
-       
         Debug.Log("Handle Send Answer");
         using (var reader = new StreamReader(req.InputStream,
                    req.ContentEncoding))
