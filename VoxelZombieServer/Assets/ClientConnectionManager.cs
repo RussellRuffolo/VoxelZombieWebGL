@@ -132,7 +132,8 @@ public class ClientConnectionManager : MonoBehaviour
 
         RTCDataChannel reliableDataChannel = peerConnection.CreateDataChannel("Reliable", new RTCDataChannelInit()
         {
-            ordered = true
+            ordered = true,
+            protocol = "raw"
         });
 
         reliableDataChannel.OnOpen += () =>

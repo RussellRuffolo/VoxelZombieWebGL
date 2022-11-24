@@ -43,11 +43,14 @@ public class RtcClient
         return false;
     }
 
+    private byte[] testMessage = new byte[] {1, 2, 3};
+
     public bool SendReliableMessage(RtcMessage message)
     {
         //FOR DEBUG, not necessary
         if (ReliableDataChannel.ReadyState == RTCDataChannelState.Open)
         {
+            ReliableDataChannel.Send(testMessage);
             ReliableDataChannel.Send(message.GetMessage());
             return true;
         }
