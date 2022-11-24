@@ -1,4 +1,5 @@
-
+﻿namespace ZombieLib
+{
     public enum MoveState
     {
         basicGrounded,
@@ -23,3 +24,5 @@
         postWallJump,
         postWallJumpSlideAir
     }
+
+}

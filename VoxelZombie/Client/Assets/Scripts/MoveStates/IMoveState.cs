@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Client;
 using UnityEngine;
+using ZombieLib;
 using ZombieLib.Interfaces;
 
 public interface IMoveState : IState

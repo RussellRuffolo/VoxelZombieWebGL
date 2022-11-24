@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using UnityEditor;
 using UnityEngine;
+using ZombieLib;
 
 public interface IMoveState
 {

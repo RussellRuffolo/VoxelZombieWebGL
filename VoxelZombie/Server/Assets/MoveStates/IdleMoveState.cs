@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using UnityEngine;
+using ZombieLib;
 
 public class IdleMoveState : IMoveState
 {
