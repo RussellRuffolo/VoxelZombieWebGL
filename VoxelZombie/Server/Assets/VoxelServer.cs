@@ -142,7 +142,7 @@ public class VoxelServer : MonoBehaviour
             ChunkID id = new ChunkID(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
             vEngine.world.Chunks[id].AddActivePlayer(clientId);
             var msg = vEngine.world.Chunks[id].GetVoxelMessage();
-            client.SendByteMessage(Cast.VoxelsAsBytes(ref msg));
+            client.SendByteMessage(Cast.AsBytes(ref msg));
         }
         else if (messageTag == Tags.BLOCK_EDIT_TAG)
         {
@@ -622,7 +622,7 @@ public class VoxelServer : MonoBehaviour
         foreach (ChunkID id in vEngine.SpawnChunks)
         {
             Voxel[] msg = vEngine.world.Chunks[id].GetVoxelMessage();
-            client.SendByteMessage(Cast.VoxelsAsBytes(ref msg));
+            client.SendByteMessage(Cast.AsBytes(ref msg));
         }
 
 

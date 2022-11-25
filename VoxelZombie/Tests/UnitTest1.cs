@@ -21,6 +21,14 @@ public class Tests
     {
         byte[] bytes = { 0, 3, 7};
         Voxel[] voxels = { Voxel.Air, Voxel.Dirt, Voxel.Bedrock };
-        Assert.That(Cast.VoxelsAsBytes(ref voxels), Is.EqualTo(bytes));
+
+        byte[] casted = Cast.AsBytes(ref voxels);
+        bytes.Zip(casted, (b, v) =>
+        {
+            Assert.That(b, Is.EqualTo(v));
+            return true;  // Todo (Russell): Make idiomatic
+        });
+        // Assert.That(retyped, Is.EqualTo(bytes));
+        // Assert.That(Unsafe.As<Voxel[], byte[]>(ref voxels), Is.EquivalentTo(bytes));
     }
 }
