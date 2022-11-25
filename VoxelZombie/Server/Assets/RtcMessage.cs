@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using ZombieLib;
 
 public class RtcMessage
 {
@@ -11,10 +12,10 @@ public class RtcMessage
 
     private int writePosition = 1;
 
-    public RtcMessage(char tag)
+    public RtcMessage(Tags tag)
     {
         messageString = "";
-        messageString += tag;
+        messageString += (char)tag;
     }
 
     private byte[] byteBuffer = new byte[4];

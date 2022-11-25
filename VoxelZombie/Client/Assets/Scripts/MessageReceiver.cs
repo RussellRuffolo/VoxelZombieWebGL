@@ -1,6 +1,7 @@
 ﻿using System;
 using Client;
 using UnityEngine;
+using ZombieLib;
 
 public class MessageReceiver : MonoBehaviour
 {
@@ -49,7 +50,7 @@ public class MessageReceiver : MonoBehaviour
     private void ReceiveMessage(string message)
     {
         RtcMessageReader reader = new RtcMessageReader(message);
-        char tag = reader.ReadTag();
+        Tags tag = reader.ReadTag();
 
         switch (tag)
         {

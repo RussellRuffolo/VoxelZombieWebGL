@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ZombieLib;
 
 public class RtcMessageReader
 {
@@ -14,10 +15,10 @@ public class RtcMessageReader
 
     private int position = 0;
 
-    public char ReadTag()
+    public Tags ReadTag()
     {
         position += 1;
-        return Message[0];
+        return (Tags)Message[0];
     }
     
     public byte ReadByte()

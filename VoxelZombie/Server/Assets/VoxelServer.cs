@@ -106,7 +106,7 @@ public class VoxelServer : MonoBehaviour
         // char messageTag = Encoding.ASCII.GetChars(message, 0, 1)[0];
         string messageStr = new string(Encoding.ASCII.GetChars(message));
         RtcMessageReader reader = new RtcMessageReader(messageStr);
-        char messageTag = reader.ReadTag();
+        Tags messageTag = reader.ReadTag();
 
 
         if (messageTag == Tags.INPUT_TAG)
