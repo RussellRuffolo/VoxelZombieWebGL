@@ -1,5 +1,6 @@
 using Client;
 using UnityEngine.UI;
+using ZombieLib;
 
 public abstract class BaseChatInputState : IInputState
 {

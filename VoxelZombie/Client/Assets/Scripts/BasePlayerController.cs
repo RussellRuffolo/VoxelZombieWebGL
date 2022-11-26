@@ -313,7 +313,7 @@ namespace Client
             int inputTickNumber = tickNumber;
 
             ClientInputs currentInputs =
-                new ClientInputs(speedVector, playerForward, jump, slide, menu, chat, inputTickNumber);
+                new ClientInputs(speedVector, playerForward, inputTickNumber, jump, slide, menu, chat);
             return currentInputs;
         }
 

@@ -58,7 +58,7 @@ public class ServerPlayerManager : MonoBehaviour
         // StartCoroutine(GetPlayerStats(name, PlayerID));
 
         InputDictionary.Add(PlayerID,
-            new ClientInputs(Vector3.zero, Vector3.zero, false, false));
+            new ClientInputs(Vector3.zero, Vector3.zero, jump: false, slide: false));
         TickDic.Add(PlayerID, -1);
         PlayerVelocities.Add(PlayerID, Vector3.zero);
     }
@@ -133,7 +133,7 @@ public class ServerPlayerManager : MonoBehaviour
                 appliedInput = true;
 
 
-                ClientInputs inputs = new ClientInputs(moveVector, lookDirection, Jump, Slide);
+                ClientInputs inputs = new ClientInputs(moveVector, lookDirection, jump: Jump, slide: Slide);
 
 
                 //apply the actions to edit blocks and spawn grenades etc

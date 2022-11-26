@@ -1,4 +1,5 @@
 ﻿using Client;
+using ZombieLib;
 using ZombieLib.Interfaces;
 
 public interface IInputState : IState

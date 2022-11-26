@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Client;
 using UnityEngine;
 using UnityEngine.UI;
+using ZombieLib;
 
 public class SinglePlayerChatInputState : BaseChatInputState
 {

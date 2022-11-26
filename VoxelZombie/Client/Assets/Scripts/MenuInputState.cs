@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Client;
 using UnityEngine;
+using ZombieLib;
 
 public class MenuInputState : IInputState
 {
